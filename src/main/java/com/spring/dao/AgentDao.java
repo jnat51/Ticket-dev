@@ -56,6 +56,7 @@ public class AgentDao{
 	
 	public Agent findUsername(String username)
 	{
+		System.out.println("test");
 		try {
 			System.out.println("find agent by bk");
 			String query = "from Agent where username = :username";
