@@ -17,12 +17,12 @@ import com.spring.service.AgentService;
 @CrossOrigin(origins = "*", allowedHeaders= "*")
 @Controller
 @RestController
+@Transactional
 @RequestMapping("/agent")
 public class AgentController {
 	@Autowired
 	AgentService agentService;
 	
-	@Transactional
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getBarangbyId(@PathVariable("id") String id)
 	{	
@@ -35,4 +35,6 @@ public class AgentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	
 }

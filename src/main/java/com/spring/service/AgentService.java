@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.spring.dao.AgentDao;
 import com.spring.model.Agent;
 
+@Service
 public class AgentService {
 	@Autowired
 	AgentDao agentDao;

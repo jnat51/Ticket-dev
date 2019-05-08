@@ -4,8 +4,13 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.spring.model.Agent;
 
+@Repository
+@Transactional
 public class AgentDao extends ParentDao{
 	public void insert(Agent agent) {
 		this.entityManager.merge(agent);
