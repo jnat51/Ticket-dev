@@ -6,15 +6,13 @@ import javax.persistence.Persistence;
 
 import com.spring.model.Admin;
 
-public class AdminDao {
+public class AdminDao extends ParentDao{
 	EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("TestPersistence");
 	EntityManager entityManager = emFactory.createEntityManager();
 	
 	public void insert(Admin admin) {
 		System.out.println("insert agent");
-		this.entityManager.getTransaction().begin();
-		this.entityManager.merge(admin);
-		this.entityManager.getTransaction().commit();
+		super.entityManager.merge(admin);
 		System.out.println("insert success");
 	}
 	
