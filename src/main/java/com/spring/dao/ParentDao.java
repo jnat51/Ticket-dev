@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public abstract class ParentDao {
-	@PersistenceContext
+	@PersistenceContext(unitName = "TestPersistence")
 	EntityManager entityManager;
 }

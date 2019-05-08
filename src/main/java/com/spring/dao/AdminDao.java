@@ -1,5 +1,29 @@
 package com.spring.dao;
 
-public class AdminDao {
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
+import com.spring.model.Admin;
+
+public class AdminDao {
+	EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("TestPersistence");
+	EntityManager entityManager = emFactory.createEntityManager();
+	
+	public void insert(Admin admin) {
+		System.out.println("insert agent");
+		this.entityManager.getTransaction().begin();
+		this.entityManager.merge(admin);
+		this.entityManager.getTransaction().commit();
+		System.out.println("insert success");
+	}
+	
+	public void update(Admin admin) {
+		this.entityManager.merge(admin);
+	}
+	
+	public void delete(Admin admin) {
+		this.entityManager.remove(admin);
+	}
+	
 }

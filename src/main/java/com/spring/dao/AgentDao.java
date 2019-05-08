@@ -31,7 +31,9 @@ public class AgentDao{
 	}
 	
 	public void delete(Agent agent) {
+		this.entityManager.getTransaction().begin();
 		this.entityManager.remove(agent);
+		this.entityManager.getTransaction().commit();
 	}
 	
 	public Agent findById(String id)
