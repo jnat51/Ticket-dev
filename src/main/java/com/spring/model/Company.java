@@ -24,9 +24,6 @@ public class Company {
 	@OneToOne
 	@JoinColumn(name = "agent_id", referencedColumnName = "id")
 	private Agent agent;
-	
-	@Column(name = "number")
-	private int number;
 
 	@Column(name = "company_name")
 	private String companyName;
@@ -67,17 +64,6 @@ public class Company {
 	public void setAgent(Agent agent) {
 		this.agent = agent;
 	}
-
-
-	public int getNumber() {
-		return number;
-	}
-
-
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
 
 	public String getCompanyName() {
 		return companyName;

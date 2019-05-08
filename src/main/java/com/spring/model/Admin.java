@@ -18,10 +18,6 @@ public class Admin {
 
 	@Column(name = "username")
 	private String username;
-
-	@Column(name = "number")
-	private int number;
-
 	@Column(name = "password")
 	private String password;
 
@@ -48,14 +44,6 @@ public class Admin {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public String getPassword() {

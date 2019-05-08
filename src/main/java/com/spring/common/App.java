@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan(basePackages = { "com.spring"})
+@ComponentScan(basePackages = {"com.spring"})
 @EnableTransactionManagement
 @EntityScan(basePackages = "com.spring.model") class App 
 {

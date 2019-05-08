@@ -2,6 +2,9 @@ package com.spring.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -11,9 +14,16 @@ import com.spring.model.Agent;
 
 @Repository
 @Transactional
-public class AgentDao extends ParentDao{
+public class AgentDao{	
+	EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("TestPersistence");
+	EntityManager entityManager = emFactory.createEntityManager();
+	
 	public void insert(Agent agent) {
+		System.out.println("insert agent");
+		this.entityManager.getTransaction().begin();
 		this.entityManager.merge(agent);
+		this.entityManager.getTransaction().commit();
+		System.out.println("insert success");
 	}
 	
 	public void update(Agent agent) {
@@ -27,6 +37,7 @@ public class AgentDao extends ParentDao{
 	public Agent findById(String id)
 	{
 		try {
+			System.out.println("find agent by id");
 			String query = "from Agent where id = :id";
 			
 			Agent agent = (Agent) this.entityManager
@@ -37,24 +48,68 @@ public class AgentDao extends ParentDao{
 			}
 			catch(Exception e)
 			{
-				return new Agent();
+				return null;
 			}
 	}
 	
-	public Agent findByBk(String email)
+	public Agent findUsername(String username)
 	{
 		try {
-			String query = "from Agent where email = :email";
+			System.out.println("find agent by bk");
+			String query = "from Agent where username = :username";
 			
 			Agent agent = (Agent) this.entityManager
 					  .createQuery(query)
-					  .setParameter("email",email).getSingleResult();
+					  .setParameter("username", username)
+					  .getSingleResult();
 			
 			return agent;
 			}
 			catch(Exception e)
 			{
-				return new Agent();
+				return null;
+			}
+	}
+	
+	public Agent findByBk(String email, String username)
+	{
+		try {
+			System.out.println("find agent by bk");
+			String query = "from Agent where email = :email AND username = :username";
+			
+			Agent agent = (Agent) this.entityManager
+					  .createQuery(query)
+					  .setParameter("email",email)
+					  .setParameter("username", username)
+					  .getSingleResult();
+			
+			return agent;
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+	}
+	
+	public boolean login(String username, String password)
+	{
+		try {
+			String query = "from Agent where username = :username";
+			
+			Agent agent = (Agent) this.entityManager
+					  .createQuery(query)
+					  .setParameter("username",username)
+					  .getSingleResult();
+			
+			System.out.println("Welcome " + agent.getName());
+			
+			return true;
+			}
+			catch(Exception e)
+			{
+				System.out.println("Wrong username/password.");
+				
+				return false;
 			}
 	}
 	
@@ -92,7 +147,7 @@ public class AgentDao extends ParentDao{
 	
 	public boolean isIdExist(String id)
 	{
-		if(findByBk(id) == null)
+		if(findById(id) == null)
 		{
 			return false;
 		}
@@ -102,9 +157,9 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
-	public boolean isBkExist(String email)
+	public boolean isBkExist(String email, String username)
 	{
-		if(findByBk(email) == null)
+		if(findByBk(email, username) == null)
 		{
 			return false;
 		}
