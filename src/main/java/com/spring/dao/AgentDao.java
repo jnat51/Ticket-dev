@@ -54,7 +54,7 @@ public class AgentDao extends ParentDao{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Agent> findBarangByFilter(String nama,String username)
+	public List<Agent> findByFilter(String nama,String username)
 	{
 		StringBuilder sb = new StringBuilder();
 		
