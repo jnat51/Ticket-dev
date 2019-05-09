@@ -92,7 +92,7 @@ public class AgentService {
 	
 	public Agent findById(String idAgent)
 	{
-		Agent brg = new Agent();
+		Agent agent = new Agent();
 		
 		if(agentDao.findById(idAgent) != null)
 		{
@@ -100,7 +100,7 @@ public class AgentService {
 		}
 		else
 		{
-			return brg;
+			return agent;
 		}
 	}
 	

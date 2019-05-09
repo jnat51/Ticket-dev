@@ -19,7 +19,7 @@ public class CompanyDao extends ParentDao{
 		super.entityManager.remove(company);
 	}
 	
-	public Company findById(String id) {
+	public Company findCompanyById(String id) {
 		try {
 			System.out.println("find company by id");
 			String query = "from Company where id = :id";
@@ -36,7 +36,7 @@ public class CompanyDao extends ParentDao{
 			}
 	}
 	
-	public Company findByBk(String companyCode) {
+	public Company findCompanyByBk(String companyCode) {
 		try {
 			System.out.println("find company by bk");
 			String query = "from Company where companyCode = :companycode";
@@ -53,9 +53,9 @@ public class CompanyDao extends ParentDao{
 			}
 	}
 	
-	public boolean isIdExist(String id)
+	public boolean isCompanyIdExist(String id)
 	{
-		if(findById(id) == null)
+		if(findCompanyById(id) == null)
 		{
 			return false;
 		}
@@ -65,9 +65,9 @@ public class CompanyDao extends ParentDao{
 		}
 	}
 	
-	public boolean isBkExist(String companyCode)
+	public boolean isCompanyBkExist(String companyCode)
 	{
-		if(findByBk(companyCode) == null)
+		if(findCompanyByBk(companyCode) == null)
 		{
 			return false;
 		}

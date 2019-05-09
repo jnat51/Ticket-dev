@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Agent;
+import com.spring.model.AgentInsert;
 import com.spring.service.AgentService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -42,7 +44,7 @@ public class AgentController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@RequestBody Agent agent, @RequestParam("pp") MultipartFile file) {
+	public ResponseEntity<?> insertAgent(@ModelAttribute AgentInsert agent, @RequestParam("pp") MultipartFile file) {
 		try {
 			Agent ag = new Agent();
 			String pass = agent.getPassword();
@@ -69,9 +71,9 @@ public class AgentController {
 		}
 	}
 	
-	@PostMapping(value = "/test")
-	public ResponseEntity<?> insertTestAgent(@RequestParam("pp") MultipartFile file,@RequestParam("username") String username,
-			@RequestParam("password") String password,@RequestParam("name") String name,@RequestParam("email") String email) {
+	@PutMapping(value = "/test")
+	public ResponseEntity<?> updateAgent(@RequestParam("pp") MultipartFile file,@RequestParam("username") String username,
+			@RequestParam("password") String password,@RequestParam("name") String name,@RequestParam("email") String email, @RequestParam("id") String id) {
 		try {
 			Agent ag = new Agent();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
@@ -81,7 +83,8 @@ public class AgentController {
 
 			System.out.println(password);
 			System.out.println(generatedSecuredPasswordHash);
-
+			
+			ag.setId(id);
 			ag.setEmail(email);
 			ag.setUsername(username);
 			ag.setPassword(generatedSecuredPasswordHash);
@@ -92,17 +95,6 @@ public class AgentController {
 			}
 
 			return new ResponseEntity<>(agentService.insert(ag), HttpStatus.CREATED);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PutMapping(value = "/")
-	public ResponseEntity<?> updateAgent(@RequestBody Agent agent) {
-		try {
-			agentService.update(agent);
-
-			return new ResponseEntity<>("Agent successfully updated!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
