@@ -15,21 +15,16 @@ import com.spring.model.Agent;
 @Repository
 @Transactional
 public class AgentDao extends ParentDao{	
-	EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("TestPersistence");
-	EntityManager entityManager = emFactory.createEntityManager();
-	
-	public void insert(Agent agent) {
-		System.out.println("insert agent");
+	public void save(Agent agent) {
+		System.out.println("merge agent");
 		super.entityManager.merge(agent);
-		System.out.println("insert success");
-	}
-	
-	public void update(Agent agent) {
-		this.entityManager.merge(agent);
+		System.out.println("merge success");
 	}
 	
 	public void delete(Agent agent) {
-		this.entityManager.remove(agent);
+		System.out.println("remove agent");
+		super.entityManager.remove(agent);
+		System.out.println("remove success");
 	}
 	
 	public Agent findById(String id)

@@ -12,11 +12,11 @@ public class CompanyService {
 	@Autowired
 	CompanyDao companyDao;
 	
-	public void delete(String companyId) throws ServiceException
+	public void deleteCompany(String companyId) throws ServiceException
 	{
 		if(companyDao.isIdExist(companyId) == true)
 		{
-			companyDao.delete(companyDao.findById(companyId));
+			companyDao.deleteCompany(companyDao.findById(companyId));
 		}
 		else
 		{
@@ -24,7 +24,7 @@ public class CompanyService {
 		}
 	}
 	
-	public String insert(Company company) throws ServiceException
+	public String insertCompany(Company company) throws ServiceException
 	{
 		if(companyDao.isIdExist(company.getId()) == true)
 		{
@@ -34,7 +34,8 @@ public class CompanyService {
 		{
 			throw new ServiceException("Email already exist!");
 		}
-			companyDao.insert(company);
-			return "New agent account successfully created";
+			companyDao.saveCompany(company);
+			return "New company successfully added";
 	}
+	
 }

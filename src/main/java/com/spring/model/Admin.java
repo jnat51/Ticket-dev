@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "username", "email" }))
+@Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
 public class Admin {
 	@Id
 	@Column(name = "id")
@@ -27,8 +27,8 @@ public class Admin {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "image")
-	private byte[] image;
+	@Column(name = "pp")
+	private byte[] pp;
 
 	public String getId() {
 		return id;
@@ -70,11 +70,11 @@ public class Admin {
 		this.email = email;
 	}
 
-	public byte[] getImage() {
-		return image;
+	public byte[] getPp() {
+		return pp;
 	}
 
-	public void setImage(byte[] image) {
-		this.image = image;
+	public void setPp(byte[] pp) {
+		this.pp = pp;
 	}
 }

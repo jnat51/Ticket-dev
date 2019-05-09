@@ -4,15 +4,18 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.Company;
+import com.spring.model.Customer;
 
 @Repository
 @Transactional
 public class CompanyDao extends ParentDao{
-	public void insert(Company company) {
+	
+	//==================================================*Company Dao*==================================================
+	public void saveCompany(Company company) {
 		super.entityManager.merge(company);
 	}
 	
-	public void delete(Company company) {
+	public void deleteCompany(Company company) {
 		super.entityManager.remove(company);
 	}
 	
@@ -72,5 +75,14 @@ public class CompanyDao extends ParentDao{
 		{
 			return true;
 		}
+	}
+	
+	//==================================================*Customer Dao*==================================================
+	public void saveCustomer(Customer customer) {
+		super.entityManager.merge(customer);
+	}
+	
+	public void deleteCustomer(Customer customer) {
+		super.entityManager.remove(customer);
 	}
 }

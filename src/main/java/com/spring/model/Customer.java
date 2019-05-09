@@ -3,21 +3,25 @@ package com.spring.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.GenericGenerator;
-
 @Entity
-@Table(name = "tbl_agent", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
-public class Agent {
+@Table(name = "tbl_customer", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
+public class Customer {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
-
+	
+	@OneToOne
+	@JoinColumn(name = "company_id", referencedColumnName = "id")
+	private Company company;
+	
 	@Column(name = "username")
 	private String username;
 
@@ -29,7 +33,10 @@ public class Agent {
 
 	@Column(name = "email")
 	private String email;
-
+	
+	@Column(name = "position")
+	private String position;
+	
 	@Column(name = "pp")
 	private byte[] pp;
 
@@ -41,6 +48,13 @@ public class Agent {
 		this.id = id;
 	}
 
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -71,6 +85,14 @@ public class Agent {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
 	public byte[] getPp() {

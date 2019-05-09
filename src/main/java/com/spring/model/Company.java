@@ -13,8 +13,8 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "tbl_company", uniqueConstraints = @UniqueConstraint(columnNames = {"company_code", "agent_id"}))
-public class Company {	
+@Table(name = "tbl_company", uniqueConstraints = @UniqueConstraint(columnNames = {"company_code"}))
+public class Company {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "UUID")
@@ -24,19 +24,14 @@ public class Company {
 	@Column(name = "company_code")
 	private String companyCode;
 
-	@OneToOne
-	@JoinColumn(name = "agent_id", referencedColumnName = "id")
-	private Agent agent;
-
 	@Column(name = "company_name")
 	private String companyName;
 
 	@Column(name = "address")
 	private String address;
-
 	
-	@Column(name = "image")
-	private byte[] image;
+	@Column(name = "company_logo")
+	private byte[] companyLogo;
 
 
 	public String getId() {
@@ -56,16 +51,6 @@ public class Company {
 
 	public void setCompanyCode(String companyCode) {
 		this.companyCode = companyCode;
-	}
-
-
-	public Agent getAgent() {
-		return agent;
-	}
-
-
-	public void setAgent(Agent agent) {
-		this.agent = agent;
 	}
 
 	public String getCompanyName() {
@@ -88,13 +73,13 @@ public class Company {
 	}
 
 
-	public byte[] getImage() {
-		return image;
+	public byte[] getCompanyLogo() {
+		return companyLogo;
 	}
 
 
-	public void setImage(byte[] image) {
-		this.image = image;
+	public void setCompanyLogo(byte[] companyLogo) {
+		this.companyLogo = companyLogo;
 	}
 		
 }

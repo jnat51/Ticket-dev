@@ -1,11 +1,5 @@
 package com.spring.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +7,18 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Agent;
-import com.spring.model.AgentInsert;
 import com.spring.service.AgentService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -47,19 +42,54 @@ public class AgentController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@RequestBody AgentInsert agentInsert) {
+	public ResponseEntity<?> insertAgent(@RequestBody Agent agent, @RequestParam("pp") MultipartFile file) {
 		try {
 			Agent ag = new Agent();
-			String pass = agentInsert.getPassword();
+			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
+
+			MultipartFile a = file;
+			byte[] data = a.getBytes();
+
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
 
-			ag.setEmail(agentInsert.getEmail());
-			ag.setUsername(agentInsert.getUsername());
+			ag.setEmail(agent.getEmail());
+			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
-			ag.setName(agentInsert.getName());
+			ag.setName(agent.getName());
+			
+			if (file.toString().isEmpty() == false) {
+				ag.setPp(data);
+			}
+
+			return new ResponseEntity<>(agentService.insert(ag), HttpStatus.CREATED);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PostMapping(value = "/test")
+	public ResponseEntity<?> insertTestAgent(@RequestParam("pp") MultipartFile file,@RequestParam("username") String username,
+			@RequestParam("password") String password,@RequestParam("name") String name,@RequestParam("email") String email) {
+		try {
+			Agent ag = new Agent();
+			String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+
+			MultipartFile a = file;
+			byte[] data = a.getBytes();
+
+			System.out.println(password);
+			System.out.println(generatedSecuredPasswordHash);
+
+			ag.setEmail(email);
+			ag.setUsername(username);
+			ag.setPassword(generatedSecuredPasswordHash);
+			ag.setName(name);
+			
+			if (file.toString().isEmpty() == false) {
+				ag.setPp(data);
+			}
 
 			return new ResponseEntity<>(agentService.insert(ag), HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -73,6 +103,17 @@ public class AgentController {
 			agentService.update(agent);
 
 			return new ResponseEntity<>("Agent successfully updated!", HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> deleteAgent(@PathVariable String id) {
+		try {
+			agentService.delete(id);
+
+			return new ResponseEntity<>("Agent successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

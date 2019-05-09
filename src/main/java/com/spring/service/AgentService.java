@@ -37,7 +37,7 @@ public class AgentService {
 		{
 			throw new ServiceException("Email already exist!");
 		}
-			agentDao.insert(agent);
+			agentDao.save(agent);
 			return "New agent account successfully created";
 	}
 	
@@ -55,7 +55,7 @@ public class AgentService {
 		{
 			throw new ServiceException("Username cannot be changed!");
 		}
-		agentDao.update(agent);
+		agentDao.save(agent);
 	}
 	
 	public Agent findByBk(String email, String username)
