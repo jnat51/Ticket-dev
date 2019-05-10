@@ -33,9 +33,9 @@ public class AgentService {
 		{
 			throw new ServiceException("Agent already exist.");
 		}
-		if(agentDao.isBkExist(agent.getEmail(), agent.getUsername()) == true)
+		if(agentDao.isBkExist(agent.getUsername()) == true)
 		{
-			throw new ServiceException("Email already exist!");
+			throw new ServiceException("Username already exist!");
 		}
 			agentDao.save(agent);
 			return "New agent account successfully created";
@@ -47,7 +47,7 @@ public class AgentService {
 		{
 			throw new ServiceException("Agent not found!");
 		}
-		if(agentDao.isBkExist(agent.getUsername(), agent.getUsername()) == false)
+		if(agentDao.isBkExist(agent.getUsername()) == false)
 		{
 			throw new ServiceException("Agent not found!");
 		}
@@ -62,9 +62,9 @@ public class AgentService {
 	{
 		Agent agent = new Agent();
 		
-		if(agentDao.findByBk(email, username) != null)
+		if(agentDao.findByBk(username) != null)
 		{
-			agent = agentDao.findByBk(email, username);
+			agent = agentDao.findByBk(username);
 			
 			return agent;
 		}

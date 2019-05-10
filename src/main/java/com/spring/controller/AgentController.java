@@ -50,8 +50,7 @@ public class AgentController {
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			MultipartFile a = file;
-			byte[] data = a.getBytes();
+			byte[] data = file.getBytes();
 
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
@@ -60,7 +59,7 @@ public class AgentController {
 			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
 			ag.setName(agent.getName());
-			
+
 			if (file.toString().isEmpty() == false) {
 				ag.setPp(data);
 			}
@@ -70,36 +69,37 @@ public class AgentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
-	@PutMapping(value = "/test")
-	public ResponseEntity<?> updateAgent(@RequestParam("pp") MultipartFile file,@RequestParam("username") String username,
-			@RequestParam("password") String password,@RequestParam("name") String name,@RequestParam("email") String email, @RequestParam("id") String id) {
+
+	@PutMapping(value = "/")
+	public ResponseEntity<?> updateAgent(@ModelAttribute AgentInsert agent, @RequestParam("pp") MultipartFile file) {
 		try {
 			Agent ag = new Agent();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+			String pass = agent.getPassword();
+			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			MultipartFile a = file;
-			byte[] data = a.getBytes();
+			byte[] data = file.getBytes();
 
-			System.out.println(password);
+			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
-			
-			ag.setId(id);
-			ag.setEmail(email);
-			ag.setUsername(username);
+
+			ag.setId(agent.getId());
+			ag.setEmail(agent.getEmail());
+			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
-			ag.setName(name);
-			
+			ag.setName(agent.getName());
+
 			if (file.toString().isEmpty() == false) {
 				ag.setPp(data);
 			}
-
-			return new ResponseEntity<>(agentService.insert(ag), HttpStatus.CREATED);
+			
+			agentService.update(ag);
+			
+			return new ResponseEntity<>("Update success", HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteAgent(@PathVariable String id) {
 		try {

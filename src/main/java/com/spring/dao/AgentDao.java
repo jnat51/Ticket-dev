@@ -65,15 +65,14 @@ public class AgentDao extends ParentDao{
 			}
 	}
 	
-	public Agent findByBk(String email, String username)
+	public Agent findByBk(String username)
 	{
 		try {
 			System.out.println("find agent by bk");
-			String query = "from Agent where email = :email AND username = :username";
+			String query = "from Agent where username = :username";
 			
 			Agent agent = (Agent) this.entityManager
 					  .createQuery(query)
-					  .setParameter("email",email)
 					  .setParameter("username", username)
 					  .getSingleResult();
 			
@@ -151,9 +150,9 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
-	public boolean isBkExist(String email, String username)
+	public boolean isBkExist(String username)
 	{
-		if(findByBk(email, username) == null)
+		if(findByBk(username) == null)
 		{
 			return false;
 		}

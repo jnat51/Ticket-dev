@@ -43,8 +43,7 @@ public class CompanyController {
 	@PostMapping(value = "/test")
 	public ResponseEntity<?> insertCompany(@RequestParam(required = false) MultipartFile companyLogo, @RequestBody Company company) {
 		try {
-			MultipartFile a = companyLogo;
-			byte[] data = a.getBytes();
+			byte[] data = companyLogo.getBytes();
 						
 			if (companyLogo.toString().isEmpty() == false) {
 				company.setCompanyLogo(data);
