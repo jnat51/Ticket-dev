@@ -3,7 +3,6 @@ package com.spring.dao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.model.Image;
 import com.spring.model.Pic;
 
 @Repository
@@ -31,5 +30,43 @@ public class PicDao extends ParentDao {
 			{
 				return null;
 			}
+	}
+	
+	public Pic findByBk(String companyId) {
+		try {
+			String query = "from Pic where company.id = :companyid";
+			
+			Pic pic = (Pic) this.entityManager
+					  .createQuery(query)
+					  .setParameter("companyid", companyId).getSingleResult();
+			
+			return pic;
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+	}
+	
+	public boolean isIdExist(String id) {
+		if(findById(id) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public boolean isBkExist(String companyId) {
+		if(findByBk(companyId) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 }
