@@ -48,4 +48,18 @@ public class ImageService {
 			return image;
 		}
 	}
+	
+	public Image findByBk(String fileName, byte[] data)
+	{
+		Image image = new Image();
+		
+		if(imageDao.findByBk(fileName, data) != null)
+		{
+			return imageDao.findByBk(fileName, data);
+		}
+		else
+		{
+			return image;
+		}
+	}
 }

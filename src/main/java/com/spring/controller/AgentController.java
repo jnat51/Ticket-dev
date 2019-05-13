@@ -21,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Agent;
 import com.spring.model.AgentInsert;
+import com.spring.model.Image;
 import com.spring.service.AgentService;
+import com.spring.service.ImageService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -31,26 +33,46 @@ import com.spring.service.AgentService;
 public class AgentController {
 	@Autowired
 	AgentService agentService;
+	@Autowired
+	ImageService imageService;
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> getAgentbyId(@PathVariable("id") String id) {
+	public ResponseEntity<?> getAgentById(@PathVariable("id") String id) {
 		try {
-			Agent barang = agentService.findById(id);
+			Agent agent = agentService.findById(id);
 
-			return new ResponseEntity<>(barang, HttpStatus.OK);
+			return new ResponseEntity<>(agent, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/user/{username}")
+	public ResponseEntity<?> getAgentByBk(@PathVariable("username") String username) {
+		try {
+			Agent agent = agentService.findByBk(username);
+
+			return new ResponseEntity<>(agent, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@ModelAttribute AgentInsert agent, @RequestParam("pp") MultipartFile file) {
+	public ResponseEntity<?> insertAgent(@ModelAttribute AgentInsert agent, @RequestParam(required = false) MultipartFile pp) {
 		try {
 			Agent ag = new Agent();
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-			byte[] data = file.getBytes();
+			
+			Image img = new Image();
+			byte[] data = pp.getBytes();
+			String fileName = pp.getOriginalFilename();
+			String mime = pp.getContentType();
+			
+			img.setImage(data);
+			img.setFileName(fileName);
+			img.setMime(mime);
 
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
@@ -59,37 +81,52 @@ public class AgentController {
 			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
 			ag.setName(agent.getName());
-
-			if (file.toString().isEmpty() == false) {
-				ag.setPp(data);
+			
+			System.out.println("test");
+			
+			if (pp.toString().isEmpty() == false) {
+				imageService.insert(img);
+				ag.setImageId(imageService.findByBk(fileName, data).getId());
 			}
+			
+			String msg = agentService.insert(ag);
 
-			return new ResponseEntity<>(agentService.insert(ag), HttpStatus.CREATED);
+			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 
 	@PutMapping(value = "/")
-	public ResponseEntity<?> updateAgent(@ModelAttribute AgentInsert agent, @RequestParam("pp") MultipartFile file) {
+	public ResponseEntity<?> updateAgent(@ModelAttribute AgentInsert agent, @RequestParam(required = false) MultipartFile pp) {
 		try {
-			Agent ag = new Agent();
+			Agent ag = agentService.findById(agent.getId());
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			byte[] data = file.getBytes();
+			Image img = new Image();
+			byte[] data = pp.getBytes();
+			String fileName = pp.getOriginalFilename();
+			String mime = pp.getContentType();
+			
+			img.setImage(data);
+			img.setFileName(fileName);
+			img.setMime(mime);
 
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
-
+			
 			ag.setId(agent.getId());
 			ag.setEmail(agent.getEmail());
 			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
 			ag.setName(agent.getName());
 
-			if (file.toString().isEmpty() == false) {
-				ag.setPp(data);
+			if (pp.toString().isEmpty() == false) {
+				System.out.println(ag.getImageId());
+				imageService.delete(ag.getImageId());
+				imageService.insert(img);
+				ag.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 			
 			agentService.update(ag);
@@ -114,9 +151,9 @@ public class AgentController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Agent agent) {
 		try {
-			System.out.println(agentService.findUsername(agent.getUsername()).getPassword());
+			System.out.println(agentService.findByBk(agent.getUsername()).getPassword());
 			boolean matched = BCrypt.checkpw(agent.getPassword(),
-					agentService.findUsername(agent.getUsername()).getPassword());
+					agentService.findByBk(agent.getUsername()).getPassword());
 			System.out.println(matched);
 
 			return new ResponseEntity<>(matched, HttpStatus.OK);

@@ -39,11 +39,13 @@ public class ImageController {
 		try {
 			Image img = new Image();
 			String fileName = file.getOriginalFilename();
+			String mime = file.getContentType();
 			
 			byte[] data = file.getBytes();
 			
 			img.setImage(data);
 			img.setFileName(fileName);
+			img.setMime(mime);
 			return new ResponseEntity<>(imageService.insert(img), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -68,12 +70,14 @@ public class ImageController {
 		try {
 			Image img = new Image();
 			String fileName = file.getOriginalFilename();
+			String mime = file.getContentType();
 			
 			byte[] data = file.getBytes();
 			
 			img.setId(id);
 			img.setImage(data);
 			img.setFileName(fileName);
+			img.setMime(mime);
 			imageService.update(img);
 			
 			return new ResponseEntity<>("Image successfully updated" ,HttpStatus.CREATED);

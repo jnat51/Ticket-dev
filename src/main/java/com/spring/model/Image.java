@@ -21,6 +21,9 @@ public class Image {
 	@Column(name = "file_name")
 	private String fileName;
 	
+	@Column(name= "mime")
+	private String mime;
+
 	@Column(name = "image")
 	private byte[] image;
 
@@ -38,6 +41,14 @@ public class Image {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	
+	public String getMime() {
+		return mime;
+	}
+
+	public void setMime(String mime) {
+		this.mime = mime;
 	}
 
 	public byte[] getImage() {

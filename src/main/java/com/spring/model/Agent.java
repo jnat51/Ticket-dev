@@ -30,8 +30,8 @@ public class Agent {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "pp")
-	private byte[] pp;
+	@Column(name = "image_id")
+	private String imageId;
 
 	public String getId() {
 		return id;
@@ -73,11 +73,11 @@ public class Agent {
 		this.email = email;
 	}
 
-	public byte[] getPp() {
-		return pp;
+	public String getImageId() {
+		return imageId;
 	}
 
-	public void setPp(byte[] pp) {
-		this.pp = pp;
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
 	}
 }

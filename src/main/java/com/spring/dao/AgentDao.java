@@ -45,26 +45,6 @@ public class AgentDao extends ParentDao{
 			}
 	}
 	
-	public Agent findUsername(String username)
-	{
-		System.out.println("test");
-		try {
-			System.out.println("find agent by bk");
-			String query = "from Agent where username = :username";
-			
-			Agent agent = (Agent) this.entityManager
-					  .createQuery(query)
-					  .setParameter("username", username)
-					  .getSingleResult();
-			
-			return agent;
-			}
-			catch(Exception e)
-			{
-				return null;
-			}
-	}
-	
 	public Agent findByBk(String username)
 	{
 		try {

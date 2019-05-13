@@ -8,12 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
 public class Admin {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
 	private String id;
 
 	@Column(name = "username")
@@ -27,8 +30,8 @@ public class Admin {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "pp")
-	private byte[] pp;
+	@Column(name = "image_id")
+	private String imageId;
 
 	public String getId() {
 		return id;
@@ -70,11 +73,11 @@ public class Admin {
 		this.email = email;
 	}
 
-	public byte[] getPp() {
-		return pp;
+	public String getImageId() {
+		return imageId;
 	}
 
-	public void setPp(byte[] pp) {
-		this.pp = pp;
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
 	}
 }

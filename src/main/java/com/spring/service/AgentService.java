@@ -58,29 +58,13 @@ public class AgentService {
 		agentDao.save(agent);
 	}
 	
-	public Agent findByBk(String email, String username)
+	public Agent findByBk(String username)
 	{
 		Agent agent = new Agent();
 		
 		if(agentDao.findByBk(username) != null)
 		{
 			agent = agentDao.findByBk(username);
-			
-			return agent;
-		}
-		else
-		{
-			return agent;
-		}
-	}
-	
-	public Agent findUsername(String username)
-	{
-		Agent agent = new Agent();
-		
-		if(agentDao.findUsername(username) != null)
-		{
-			agent = agentDao.findUsername(username);
 			
 			return agent;
 		}

@@ -32,9 +32,41 @@ public class ImageDao extends ParentDao{
 			}
 	}
 	
+	public Image findByBk(String fileName, byte[] data)
+	{
+		try {
+			System.out.println("find image by bk");
+			String query = "from Image where fileName = :filename AND image = :data";
+			
+			Image image = (Image) this.entityManager
+					  .createQuery(query)
+					  .setParameter("filename", fileName)
+					  .setParameter("data", data)
+					  .getSingleResult();
+			
+			return image;
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+	}
+	
 	public boolean isIdExist(String id)
 	{
 		if(findById(id) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public boolean isBkExist(String fileName, byte[] data)
+	{
+		if(findByBk(fileName, data) == null)
 		{
 			return false;
 		}
