@@ -8,17 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Company;
-import com.spring.model.Customer;
+import com.spring.model.Image;
 import com.spring.service.CompanyService;
+import com.spring.service.ImageService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -28,6 +29,8 @@ import com.spring.service.CompanyService;
 public class CompanyController {
 	@Autowired
 	CompanyService companyService;
+	@Autowired
+	ImageService imageService;
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteCompany(@PathVariable String id) {
@@ -40,22 +43,25 @@ public class CompanyController {
 		}
 	}
 	
-	@PostMapping(value = "/test")
-	public ResponseEntity<?> insertCompany(@RequestParam(required = false) MultipartFile companyLogo, @RequestBody Company company) {
+	@PostMapping(value = "/")
+	public ResponseEntity<?> insertCompany(@RequestParam(required = false) MultipartFile companyLogo, @ModelAttribute Company company) {
 		try {
+			Image image = new Image();
+			
 			byte[] data = companyLogo.getBytes();
+			String fileName = companyLogo.getOriginalFilename();
+			image.setImage(data);
+			image.setFileName(fileName);
+			image.setMime(companyLogo.getContentType());
 						
 			if (companyLogo.toString().isEmpty() == false) {
-				company.setCompanyLogo(data);
+				imageService.insert(image);
+				company.setImage(imageService.findByBk(fileName, data).getId());
 			}
 			
-			for(Customer cust: company.getCustomers())
-			{
-				cust.setCompany(companyService.findCompanyById(company.getId()));
-				companyService.insertCustomer(cust);
-			}
+			String msg = companyService.insertCompany(company);
 
-			return new ResponseEntity<>(companyService.insertCompany(company), HttpStatus.CREATED);
+			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

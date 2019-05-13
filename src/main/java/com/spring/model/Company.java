@@ -32,8 +32,8 @@ public class Company {
 	@Column(name = "address")
 	private String address;
 	
-	@Column(name = "company_logo")
-	private byte[] companyLogo;
+	@Column(name = "image_id")
+	private String image;
 	
 	@OneToMany(mappedBy="company", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
 	private List<Customer> customers;
@@ -75,17 +75,17 @@ public class Company {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
-
-	public byte[] getCompanyLogo() {
-		return companyLogo;
-	}
-
-
-	public void setCompanyLogo(byte[] companyLogo) {
-		this.companyLogo = companyLogo;
-	}
 	
+	public String getImage() {
+		return image;
+	}
+
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+
 	public List<Customer> getCustomers() {
 		return customers;
 	}

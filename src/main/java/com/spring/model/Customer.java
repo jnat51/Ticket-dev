@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -38,8 +37,8 @@ public class Customer {
 	@Column(name = "position")
 	private String position;
 	
-	@Column(name = "pp")
-	private byte[] pp;
+	@Column(name = "image_id")
+	private String image;
 
 	public String getId() {
 		return id;
@@ -96,11 +95,11 @@ public class Customer {
 		this.position = position;
 	}
 
-	public byte[] getPp() {
-		return pp;
+	public String getImage() {
+		return image;
 	}
 
-	public void setPp(byte[] pp) {
-		this.pp = pp;
+	public void setImage(String image) {
+		this.image = image;
 	}
 }

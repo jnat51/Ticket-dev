@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Agent;
-import com.spring.model.AgentInsert;
 import com.spring.model.Image;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
@@ -59,7 +58,7 @@ public class AgentController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@ModelAttribute AgentInsert agent, @RequestParam(required = false) MultipartFile pp) {
+	public ResponseEntity<?> insertAgent(@ModelAttribute Agent agent, @RequestParam(required = false) MultipartFile pp) {
 		try {
 			Agent ag = new Agent();
 			String pass = agent.getPassword();
@@ -98,7 +97,7 @@ public class AgentController {
 	}
 
 	@PutMapping(value = "/")
-	public ResponseEntity<?> updateAgent(@ModelAttribute AgentInsert agent, @RequestParam(required = false) MultipartFile pp) {
+	public ResponseEntity<?> updateAgent(@ModelAttribute Agent agent, @RequestParam(required = false) MultipartFile pp) {
 		try {
 			Agent ag = agentService.findById(agent.getId());
 			String pass = agent.getPassword();
