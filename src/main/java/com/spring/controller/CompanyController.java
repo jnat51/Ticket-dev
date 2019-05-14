@@ -36,6 +36,7 @@ public class CompanyController {
 	public ResponseEntity<?> deleteCompany(@PathVariable String id) {
 		try {
 			companyService.deleteCompany(id);
+			imageService.delete(companyService.findCompanyById(id).getImageId());
 
 			return new ResponseEntity<>("Company successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
@@ -44,7 +45,7 @@ public class CompanyController {
 	}
 	
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertCompany(@RequestParam(required = false) MultipartFile companyLogo, @ModelAttribute Company company) {
+	public ResponseEntity<?> insertCompany(@RequestParam(name="logo",required = false) MultipartFile companyLogo, @ModelAttribute Company company) {
 		try {
 			Image image = new Image();
 			
@@ -56,7 +57,7 @@ public class CompanyController {
 						
 			if (companyLogo.toString().isEmpty() == false) {
 				imageService.insert(image);
-				company.setImage(imageService.findByBk(fileName, data).getId());
+				company.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 			
 			String msg = companyService.insertCompany(company);

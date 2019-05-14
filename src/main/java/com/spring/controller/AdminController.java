@@ -136,6 +136,7 @@ public class AdminController {
 	public ResponseEntity<?> deleteAdmin(@PathVariable String id) {
 		try {
 			adminService.delete(id);
+			imageService.delete(adminService.findById(id).getImageId());
 
 			return new ResponseEntity<>("Admin successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {

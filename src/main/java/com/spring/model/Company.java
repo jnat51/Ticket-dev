@@ -33,7 +33,7 @@ public class Company {
 	private String address;
 	
 	@Column(name = "image_id")
-	private String image;
+	private String imageId;
 	
 	@OneToMany(mappedBy="company", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
 	private List<Customer> customers;
@@ -75,14 +75,14 @@ public class Company {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
-	public String getImage() {
-		return image;
+
+	public String getImageId() {
+		return imageId;
 	}
 
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
 	}
 
 

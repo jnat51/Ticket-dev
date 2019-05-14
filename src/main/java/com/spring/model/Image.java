@@ -10,7 +10,7 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "tbl_image")
+@Table(name = "tbl_image", uniqueConstraints = @UniqueConstraint(columnNames = {"file_name", "image"}))
 public class Image {
 	@Id
 	@Column(name = "id")

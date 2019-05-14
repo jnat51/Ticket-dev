@@ -38,7 +38,7 @@ public class Customer {
 	private String position;
 	
 	@Column(name = "image_id")
-	private String image;
+	private String imageId;
 
 	public String getId() {
 		return id;
@@ -95,11 +95,11 @@ public class Customer {
 		this.position = position;
 	}
 
-	public String getImage() {
-		return image;
+	public String getImageId() {
+		return imageId;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
 	}
 }

@@ -140,6 +140,7 @@ public class AgentController {
 	public ResponseEntity<?> deleteAgent(@PathVariable String id) {
 		try {
 			agentService.delete(id);
+			imageService.delete(agentService.findById(id).getImageId());
 
 			return new ResponseEntity<>("Agent successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
