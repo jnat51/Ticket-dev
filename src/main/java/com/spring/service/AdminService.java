@@ -1,10 +1,10 @@
 package com.spring.service;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.AdminDao;
+import com.spring.exception.ErrorException;
 import com.spring.model.Admin;
 
 @Service
@@ -12,7 +12,7 @@ public class AdminService {
 	@Autowired
 	AdminDao adminDao;
 	
-	public void delete(String id) throws ServiceException
+	public void delete(String id) throws ErrorException
 	{
 		if(adminDao.isIdExist(id) == true)
 		{
@@ -20,37 +20,37 @@ public class AdminService {
 		}
 		else
 		{
-			throw new ServiceException("Admin not found!");
+			throw new ErrorException("Admin not found!");
 		}
 	}
 	
-	public String insert(Admin admin) throws ServiceException
+	public String insert(Admin admin) throws ErrorException
 	{
 		if(adminDao.isIdExist(admin.getId()) == true)
 		{
-			throw new ServiceException("Admin already exist.");
+			throw new ErrorException("Admin already exist.");
 		}
 		if(adminDao.isBkExist(admin.getUsername()) == true)
 		{
-			throw new ServiceException("Username already exist!");
+			throw new ErrorException("Username already exist!");
 		}
 			adminDao.save(admin);
 			return "New Admin account successfully created";
 	}
 	
-	public void update(Admin admin) throws ServiceException
+	public void update(Admin admin) throws ErrorException
 	{
 		if(adminDao.isIdExist(admin.getId()) == false)
 		{
-			throw new ServiceException("Admin not found!");
+			throw new ErrorException("Admin not found!");
 		}
 		if(adminDao.isBkExist(admin.getUsername()) == false)
 		{
-			throw new ServiceException("Admin not found!");
+			throw new ErrorException("Admin not found!");
 		}
 		if(!admin.getUsername().equals(adminDao.findById(admin.getId()).getUsername()))
 		{
-			throw new ServiceException("Username cannot be changed!");
+			throw new ErrorException("Username cannot be changed!");
 		}
 		adminDao.save(admin);
 	}

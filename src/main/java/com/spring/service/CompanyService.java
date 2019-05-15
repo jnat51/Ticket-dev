@@ -1,10 +1,10 @@
 package com.spring.service;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.CompanyDao;
+import com.spring.exception.ErrorException;
 import com.spring.model.Company;
 
 @Service
@@ -12,34 +12,34 @@ public class CompanyService {
 	@Autowired
 	CompanyDao companyDao;
 
-	public void deleteCompany(String companyId) throws ServiceException {
+	public void deleteCompany(String companyId) throws ErrorException {
 		if (companyDao.isCompanyIdExist(companyId) == true) {
 			companyDao.deleteCompany(companyDao.findCompanyById(companyId));
 		} else {
-			throw new ServiceException("Company not found!");
+			throw new ErrorException("Company not found!");
 		}
 	}
 
-	public String insertCompany(Company company) throws ServiceException {
+	public String insertCompany(Company company) throws ErrorException {
 		if (companyDao.isCompanyIdExist(company.getId()) == true) {
-			throw new ServiceException("Company already exist.");
+			throw new ErrorException("Company already exist.");
 		}
 		if (companyDao.isCompanyBkExist(company.getCompanyCode()) == true) {
-			throw new ServiceException("Company code already exist!");
+			throw new ErrorException("Company code already exist!");
 		}
 		companyDao.saveCompany(company);
 		return "New company successfully added";
 	}
 
-	public void updateCompany(Company company) throws ServiceException {
+	public void updateCompany(Company company) throws ErrorException {
 		if (companyDao.isCompanyIdExist(company.getId()) == false) {
-			throw new ServiceException("Company not found!");
+			throw new ErrorException("Company not found!");
 		}
 		if (companyDao.isCompanyBkExist(company.getCompanyCode()) == false) {
-			throw new ServiceException("Company not found!");
+			throw new ErrorException("Company not found!");
 		}
 		if (!company.getCompanyCode().equals(companyDao.findCompanyById(company.getId()).getCompanyCode())) {
-			throw new ServiceException("Company code cannot be changed!");
+			throw new ErrorException("Company code cannot be changed!");
 		}
 
 		companyDao.saveCompany(company);

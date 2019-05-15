@@ -3,11 +3,11 @@ package com.spring.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.AgentDao;
+import com.spring.exception.ErrorException;
 import com.spring.model.Agent;
 
 @Service
@@ -15,7 +15,7 @@ public class AgentService {
 	@Autowired
 	AgentDao agentDao;
 	
-	public void delete(String agentId) throws ServiceException
+	public void delete(String agentId) throws ErrorException
 	{
 		if(agentDao.isIdExist(agentId) == true)
 		{
@@ -23,37 +23,37 @@ public class AgentService {
 		}
 		else
 		{
-			throw new ServiceException("Agent not found!");
+			throw new ErrorException("Agent not found!");
 		}
 	}
 	
-	public String insert(Agent agent) throws ServiceException
+	public String insert(Agent agent) throws ErrorException
 	{
 		if(agentDao.isIdExist(agent.getId()) == true)
 		{
-			throw new ServiceException("Agent already exist.");
+			throw new ErrorException("Agent already exist.");
 		}
 		if(agentDao.isBkExist(agent.getUsername()) == true)
 		{
-			throw new ServiceException("Username already exist!");
+			throw new ErrorException("Username already exist!");
 		}
 			agentDao.save(agent);
 			return "New agent account successfully created";
 	}
 	
-	public void update(Agent agent) throws ServiceException
+	public void update(Agent agent) throws ErrorException
 	{
 		if(agentDao.isIdExist(agent.getId()) == false)
 		{
-			throw new ServiceException("Agent not found!");
+			throw new ErrorException("Agent not found!");
 		}
 		if(agentDao.isBkExist(agent.getUsername()) == false)
 		{
-			throw new ServiceException("Agent not found!");
+			throw new ErrorException("Agent not found!");
 		}
 		if(!agent.getUsername().equals(agentDao.findById(agent.getId()).getUsername()))
 		{
-			throw new ServiceException("Username cannot be changed!");
+			throw new ErrorException("Username cannot be changed!");
 		}
 		agentDao.save(agent);
 	}

@@ -19,17 +19,13 @@ public class ImageDao extends ParentDao{
 	public Image findById(String id) {
 		try {
 			String query = "from Image where id = :id";
-			
-			Image image = (Image) this.entityManager
-					  .createQuery(query)
-					  .setParameter("id",id).getSingleResult();
-			
+
+			Image image = (Image) this.entityManager.createQuery(query).setParameter("id", id).getSingleResult();
+
 			return image;
-			}
-			catch(Exception e)
-			{
-				return null;
-			}
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	public Image findByBk(String fileName, byte[] data)

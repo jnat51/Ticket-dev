@@ -1,10 +1,10 @@
 package com.spring.service;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.CustomerDao;
+import com.spring.exception.ErrorException;
 import com.spring.model.Customer;
 
 @Service
@@ -12,28 +12,34 @@ public class CustomerService {
 	@Autowired
 	CustomerDao customerDao;
 	
-	public String insertCustomer(Customer customer) throws ServiceException {
+	public String insertCustomer(Customer customer) throws ErrorException {
+		if (customerDao.isCustomerIdExist(customer.getId()) == true) {
+			throw new ErrorException("Customer already exist.");
+		}
+		if (customerDao.isCustomerBkExist(customer.getUsername()) == true) {
+			throw new ErrorException("Username already exist!");
+		}
 		customerDao.saveCustomer(customer);
 		return "New customer successfully added";
 	}
 
-	public void deleteCustomer(String customerId) throws ServiceException {
+	public void deleteCustomer(String customerId) throws ErrorException {
 		if (customerDao.isCustomerIdExist(customerId) == true) {
 			customerDao.deleteCustomer(customerDao.findCustomerById(customerId));
 		} else {
-			throw new ServiceException("Customer not found!");
+			throw new ErrorException("Customer not found!");
 		}
 	}
 
-	public void updateCustomer(Customer customer) throws ServiceException {
+	public void updateCustomer(Customer customer) throws ErrorException {
 		if (customerDao.isCustomerIdExist(customer.getId()) == false) {
-			throw new ServiceException("Customer not found!");
+			throw new ErrorException("Customer not found!");
 		}
 		if (customerDao.isCustomerBkExist(customer.getUsername()) == false) {
-			throw new ServiceException("Customer not found!");
+			throw new ErrorException("Customer not found!");
 		}
 		if (!customer.getUsername().equals(customerDao.findCustomerById(customer.getId()).getUsername())) {
-			throw new ServiceException("Username cannot be changed!");
+			throw new ErrorException("Username cannot be changed!");
 		}
 
 		customerDao.saveCustomer(customer);
