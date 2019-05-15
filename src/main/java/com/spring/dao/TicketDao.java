@@ -1,7 +1,12 @@
 package com.spring.dao;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.spring.model.Ticket;
 
+@Repository
+@Transactional
 public class TicketDao extends ParentDao{
 	public void saveTicket(Ticket ticket) {
 		super.entityManager.merge(ticket);

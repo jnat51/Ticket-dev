@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Admin;
+import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.service.AdminService;
 import com.spring.service.ImageService;
@@ -148,6 +150,20 @@ public class AdminController {
 			imageService.delete(adminService.findById(id).getImageId());
 
 			return new ResponseEntity<>("Admin successfully deleted!", HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/login")
+	public ResponseEntity<?> login(@RequestBody Admin admin) {
+		try {
+			System.out.println(adminService.findByBk(admin.getUsername()).getPassword());
+			boolean matched = BCrypt.checkpw(admin.getPassword(),
+					adminService.findByBk(admin.getUsername()).getPassword());
+			System.out.println(matched);
+
+			return new ResponseEntity<>(matched, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

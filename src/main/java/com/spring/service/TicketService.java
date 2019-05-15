@@ -2,12 +2,13 @@ package com.spring.service;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.spring.dao.TicketDao;
 import com.spring.exception.ErrorException;
-import com.spring.model.Company;
 import com.spring.model.Ticket;
 
+@Service
 public class TicketService {
 	@Autowired
 	TicketDao ticketDao;
@@ -37,7 +38,7 @@ public class TicketService {
 		ticketDao.saveTicket(ticket);
 	}
 	
-	public void removeTicket(String id) throws ErrorException {
+	public void deleteTicket(String id) throws ErrorException {
 		if (ticketDao.isTicketIdExist(id) == true) {
 			ticketDao.removeTicket(ticketDao.findTicketById(id));
 		} else {

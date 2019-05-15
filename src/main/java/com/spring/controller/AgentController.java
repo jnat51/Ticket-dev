@@ -1,11 +1,15 @@
 package com.spring.controller;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +41,8 @@ public class AgentController {
 	AgentService agentService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+    private JavaMailSender javaMailSender;
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getAgentById(@PathVariable("id") String id) {
@@ -64,7 +70,18 @@ public class AgentController {
 	public ResponseEntity<?> insertAgent(@ModelAttribute Agent agent, @RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
 			Agent ag = new Agent();
-			String pass = agent.getPassword();
+			
+			Random RANDOM = new SecureRandom();
+		    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		        int passwordLength = 8;
+		        
+		        StringBuilder returnValue = new StringBuilder(passwordLength);
+		        
+		        for (int i = 0; i < passwordLength; i++) {
+		            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+		        }
+			
+			String pass = returnValue.toString();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
 			System.out.println(pass);
@@ -93,6 +110,19 @@ public class AgentController {
 				
 				imageService.insert(img);
 				ag.setImageId(imageService.findByBk(fileName, data).getId());
+				
+				SimpleMailMessage msg = new SimpleMailMessage();
+		        //setTo(from, to)
+		        msg.setTo("jnat51.jg@gmail.com", agent.getEmail());
+		        
+		        msg.setSubject("Welcome "+ agent.getName() +", New Agent!");
+		        msg.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
+		        
+		        System.out.println("send...");
+		        
+		        javaMailSender.send(msg);
+		        
+		        System.out.println("sent");
 			}
 			
 			String msg = agentService.insert(ag);
