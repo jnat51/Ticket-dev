@@ -11,12 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name="tbl_ticket")
 public class Ticket {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
 	private String id;
 	
 	@Column(name="ticket_code")
