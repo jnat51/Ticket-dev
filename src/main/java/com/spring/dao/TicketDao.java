@@ -1,5 +1,5 @@
 package com.spring.dao;
 
-public class TicketDao {
-
+public class TicketDao extends ParentDao{
+	//public 
 }
