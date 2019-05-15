@@ -1,5 +1,8 @@
 package com.spring.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,21 +61,12 @@ public class AgentController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@ModelAttribute Agent agent, @RequestParam(required = false) MultipartFile pp) {
+	public ResponseEntity<?> insertAgent(@ModelAttribute Agent agent, @RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
 			Agent ag = new Agent();
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
-			Image img = new Image();
-			byte[] data = pp.getBytes();
-			String fileName = pp.getOriginalFilename();
-			String mime = pp.getContentType();
-			
-			img.setImage(data);
-			img.setFileName(fileName);
-			img.setMime(mime);
-
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
 
@@ -84,6 +78,19 @@ public class AgentController {
 			System.out.println("test");
 			
 			if (pp.toString().isEmpty() == false) {
+				Image img = new Image();
+				byte[] data = pp.getBytes();
+				Date date = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String dateNow = dateFormat.format(date);
+				String[] originalName = pp.getOriginalFilename().split("\\.");
+				String fileName = originalName[0] + dateNow + "." + originalName[1];
+				String mime = pp.getContentType();
+				
+				img.setImage(data);
+				img.setFileName(fileName);
+				img.setMime(mime);
+				
 				imageService.insert(img);
 				ag.setImageId(imageService.findByBk(fileName, data).getId());
 			}
@@ -103,15 +110,6 @@ public class AgentController {
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			Image img = new Image();
-			byte[] data = pp.getBytes();
-			String fileName = pp.getOriginalFilename();
-			String mime = pp.getContentType();
-			
-			img.setImage(data);
-			img.setFileName(fileName);
-			img.setMime(mime);
-
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
 			
@@ -122,7 +120,19 @@ public class AgentController {
 			ag.setName(agent.getName());
 
 			if (pp.toString().isEmpty() == false) {
-				System.out.println(ag.getImageId());
+				Image img = new Image();
+				byte[] data = pp.getBytes();
+				Date date = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String dateNow = dateFormat.format(date);
+				String[] originalName = pp.getOriginalFilename().split("\\.");
+				String fileName = originalName[0] + dateNow + "." + originalName[1];
+				String mime = pp.getContentType();
+				
+				img.setImage(data);
+				img.setFileName(fileName);
+				img.setMime(mime);
+				
 				imageService.delete(ag.getImageId());
 				imageService.insert(img);
 				ag.setImageId(imageService.findByBk(fileName, data).getId());

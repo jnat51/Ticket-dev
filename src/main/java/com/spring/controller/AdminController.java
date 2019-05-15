@@ -1,5 +1,8 @@
 package com.spring.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,24 +65,26 @@ public class AdminController {
 			Admin adm = new Admin();
 			String pass = admin.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
-			Image img = new Image();
-			byte[] data = pp.getBytes();
-			String fileName = pp.getOriginalFilename();
-			String mime = pp.getContentType();
-			
-			img.setImage(data);
-			img.setFileName(fileName);
-			img.setMime(mime);
-			
+						
 			adm.setEmail(admin.getEmail());
 			adm.setUsername(admin.getUsername());
 			adm.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
 			
-			System.out.println(imageService.findByBk(fileName, data).getId());
-			
 			if (pp.toString().isEmpty() == false) {
+				Image img = new Image();
+				byte[] data = pp.getBytes();
+				Date date = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String dateNow = dateFormat.format(date);
+				String[] originalName = pp.getOriginalFilename().split("\\.");
+				String fileName = originalName[0] + dateNow + "." + originalName[1];
+				String mime = pp.getContentType();
+				
+				img.setImage(data);
+				img.setFileName(fileName);
+				img.setMime(mime);
+				
 				imageService.insert(img);
 				adm.setImageId(imageService.findByBk(fileName, data).getId());
 			}
@@ -111,7 +116,11 @@ public class AdminController {
 			if (pp.toString().isEmpty() == false) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
-				String fileName = pp.getOriginalFilename();
+				Date date = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String dateNow = dateFormat.format(date);
+				String[] originalName = pp.getOriginalFilename().split("\\.");
+				String fileName = originalName[0] + dateNow + "." + originalName[1];
 				String mime = pp.getContentType();
 				
 				img.setImage(data);

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CompanyDao;
 import com.spring.model.Company;
-import com.spring.model.Customer;
 
 @Service
 public class CompanyService {
@@ -63,55 +62,6 @@ public class CompanyService {
 			return companyDao.findCompanyByBk(companyCode);
 		} else {
 			return comp;
-		}
-	}
-
-//====================================*Customer Service*===============================================	
-
-	public String insertCustomer(Customer customer) throws ServiceException {
-		companyDao.saveCustomer(customer);
-		return "New customer successfully added";
-	}
-
-	public void deleteCustomer(String customerId) throws ServiceException {
-		if (companyDao.isCompanyIdExist(customerId) == true) {
-			companyDao.deleteCustomer(companyDao.findCustomerById(customerId));
-		} else {
-			throw new ServiceException("Customer not found!");
-		}
-	}
-
-	public void updateCustomer(Customer customer) throws ServiceException {
-		if (companyDao.isCompanyIdExist(customer.getId()) == false) {
-			throw new ServiceException("Customer not found!");
-		}
-		if (companyDao.isCompanyBkExist(customer.getUsername()) == false) {
-			throw new ServiceException("Customer not found!");
-		}
-		if (!customer.getUsername().equals(companyDao.findCustomerById(customer.getId()).getUsername())) {
-			throw new ServiceException("Username cannot be changed!");
-		}
-
-		companyDao.saveCustomer(customer);
-	}
-	
-	public Customer findCustomerById(String idCustomer) {
-		Customer cust = new Customer();
-
-		if (companyDao.findCustomerById(idCustomer) != null) {
-			return companyDao.findCustomerById(idCustomer);
-		} else {
-			return cust;
-		}
-	}
-
-	public Customer findCustomerByBk(String username) {
-		Customer cust = new Customer();
-
-		if (companyDao.findCustomerByBk(username) != null) {
-			return companyDao.findCustomerByBk(username);
-		} else {
-			return cust;
 		}
 	}
 }
