@@ -62,7 +62,7 @@ public class AdminController {
 	}
 	
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin, @RequestParam(required = false) MultipartFile pp) {
+	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin, @RequestParam(name= "pp",required = false) MultipartFile pp) {
 		try {
 			Admin adm = new Admin();
 			String pass = admin.getPassword();
@@ -146,8 +146,8 @@ public class AdminController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteAdmin(@PathVariable String id) {
 		try {
-			adminService.delete(id);
 			imageService.delete(adminService.findById(id).getImageId());
+			adminService.delete(id);
 
 			return new ResponseEntity<>("Admin successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {

@@ -134,7 +134,7 @@ public class AgentController {
 	}
 
 	@PutMapping(value = "/")
-	public ResponseEntity<?> updateAgent(@ModelAttribute Agent agent, @RequestParam(required = false) MultipartFile pp) {
+	public ResponseEntity<?> updateAgent(@ModelAttribute Agent agent, @RequestParam(name= "pp", required = false) MultipartFile pp) {
 		try {
 			Agent ag = agentService.findById(agent.getId());
 			String pass = agent.getPassword();

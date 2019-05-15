@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.model.Admin;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
@@ -153,6 +155,20 @@ public class CustomerController {
 			Customer cust = customerService.findCustomerByBk(username);
 
 			return new ResponseEntity<>(cust, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/login")
+	public ResponseEntity<?> login(@RequestBody Customer customer) {
+		try {
+			System.out.println(customerService.findCustomerByBk(customer.getUsername()).getPassword());
+			boolean matched = BCrypt.checkpw(customer.getPassword(),
+					customerService.findCustomerByBk(customer.getUsername()).getPassword());
+			System.out.println(matched);
+
+			return new ResponseEntity<>(matched, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

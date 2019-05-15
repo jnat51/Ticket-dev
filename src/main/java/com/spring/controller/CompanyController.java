@@ -81,19 +81,19 @@ public class CompanyController {
 	}
 
 	@PutMapping(value = "/")
-	public ResponseEntity<?> updateCompany(@RequestParam(name = "logo", required = false) MultipartFile companyLogo,
+	public ResponseEntity<?> updateCompany(@RequestParam(name = "logo", required = false) MultipartFile logo,
 			@ModelAttribute Company company) {
 		try {
 			Company comp = companyService.findCompanyById(company.getId());
 			Image image = new Image();
 
-			byte[] data = companyLogo.getBytes();
-			String fileName = companyLogo.getOriginalFilename();
+			byte[] data = logo.getBytes();
+			String fileName = logo.getOriginalFilename();
 			image.setImage(data);
 			image.setFileName(fileName);
-			image.setMime(companyLogo.getContentType());
+			image.setMime(logo.getContentType());
 
-			if (companyLogo.toString().isEmpty() == false) {
+			if (logo.toString().isEmpty() == false) {
 				imageService.delete(comp.getImageId());
 				imageService.insert(image);
 				company.setImageId(imageService.findByBk(fileName, data).getId());

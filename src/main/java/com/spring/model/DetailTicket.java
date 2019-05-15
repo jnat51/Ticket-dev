@@ -11,11 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="tbl_detail_ticket")
+@Table(name="tbl_detail_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"ticket_id"}))
 public class DetailTicket {
 	@Id
 	@Column(name = "id")
