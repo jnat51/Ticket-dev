@@ -1,11 +1,15 @@
 package com.spring.controller;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.model.Admin;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
@@ -41,12 +44,29 @@ public class CustomerController {
 	CustomerService customerService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+    private JavaMailSender javaMailSender;
+	
+	public String passwordGenerator()
+	{
+		Random RANDOM = new SecureRandom();
+	    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	        int passwordLength = 8;
+	        
+	        StringBuilder returnValue = new StringBuilder(passwordLength);
+	        
+	        for (int i = 0; i < passwordLength; i++) {
+	            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+	        }
+	        
+	        return returnValue.toString();
+	}
 	
 	@PostMapping(value = "/")
 	public ResponseEntity<?> insertCustomer(@RequestParam(name="pp",required = false) MultipartFile image, @ModelAttribute Customer customer) {
 		try {
 			Customer cust = new Customer();
-			String pass = customer.getPassword();
+			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
 			cust.setEmail(customer.getEmail());
@@ -57,7 +77,7 @@ public class CustomerController {
 			cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
 			System.out.println(customer.getCompany().getId());
 						
-			if (image.toString().isEmpty() == false) {
+			if (image != null) {
 				Image img = new Image();
 				byte[] data = image.getBytes();
 				
@@ -78,6 +98,19 @@ public class CustomerController {
 			}
 			
 			String msg = customerService.insertCustomer(cust);
+			
+			SimpleMailMessage email = new SimpleMailMessage();
+	        //setTo(from, to)
+	        email.setTo("jnat51.jg@gmail.com", customer.getEmail());
+	        
+	        email.setSubject("Welcome to Linov Support, "+ customer.getName() +"!");
+	        email.setText("Here is your username and password to login to your account.\nUsername: "+ customer.getUsername()+ "\nPassword: " + pass);
+	        
+	        System.out.println("send...");
+	        
+	        javaMailSender.send(email);
+	        
+	        System.out.println("sent");
 
 			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -97,7 +130,7 @@ public class CustomerController {
 			cust.setPassword(generatedSecuredPasswordHash);
 			cust.setName(customer.getName());
 						
-			if (image.toString().isEmpty() == false) {
+			if (image != null) {
 				Image img = new Image();
 				byte[] data = image.getBytes();
 				
@@ -129,8 +162,10 @@ public class CustomerController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteCustomer(@PathVariable String id) {
 		try {
+			Customer customer = customerService.findCustomerById(id);
+			
 			customerService.deleteCustomer(id);
-			imageService.delete(customerService.findCustomerById(id).getImageId());
+			imageService.delete(customer.getImageId());
 
 			return new ResponseEntity<>("Company successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
