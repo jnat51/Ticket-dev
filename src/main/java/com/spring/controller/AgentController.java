@@ -99,7 +99,7 @@ public class AgentController {
 			
 			System.out.println("test");
 			
-			if (pp.toString().isEmpty() == false) {
+			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
 				Date date = new Date();
@@ -124,7 +124,7 @@ public class AgentController {
 	        email.setTo("jnat51.jg@gmail.com", agent.getEmail());
 	        
 	        email.setSubject("Welcome "+ agent.getName() +", New Agent!");
-	        email.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
+	        email.setText("Here is your username and password to login to your account.\nUsername: "+ agent.getUsername()+ "\nPassword: " + pass);
 	        
 	        System.out.println("send...");
 	        
@@ -154,7 +154,7 @@ public class AgentController {
 			ag.setPassword(generatedSecuredPasswordHash);
 			ag.setName(agent.getName());
 
-			if (pp.toString().isEmpty() == false) {
+			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
 				Date date = new Date();
@@ -175,7 +175,7 @@ public class AgentController {
 			
 			agentService.update(ag);
 			
-			return new ResponseEntity<>("Update success", HttpStatus.CREATED);
+			return new ResponseEntity<>("Update success", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

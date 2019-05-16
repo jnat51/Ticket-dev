@@ -91,7 +91,7 @@ public class AdminController {
 			adm.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
 			
-			if (pp.toString().isEmpty() == false) {
+			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
 				Date date = new Date();
@@ -113,7 +113,7 @@ public class AdminController {
 			
 			return new ResponseEntity<>(msg , HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class AdminController {
 			Admin adm = adminService.findById(admin.getId());
 			String pass = admin.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
+			
 			System.out.println(pass);
 			System.out.println(generatedSecuredPasswordHash);
 			
@@ -133,7 +133,7 @@ public class AdminController {
 			adm.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
 
-			if (pp.toString().isEmpty() == false) {
+			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
 				Date date = new Date();
@@ -155,7 +155,7 @@ public class AdminController {
 			
 			adminService.update(adm);
 			
-			return new ResponseEntity<>("Update success", HttpStatus.CREATED);
+			return new ResponseEntity<>("Update success", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

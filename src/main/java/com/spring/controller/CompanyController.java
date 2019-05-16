@@ -55,7 +55,7 @@ public class CompanyController {
 	public ResponseEntity<?> insertCompany(@RequestParam(name = "logo", required = false) MultipartFile logo,
 			@ModelAttribute Company company) {
 		try {
-			if (logo.toString().isEmpty() == false) {
+			if (logo != null) {
 				Image img = new Image();
 				byte[] data = logo.getBytes();
 				
@@ -95,7 +95,7 @@ public class CompanyController {
 			image.setFileName(fileName);
 			image.setMime(logo.getContentType());
 
-			if (logo.toString().isEmpty() == false) {
+			if (logo != null) {
 				imageService.delete(comp.getImageId());
 				imageService.insert(image);
 				company.setImageId(imageService.findByBk(fileName, data).getId());

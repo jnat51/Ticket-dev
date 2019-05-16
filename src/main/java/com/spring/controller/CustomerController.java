@@ -77,7 +77,7 @@ public class CustomerController {
 			cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
 			System.out.println(customer.getCompany().getId());
 						
-			if (image.toString().isEmpty() == false) {
+			if (image != null) {
 				Image img = new Image();
 				byte[] data = image.getBytes();
 				
@@ -103,8 +103,8 @@ public class CustomerController {
 	        //setTo(from, to)
 	        email.setTo("jnat51.jg@gmail.com", customer.getEmail());
 	        
-	        email.setSubject("Welcome "+ customer.getName() +", New Agent!");
-	        email.setText("Username: "+ customer.getUsername()+ "\nPassword: " + pass);
+	        email.setSubject("Welcome to Linov Support, "+ customer.getName() +"!");
+	        email.setText("Here is your username and password to login to your account.\nUsername: "+ customer.getUsername()+ "\nPassword: " + pass);
 	        
 	        System.out.println("send...");
 	        
@@ -130,7 +130,7 @@ public class CustomerController {
 			cust.setPassword(generatedSecuredPasswordHash);
 			cust.setName(customer.getName());
 						
-			if (image.toString().isEmpty() == false) {
+			if (image != null) {
 				Image img = new Image();
 				byte[] data = image.getBytes();
 				
