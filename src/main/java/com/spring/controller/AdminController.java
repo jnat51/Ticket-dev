@@ -1,7 +1,9 @@
 package com.spring.controller;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,21 @@ public class AdminController {
 	@Autowired
 	ImageService imageService;
 
+	public String passwordGenerator()
+	{
+		Random RANDOM = new SecureRandom();
+	    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	        int passwordLength = 8;
+	        
+	        StringBuilder returnValue = new StringBuilder(passwordLength);
+	        
+	        for (int i = 0; i < passwordLength; i++) {
+	            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+	        }
+	        
+	        return returnValue.toString();
+	}
+	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getAdminById(@PathVariable("id") String id) {
 		try {
@@ -65,7 +82,8 @@ public class AdminController {
 	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin, @RequestParam(name= "pp",required = false) MultipartFile pp) {
 		try {
 			Admin adm = new Admin();
-			String pass = admin.getPassword();
+			
+			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 						
 			adm.setEmail(admin.getEmail());
@@ -146,9 +164,11 @@ public class AdminController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteAdmin(@PathVariable String id) {
 		try {
-			imageService.delete(adminService.findById(id).getImageId());
+			Admin admin = adminService.findById(id);
+			
 			adminService.delete(id);
-
+			imageService.delete(admin.getImageId());
+			
 			return new ResponseEntity<>("Admin successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

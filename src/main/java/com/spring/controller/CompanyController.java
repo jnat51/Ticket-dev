@@ -40,8 +40,10 @@ public class CompanyController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteCompany(@PathVariable String id) {
 		try {
+			Company company = companyService.findCompanyById(id);
+			
 			companyService.deleteCompany(id);
-			imageService.delete(companyService.findCompanyById(id).getImageId());
+			imageService.delete(company.getImageId());
 
 			return new ResponseEntity<>("Company successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {

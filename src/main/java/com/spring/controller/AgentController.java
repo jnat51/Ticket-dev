@@ -43,6 +43,21 @@ public class AgentController {
 	ImageService imageService;
 	@Autowired
     private JavaMailSender javaMailSender;
+	
+	public String passwordGenerator()
+	{
+		Random RANDOM = new SecureRandom();
+	    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	        int passwordLength = 8;
+	        
+	        StringBuilder returnValue = new StringBuilder(passwordLength);
+	        
+	        for (int i = 0; i < passwordLength; i++) {
+	            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+	        }
+	        
+	        return returnValue.toString();
+	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getAgentById(@PathVariable("id") String id) {
@@ -71,17 +86,7 @@ public class AgentController {
 		try {
 			Agent ag = new Agent();
 			
-			Random RANDOM = new SecureRandom();
-		    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-		        int passwordLength = 8;
-		        
-		        StringBuilder returnValue = new StringBuilder(passwordLength);
-		        
-		        for (int i = 0; i < passwordLength; i++) {
-		            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
-		        }
-			
-			String pass = returnValue.toString();
+			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
 			System.out.println(pass);
@@ -110,23 +115,23 @@ public class AgentController {
 				
 				imageService.insert(img);
 				ag.setImageId(imageService.findByBk(fileName, data).getId());
-				
-				SimpleMailMessage msg = new SimpleMailMessage();
-		        //setTo(from, to)
-		        msg.setTo("jnat51.jg@gmail.com", agent.getEmail());
-		        
-		        msg.setSubject("Welcome "+ agent.getName() +", New Agent!");
-		        msg.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
-		        
-		        System.out.println("send...");
-		        
-		        javaMailSender.send(msg);
-		        
-		        System.out.println("sent");
 			}
 			
 			String msg = agentService.insert(ag);
 
+			SimpleMailMessage email = new SimpleMailMessage();
+	        //setTo(from, to)
+	        email.setTo("jnat51.jg@gmail.com", agent.getEmail());
+	        
+	        email.setSubject("Welcome "+ agent.getName() +", New Agent!");
+	        email.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
+	        
+	        System.out.println("send...");
+	        
+	        javaMailSender.send(email);
+	        
+	        System.out.println("sent");
+			
 			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -179,9 +184,11 @@ public class AgentController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteAgent(@PathVariable String id) {
 		try {
+			Agent agent = agentService.findById(id);
+			
 			agentService.delete(id);
-			imageService.delete(agentService.findById(id).getImageId());
-
+			imageService.delete(agent.getImageId());
+			
 			return new ResponseEntity<>("Agent successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
