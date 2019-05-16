@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Admin;
-import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.service.AdminService;
 import com.spring.service.ImageService;
@@ -91,6 +90,8 @@ public class AdminController {
 			adm.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
 			
+			String msg = adminService.insert(adm);
+			
 			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
@@ -109,7 +110,7 @@ public class AdminController {
 				adm.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 			
-			String msg = adminService.insert(adm);
+			
 			
 			return new ResponseEntity<>(msg , HttpStatus.OK);
 		} catch (Exception e) {

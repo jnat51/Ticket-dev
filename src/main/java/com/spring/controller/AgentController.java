@@ -97,10 +97,14 @@ public class AgentController {
 			ag.setPassword(encryptedPassword);
 			ag.setName(agent.getName());
 			
+			
+			String msg = agentService.insert(ag);
+			
 			System.out.println("test");
 			
+			Image img = new Image();
+			
 			if (pp != null) {
-				Image img = new Image();
 				byte[] data = pp.getBytes();
 				Date date = new Date();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
@@ -113,27 +117,12 @@ public class AgentController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 				
-				imageService.insert(img);
-				ag.setImageId(imageService.findByBk(fileName, data).getId());
-<<<<<<< HEAD
+				Agent agn = agentService.findByBk(ag.getUsername());
 				
-				SimpleMailMessage msg = new SimpleMailMessage();
-		        //setTo(from, to)
-		        msg.setTo("watashias@gmail.com", agent.getEmail());
-		        
-		        msg.setSubject("Welcome "+ agent.getName() +", New Agent!");
-		        msg.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
-		        
-		        System.out.println("send...");
-		        
-		        javaMailSender.send(msg);
-		        
-		        System.out.println("sent");
-=======
->>>>>>> a70adbe797b192c10ff8dee0022c7c180abf291f
+				imageService.insert(img);
+				agn.setImageId(imageService.findByBk(fileName, data).getId());
+				agentService.update(agn);
 			}
-			
-			String msg = agentService.insert(ag);
 
 			SimpleMailMessage email = new SimpleMailMessage();
 	        //setTo(from, to)
