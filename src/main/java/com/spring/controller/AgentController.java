@@ -113,7 +113,7 @@ public class AgentController {
 				
 				SimpleMailMessage msg = new SimpleMailMessage();
 		        //setTo(from, to)
-		        msg.setTo("jnat51.jg@gmail.com", agent.getEmail());
+		        msg.setTo("watashias@gmail.com", agent.getEmail());
 		        
 		        msg.setSubject("Welcome "+ agent.getName() +", New Agent!");
 		        msg.setText("Username: "+ agent.getUsername()+ "\nPassword: " + pass);
