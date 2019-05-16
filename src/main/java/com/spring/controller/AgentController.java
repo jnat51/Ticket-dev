@@ -87,14 +87,14 @@ public class AgentController {
 			Agent ag = new Agent();
 			
 			String pass = passwordGenerator();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
+			String encryptedPassword = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
 			System.out.println(pass);
-			System.out.println(generatedSecuredPasswordHash);
+			System.out.println(encryptedPassword);
 
 			ag.setEmail(agent.getEmail());
 			ag.setUsername(agent.getUsername());
-			ag.setPassword(generatedSecuredPasswordHash);
+			ag.setPassword(encryptedPassword);
 			ag.setName(agent.getName());
 			
 			System.out.println("test");
