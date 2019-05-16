@@ -3,24 +3,24 @@ package com.spring.dao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.model.Pic;
+import com.spring.model.Mapping;
 
 @Repository
 @Transactional
-public class PicDao extends ParentDao {
-	public void save(Pic pic) {
+public class MappingDao extends ParentDao {
+	public void save(Mapping pic) {
 		super.entityManager.merge(pic);
 	}
 	
-	public void delete(Pic pic) {
+	public void delete(Mapping pic) {
 		super.entityManager.remove(pic);
 	}
 	
-	public Pic findById(String id) {
+	public Mapping findById(String id) {
 		try {
 			String query = "from Pic where id = :id";
 			
-			Pic pic = (Pic) this.entityManager
+			Mapping pic = (Mapping) this.entityManager
 					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			
@@ -32,11 +32,11 @@ public class PicDao extends ParentDao {
 			}
 	}
 	
-	public Pic findByBk(String companyId) {
+	public Mapping findByBk(String companyId) {
 		try {
 			String query = "from Pic where company.id = :companyid";
 			
-			Pic pic = (Pic) this.entityManager
+			Mapping pic = (Mapping) this.entityManager
 					  .createQuery(query)
 					  .setParameter("companyid", companyId).getSingleResult();
 			

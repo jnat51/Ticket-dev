@@ -1,5 +1,7 @@
 package com.spring.controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.model.DetailTicket;
 import com.spring.model.Ticket;
 import com.spring.service.TicketService;
 
@@ -26,6 +29,7 @@ public class TicketController {
 	@Autowired
 	TicketService ticketService;
 
+	//======================================*Header Ticket*===========================================
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicket(Ticket ticket) {
 		try {
@@ -72,6 +76,29 @@ public class TicketController {
 
 	@GetMapping(value = "/hdr/code/{ticketCode}")
 	public ResponseEntity<?> findTicketByBk(@PathVariable String ticketCode) {
+		try {
+			Ticket ticket = ticketService.findTicketByBk(ticketCode);
+
+			return new ResponseEntity<>(ticket, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//======================================*Detail Ticket*===========================================
+	@GetMapping(value = "/dtl/{id}")
+	public ResponseEntity<?> findDetailTicketById(@PathVariable String id){
+		try {
+			DetailTicket dtlticket = ticketService.findDetailTicketById(id);
+
+			return new ResponseEntity<>(dtlticket, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/dtl/{ticketCode}/{messageDate}")
+	public ResponseEntity<?> findDetailTicketByBk(@PathVariable String ticketCode, @PathVariable Date messageDate) {
 		try {
 			Ticket ticket = ticketService.findTicketByBk(ticketCode);
 

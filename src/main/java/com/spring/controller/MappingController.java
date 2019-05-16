@@ -15,22 +15,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.model.Pic;
-import com.spring.service.PicService;
+import com.spring.model.Mapping;
+import com.spring.service.MappingService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
 @Transactional
-@RequestMapping("/pic")
-public class PicController {
+@RequestMapping("/map")
+public class MappingController {
 	@Autowired
-	PicService picService;
+	MappingService mappingService;
 	
 	@PostMapping("/")
-	public ResponseEntity<?> insertPic(@RequestBody Pic pic){
+	public ResponseEntity<?> insertPic(@RequestBody Mapping pic){
 		try {
-			picService.insert(pic);
+			mappingService.insert(pic);
 			
 			return new ResponseEntity<>("Pic successfuly inserted", HttpStatus.OK);
 		}catch (Exception e) {
@@ -41,7 +41,7 @@ public class PicController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePic(@PathVariable String id){
 		try {
-			picService.delete(id);
+			mappingService.delete(id);
 			
 			return new ResponseEntity<>("Pic successfuly deleted", HttpStatus.OK);
 		}catch (Exception e) {
@@ -50,9 +50,9 @@ public class PicController {
 	}
 	
 	@PutMapping("/")
-	public ResponseEntity<?> updatePic(@RequestBody Pic pic){
+	public ResponseEntity<?> updatePic(@RequestBody Mapping pic){
 		try {
-			picService.update(pic);
+			mappingService.update(pic);
 			
 			return new ResponseEntity<>("Pic successfuly updated", HttpStatus.OK);
 		}catch (Exception e) {
@@ -63,7 +63,7 @@ public class PicController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> findPicById(@PathVariable("id") String id) {
 		try {
-		Pic pic = picService.findById(id);
+		Mapping pic = mappingService.findById(id);
 		
 		return new ResponseEntity<>(pic , HttpStatus.OK);
 		} catch (Exception e) {
@@ -74,7 +74,7 @@ public class PicController {
 	@GetMapping("/company/{companyId}")
 	public ResponseEntity<?> findPicByBk(@PathVariable("companyId") String companyId) {
 		try {
-		Pic pic = picService.findByBk(companyId);
+		Mapping pic = mappingService.findByBk(companyId);
 		
 		return new ResponseEntity<>(pic , HttpStatus.OK);
 		} catch (Exception e) {

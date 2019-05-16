@@ -1,5 +1,7 @@
 package com.spring.dao;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,7 +77,7 @@ public class TicketDao extends ParentDao{
 		super.entityManager.merge(DetailTicket);
 	}
 	
-	public void removeTicket(DetailTicket DetailTicket) {
+	public void removeDetailTicket(DetailTicket DetailTicket) {
 		super.entityManager.remove(DetailTicket);
 	}
 	
@@ -93,15 +95,16 @@ public class TicketDao extends ParentDao{
 		}
 	}
 	
-	public Ticket findDetailTicketByBk (String ticketId) {
+	public DetailTicket findDetailTicketByBk (String ticketId, Date messageDate) {
 		try {
-			String query = "from Ticket where ticketId = :ticketid";
+			String query = "from Ticket where ticketId = :ticketid AND messageDate = :messagedate";
 
-			Ticket ticket = (Ticket) this.entityManager.createQuery(query)
+			DetailTicket detailTicket = (DetailTicket) this.entityManager.createQuery(query)
 					.setParameter("ticketid", ticketId)
+					.setParameter("messagedate", messageDate)
 					.getSingleResult();
 
-			return ticket;
+			return detailTicket;
 		} catch (Exception e) {
 			return null;
 		}
@@ -119,9 +122,9 @@ public class TicketDao extends ParentDao{
 		}
 	}
 	
-	public boolean isDetailTicketBkExist(String ticketId)
+	public boolean isDetailTicketBkExist(String ticketId, Date messageDate)
 	{
-		if(findDetailTicketByBk(ticketId) == null)
+		if(findDetailTicketByBk(ticketId, messageDate) == null)
 		{
 			return false;
 		}

@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "tbl_pic")
-public class Pic {
+@Table(name = "tbl_mapping")
+public class Mapping {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "UUID")

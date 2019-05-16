@@ -28,7 +28,7 @@ public class Ticket {
 	
 	@OneToOne
 	@JoinColumn(name="pic_id", referencedColumnName="id")
-	private Pic pic;
+	private Mapping pic;
 	
 	@Column(name="ticket_date")
 	private Date ticketDate;
@@ -59,11 +59,11 @@ public class Ticket {
 		this.ticketCode = ticketCode;
 	}
 
-	public Pic getPic() {
+	public Mapping getPic() {
 		return pic;
 	}
 
-	public void setPic(Pic pic) {
+	public void setPic(Mapping pic) {
 		this.pic = pic;
 	}
 
