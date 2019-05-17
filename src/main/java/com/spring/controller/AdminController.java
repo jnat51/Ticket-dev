@@ -8,6 +8,8 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,8 @@ public class AdminController {
 	AdminService adminService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+	JavaMailSender javaMailSender;
 
 	public String passwordGenerator()
 	{
@@ -106,11 +110,26 @@ public class AdminController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 				
+				Admin ad = adminService.findByBk(adm.getUsername());
+				
 				imageService.insert(img);
 				adm.setImageId(imageService.findByBk(fileName, data).getId());
+				adminService.update(ad);
 			}
 			
-			
+			SimpleMailMessage email = new SimpleMailMessage();
+	        //setTo(from, to)
+	        email.setTo("jnat51.jg@gmail.com", admin.getEmail());
+	        
+	        email.setSubject("Welcome "+ admin.getName() +", New Admin!");
+	        email.setText("Here is your username and password to login to your account.\nUsername: "+ admin.getUsername()+
+	        		"\nPassword: " + pass);
+	        
+	        System.out.println("send...");
+	        
+	        javaMailSender.send(email);
+	        
+	        System.out.println("sent");
 			
 			return new ResponseEntity<>(msg , HttpStatus.OK);
 		} catch (Exception e) {

@@ -1,15 +1,21 @@
 package com.spring.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.model.Customer;
 import com.spring.model.Mapping;
 
 @Repository
 @Transactional
 public class MappingDao extends ParentDao {
 	public void save(Mapping mapping) {
+		System.out.println("Merge mapping");
 		super.entityManager.merge(mapping);
+		System.out.println("Merge success");
 	}
 	
 	public void delete(Mapping mapping) {
@@ -17,12 +23,21 @@ public class MappingDao extends ParentDao {
 	}
 	
 	public Mapping findById(String id) {
+		Mapping mapping;
 		try {
 			String query = "from Mapping where id = :id";
 			
-			Mapping mapping = (Mapping) this.entityManager
-					  .createQuery(query)
+			 mapping = (Mapping) super.entityManager
+					  .createNativeQuery(query)
 					  .setParameter("id",id).getSingleResult();
+			 
+			 List<Customer> customers = new ArrayList<Customer>();
+			 for (Customer cust : mapping.getCompany().getCustomers()) {
+					cust.setCompany(null);
+					customers.add(cust);
+				}
+			 
+			 mapping.getCompany().setCustomers(customers);
 			
 			return mapping;
 			}
@@ -33,12 +48,21 @@ public class MappingDao extends ParentDao {
 	}
 	
 	public Mapping findByBk(String companyId) {
+		Mapping mapping;
 		try {
 			String query = "from Mapping where company.id = :companyid";
 			
-			Mapping mapping = (Mapping) this.entityManager
+			mapping = (Mapping) super.entityManager
 					  .createQuery(query)
 					  .setParameter("companyid", companyId).getSingleResult();
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			 for (Customer cust : mapping.getCompany().getCustomers()) {
+					cust.setCompany(null);
+					customers.add(cust);
+				}
+			 
+			 mapping.getCompany().setCustomers(customers);
 			
 			return mapping;
 			}

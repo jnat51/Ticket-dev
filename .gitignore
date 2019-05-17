@@ -1,6 +1,9 @@
 /target/
+
+### STS ###
 .classpath
-.settings/
 .project
-/src/main/resources
+.settings
+
+resources/
 *.properties

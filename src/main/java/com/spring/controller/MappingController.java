@@ -28,7 +28,7 @@ public class MappingController {
 	MappingService mappingService;
 	
 	@PostMapping("/")
-	public ResponseEntity<?> insertPic(@RequestBody Mapping pic){
+	public ResponseEntity<?> insertMapping(@RequestBody Mapping pic){
 		try {
 			mappingService.insert(pic);
 			
@@ -39,7 +39,7 @@ public class MappingController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deletePic(@PathVariable String id){
+	public ResponseEntity<?> deleteMapping(@PathVariable String id){
 		try {
 			mappingService.delete(id);
 			
@@ -50,7 +50,7 @@ public class MappingController {
 	}
 	
 	@PutMapping("/")
-	public ResponseEntity<?> updatePic(@RequestBody Mapping pic){
+	public ResponseEntity<?> updateMapping(@RequestBody Mapping pic){
 		try {
 			mappingService.update(pic);
 			
@@ -61,7 +61,7 @@ public class MappingController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> findPicById(@PathVariable("id") String id) {
+	public ResponseEntity<?> findById(@PathVariable("id") String id) {
 		try {
 		Mapping pic = mappingService.findById(id);
 		
@@ -72,7 +72,7 @@ public class MappingController {
 	}
 	
 	@GetMapping("/company/{companyId}")
-	public ResponseEntity<?> findPicByBk(@PathVariable("companyId") String companyId) {
+	public ResponseEntity<?> findByBk(@PathVariable("companyId") String companyId) {
 		try {
 		Mapping pic = mappingService.findByBk(companyId);
 		

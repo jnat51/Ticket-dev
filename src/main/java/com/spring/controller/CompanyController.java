@@ -120,7 +120,7 @@ public class CompanyController {
 		}
 	}
 
-	@GetMapping(value = "/{companyCode}")
+	@GetMapping(value = "/code/{companyCode}")
 	public ResponseEntity<?> getCompanyByBk(@PathVariable String companyCode) {
 		try {
 			Company comp = companyService.findCompanyByBk(companyCode);

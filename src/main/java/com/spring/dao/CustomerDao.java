@@ -21,7 +21,7 @@ public class CustomerDao extends ParentDao{
 			System.out.println("find customer by id");
 			String query = "from Customer where id = :id";
 			
-			Customer customer = (Customer) this.entityManager
+			Customer customer = (Customer) super.entityManager
 					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			
@@ -38,7 +38,7 @@ public class CustomerDao extends ParentDao{
 			System.out.println("find customer by bk");
 			String query = "from Customer where username = :username";
 			
-			Customer customer = (Customer) this.entityManager
+			Customer customer = (Customer) super.entityManager
 					  .createQuery(query)
 					  .setParameter("username", username).getSingleResult();
 			

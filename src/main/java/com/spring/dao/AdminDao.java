@@ -21,7 +21,7 @@ public class AdminDao extends ParentDao{
 			System.out.println("find admin by id");
 			String query = "from Admin where id = :id";
 			
-			Admin admin = (Admin) this.entityManager
+			Admin admin = (Admin) super.entityManager
 					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			
@@ -38,7 +38,7 @@ public class AdminDao extends ParentDao{
 			System.out.println("find admin by username");
 			String query = "from Admin where username = :username";
 			
-			Admin admin = (Admin) this.entityManager
+			Admin admin = (Admin) super.entityManager
 					  .createQuery(query)
 					  .setParameter("username",username).getSingleResult();
 			
@@ -77,7 +77,7 @@ public class AdminDao extends ParentDao{
 		try {
 			String query = "from Admin where username = :username";
 			
-			Admin admin = (Admin) this.entityManager
+			Admin admin = (Admin) super.entityManager
 					  .createQuery(query)
 					  .setParameter("username",username)
 					  .getSingleResult();

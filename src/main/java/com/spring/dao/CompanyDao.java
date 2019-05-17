@@ -1,5 +1,8 @@
 package com.spring.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,70 +11,73 @@ import com.spring.model.Customer;
 
 @Repository
 @Transactional
-public class CompanyDao extends ParentDao{
-	
+public class CompanyDao extends ParentDao {
+
 	public void saveCompany(Company company) {
 		super.entityManager.merge(company);
 	}
-	
+
 	public void deleteCompany(Company company) {
 		super.entityManager.remove(company);
 	}
-	
+
 	public Company findCompanyById(String id) {
+		System.out.println("find company by id");
+		Company company;
 		try {
-			System.out.println("find company by id");
+
 			String query = "from Company where id = :id";
+
+			company = (Company) this.entityManager.createQuery(query).setParameter("id", id).getSingleResult();
+
+			List<Customer> customers = new ArrayList<Customer>();
+			for (Customer cust : company.getCustomers()) {
+				cust.setCompany(null);
+				customers.add(cust);
+			}
 			
-			Company company = (Company) this.entityManager
-					  .createQuery(query)
-					  .setParameter("id",id).getSingleResult();
-			
+			company.setCustomers(customers);
+
 			return company;
-			}
-			catch(Exception e)
-			{
-				return null;
-			}
-	}
-	
-	public Company findCompanyByBk(String companyCode) {
-		try {
-			System.out.println("find company by bk");
-			String query = "from Company where companyCode = :companycode";
-			
-			Company company = (Company) this.entityManager
-					  .createQuery(query)
-					  .setParameter("companycode", companyCode).getSingleResult();
-			
-			return company;
-			}
-			catch(Exception e)
-			{
-				return null;
-			}
-	}
-	
-	public boolean isCompanyIdExist(String id)
-	{
-		if(findCompanyById(id) == null)
-		{
-			return false;
+		} catch (Exception e) {
+			return null;
 		}
-		else
-		{
+	}
+
+	public Company findCompanyByBk(String companyCode) {
+		System.out.println("find company by bk");
+		Company company;
+		try {
+			String query = "from Company where companyCode = :companycode";
+
+			company = (Company) this.entityManager.createQuery(query).setParameter("companycode", companyCode)
+					.getSingleResult();
+
+			List<Customer> customers = new ArrayList<Customer>();
+			for (Customer cust : company.getCustomers()) {
+				cust.setCompany(null);
+				customers.add(cust);
+			}
+			company.setCustomers(customers);
+
+			return company;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public boolean isCompanyIdExist(String id) {
+		if (findCompanyById(id) == null) {
+			return false;
+		} else {
 			return true;
 		}
 	}
-	
-	public boolean isCompanyBkExist(String companyCode)
-	{
-		if(findCompanyByBk(companyCode) == null)
-		{
+
+	public boolean isCompanyBkExist(String companyCode) {
+		if (findCompanyByBk(companyCode) == null) {
 			return false;
-		}
-		else
-		{
+		} else {
 			return true;
 		}
 	}

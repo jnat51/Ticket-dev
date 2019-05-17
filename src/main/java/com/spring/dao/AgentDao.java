@@ -33,7 +33,7 @@ public class AgentDao extends ParentDao{
 			System.out.println("find agent by id");
 			String query = "from Agent where id = :id";
 			
-			Agent agent = (Agent) this.entityManager
+			Agent agent = (Agent) super.entityManager
 					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			
@@ -51,7 +51,7 @@ public class AgentDao extends ParentDao{
 			System.out.println("find agent by bk");
 			String query = "from Agent where username = :username";
 			
-			Agent agent = (Agent) this.entityManager
+			Agent agent = (Agent) super.entityManager
 					  .createQuery(query)
 					  .setParameter("username", username)
 					  .getSingleResult();
@@ -69,7 +69,7 @@ public class AgentDao extends ParentDao{
 		try {
 			String query = "from Agent where username = :username";
 			
-			Agent agent = (Agent) this.entityManager
+			Agent agent = (Agent) super.entityManager
 					  .createQuery(query)
 					  .setParameter("username",username)
 					  .getSingleResult();
@@ -102,7 +102,7 @@ public class AgentDao extends ParentDao{
 			sb.append(" AND username LIKE :username");
 		}
 		
-		Query query = this.entityManager
+		Query query = super.entityManager
 		  .createQuery(sb.toString());
 		if (!nama.trim().isEmpty())
 	  	{

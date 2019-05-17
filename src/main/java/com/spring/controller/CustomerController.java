@@ -184,7 +184,7 @@ public class CustomerController {
 		}
 	}
 	
-	@GetMapping(value = "/{companyCode}")
+	@GetMapping(value = "/company/{companyCode}")
 	public ResponseEntity<?> getCompanyByBk(@PathVariable String username){
 		try {
 			Customer cust = customerService.findCustomerByBk(username);

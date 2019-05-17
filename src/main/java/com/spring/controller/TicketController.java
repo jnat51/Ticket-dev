@@ -28,11 +28,21 @@ import com.spring.service.TicketService;
 public class TicketController {
 	@Autowired
 	TicketService ticketService;
-
+	
+	enum Status{
+		open,close,reopen
+	}
+	
+	/***
+	 * Debug ticket controller
+	 * @param ticket
+	 * @return
+	 */
+	
 	//======================================*Header Ticket*===========================================
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicket(Ticket ticket) {
-		try {
+		try {			
 			String msg = ticketService.insertTicket(ticket);
 
 			return new ResponseEntity<>(msg, HttpStatus.CREATED);
