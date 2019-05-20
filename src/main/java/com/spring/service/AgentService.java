@@ -37,6 +37,9 @@ public class AgentService {
 		{
 			throw new ErrorException("Username already exist!");
 		}
+		if(agentDao.isEmailExist(agent.getEmail()) == true) {
+			throw new ErrorException("Email already exist!");
+		}
 			agentDao.save(agent);
 			return "New agent account successfully created";
 	}
@@ -90,17 +93,38 @@ public class AgentService {
 	
 	public List<Agent> findByFilter(String namaAgent, String username)
 	{
-		List<Agent> barangs = new ArrayList<Agent>();
+		List<Agent> agents = new ArrayList<Agent>();
 		
 		if(agentDao.findByFilter(namaAgent, username).size() > 0)
 		{
-			barangs = agentDao.findByFilter(namaAgent, username);
+			agents = agentDao.findByFilter(namaAgent, username);
 			
-			return barangs;
+			return agents;
 		}
 		else
 		{
-			return barangs;
+			return agents;
+		}
+	}
+	
+	public boolean passwordVerification(String password) throws ErrorException
+	{
+		if(agentDao.passwordVerification(password) == false) {
+			throw new ErrorException("Password is not match.");
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public Agent resetPassword(String email) throws ErrorException
+	{
+		if(agentDao.findByEmail(email) != null)
+		{
+			return agentDao.findByEmail(email);
+		}
+		else {
+			return null;
 		}
 	}
 }

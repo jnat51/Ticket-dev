@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,15 +27,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.model.Admin;
 import com.spring.model.Agent;
 import com.spring.model.Image;
+import com.spring.model.UpdatePassword;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
-@Transactional
 @RequestMapping("/agent")
 public class AgentController {
 	@Autowired
@@ -192,7 +194,10 @@ public class AgentController {
 			Agent agent = agentService.findById(id);
 			
 			agentService.delete(id);
+			
+			if (agent.getImageId() != null) {
 			imageService.delete(agent.getImageId());
+			}
 			
 			return new ResponseEntity<>("Agent successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
@@ -209,6 +214,58 @@ public class AgentController {
 			System.out.println(matched);
 
 			return new ResponseEntity<>(matched, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/password/{id}")
+	public ResponseEntity<?> updatePassword(@RequestBody UpdatePassword updatePassword, @PathVariable String id) {
+		try {
+			Agent agent = agentService.findById(id);
+
+			if (BCrypt.checkpw(updatePassword.getOldPassword(), agent.getPassword()) == true) {
+
+				String pass = updatePassword.getNewPassword();
+				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
+
+				agent.setPassword(generatedSecuredPasswordHash);
+
+				agentService.update(agent);
+				
+				return new ResponseEntity<>("Update password success", HttpStatus.OK);
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/reset")
+	public ResponseEntity<?> resetPassword(@RequestParam String email) {
+		try {
+			Agent agent = agentService.resetPassword(email);
+			
+			String pass = passwordGenerator();
+			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
+			
+			agent.setPassword(generatedSecuredPasswordHash);
+			
+			SimpleMailMessage mail = new SimpleMailMessage();
+			// setTo(from, to)
+			mail.setTo("jnat51.jg@gmail.com", email);
+
+			mail.setSubject("Hi " + agent.getName());
+			mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
+
+			System.out.println("send...");
+
+			javaMailSender.send(mail);
+
+			System.out.println("sent");
+			
+			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

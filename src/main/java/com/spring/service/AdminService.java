@@ -34,6 +34,10 @@ public class AdminService {
 		{
 			throw new ErrorException("Username already exist!");
 		}
+		if(adminDao.isEmailExist(admin.getEmail()) == true) {
+			throw new ErrorException("Email already exist!");
+		}
+		
 			adminDao.save(admin);
 			return "New Admin account successfully created";
 	}
@@ -47,6 +51,9 @@ public class AdminService {
 		if(adminDao.isBkExist(admin.getUsername()) == false)
 		{
 			throw new ErrorException("Admin not found!");
+		}
+		if(adminDao.isEmailExist(admin.getEmail()) == false) {
+			throw new ErrorException("Email not registered!");
 		}
 		if(!admin.getUsername().equals(adminDao.findById(admin.getId()).getUsername()))
 		{
@@ -78,6 +85,42 @@ public class AdminService {
 		if(adminDao.findById(id) != null)
 		{
 			return adminDao.findById(id);
+		}
+		else
+		{
+			return admin;
+		}
+	}
+	
+	public Admin login(String username, String password) throws ErrorException
+	{
+		Admin admin = new Admin();
+		
+		if(adminDao.login(username, password) == null) {
+			throw new ErrorException("Wrong username/password!");
+		}
+		else {
+			return admin;
+		}
+	}
+	
+	public boolean passwordVerification(String password) throws ErrorException
+	{
+		if(adminDao.passwordVerification(password) == false) {
+			throw new ErrorException("Password is not match.");
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public Admin findByEmail(String email) throws ErrorException
+	{
+		Admin admin = new Admin();
+		
+		if(adminDao.findByEmail(email) != null)
+		{
+			return adminDao.findByEmail(email);
 		}
 		else
 		{

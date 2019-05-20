@@ -1,8 +1,9 @@
 package com.spring.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Company;
+import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
 import com.spring.service.ImageService;
@@ -29,7 +31,6 @@ import com.spring.service.ImageService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
-@Transactional
 @RequestMapping("/company")
 public class CompanyController {
 	@Autowired
@@ -43,7 +44,10 @@ public class CompanyController {
 			Company company = companyService.findCompanyById(id);
 			
 			companyService.deleteCompany(id);
+			
+			if (company.getImageId() != null) {
 			imageService.delete(company.getImageId());
+			}
 
 			return new ResponseEntity<>("Company successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
@@ -112,9 +116,19 @@ public class CompanyController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getCompanyById(@PathVariable String id) {
 		try {
-			Company comp = companyService.findCompanyById(id);
+			Company company = companyService.findCompanyById(id);
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			Company comp = new Company();
+			comp.setId(id);
+			for (Customer cust : company.getCustomers()) {
+				cust.setCompany(comp);
+				customers.add(cust);
+			}
+			
+			company.setCustomers(customers);
 
-			return new ResponseEntity<>(comp, HttpStatus.OK);
+			return new ResponseEntity<>(company, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

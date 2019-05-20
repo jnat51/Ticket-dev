@@ -28,7 +28,7 @@ public class MappingDao extends ParentDao {
 			String query = "from Mapping where id = :id";
 			
 			 mapping = (Mapping) super.entityManager
-					  .createNativeQuery(query)
+					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			 
 			 List<Customer> customers = new ArrayList<Customer>();

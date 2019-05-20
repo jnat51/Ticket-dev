@@ -3,6 +3,10 @@ package com.spring.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +15,7 @@ import com.spring.model.Customer;
 
 @Repository
 @Transactional
-public class CompanyDao extends ParentDao {
-
+public class CompanyDao extends ParentDao{	
 	public void saveCompany(Company company) {
 		super.entityManager.merge(company);
 	}
@@ -28,15 +31,7 @@ public class CompanyDao extends ParentDao {
 
 			String query = "from Company where id = :id";
 
-			company = (Company) this.entityManager.createQuery(query).setParameter("id", id).getSingleResult();
-
-			List<Customer> customers = new ArrayList<Customer>();
-			for (Customer cust : company.getCustomers()) {
-				cust.setCompany(null);
-				customers.add(cust);
-			}
-			
-			company.setCustomers(customers);
+			company = (Company) super.entityManager.createQuery(query).setParameter("id", id).getSingleResult();			
 
 			return company;
 		} catch (Exception e) {
@@ -50,12 +45,13 @@ public class CompanyDao extends ParentDao {
 		try {
 			String query = "from Company where companyCode = :companycode";
 
-			company = (Company) this.entityManager.createQuery(query).setParameter("companycode", companyCode)
+			company = (Company) super.entityManager.createQuery(query).setParameter("companycode", companyCode)
 					.getSingleResult();
-
+			
 			List<Customer> customers = new ArrayList<Customer>();
+			Company co = new Company();
 			for (Customer cust : company.getCustomers()) {
-				cust.setCompany(null);
+				cust.setCompany(co);
 				customers.add(cust);
 			}
 			company.setCustomers(customers);

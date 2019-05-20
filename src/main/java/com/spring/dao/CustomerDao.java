@@ -3,6 +3,7 @@ package com.spring.dao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.model.Admin;
 import com.spring.model.Customer;
 
 @Repository
@@ -62,6 +63,17 @@ public class CustomerDao extends ParentDao{
 		}
 	}
 	
+	public boolean isCustomerEmailExist(String email)
+	{
+		if(findByEmail(email)==null)
+		{
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 	public boolean isCustomerBkExist(String username)
 	{
 		if(findCustomerByBk(username) == null)
@@ -71,6 +83,39 @@ public class CustomerDao extends ParentDao{
 		else
 		{
 			return true;
+		}
+	}
+	
+	public boolean passwordVerification(String password) {
+		try {
+			String query = "from Customer where password = :password";
+
+			Customer customer = (Customer) super.entityManager.createQuery(query).setParameter("password", password)
+					.getSingleResult();
+
+			if (customer.getId() == null) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println("Wrong password.");
+
+			return false;
+		}
+	}
+
+	public Customer findByEmail(String email) {
+		try {
+			String query = "from Customer WHERE email = :email";
+			
+			Customer customer = (Customer) super.entityManager.createQuery(query).setParameter("email", email)
+					.getSingleResult();
+			
+			return customer;
+		}
+		catch (Exception e) {
+			return null;
 		}
 	}
 }

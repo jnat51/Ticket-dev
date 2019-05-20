@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CustomerDao;
 import com.spring.exception.ErrorException;
+import com.spring.model.Agent;
 import com.spring.model.Customer;
 
 @Service
@@ -18,6 +19,9 @@ public class CustomerService {
 		}
 		if (customerDao.isCustomerBkExist(customer.getUsername()) == true) {
 			throw new ErrorException("Username already exist!");
+		}
+		if(customerDao.isCustomerEmailExist(customer.getEmail()) == true) {
+			throw new ErrorException("Email already exist!");
 		}
 		customerDao.saveCustomer(customer);
 		return "New customer successfully added";
@@ -62,6 +66,27 @@ public class CustomerService {
 			return customerDao.findCustomerByBk(username);
 		} else {
 			return cust;
+		}
+	}
+	
+	public boolean passwordVerification(String password) throws ErrorException
+	{
+		if(customerDao.passwordVerification(password) == false) {
+			throw new ErrorException("Password is not match.");
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public Customer resetPassword(String email) throws ErrorException
+	{
+		if(customerDao.findByEmail(email) != null)
+		{
+			return customerDao.findByEmail(email);
+		}
+		else {
+			return null;
 		}
 	}
 }

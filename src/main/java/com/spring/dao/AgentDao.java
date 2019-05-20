@@ -2,9 +2,6 @@ package com.spring.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -130,6 +127,18 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
+	public boolean isEmailExist(String email)
+	{
+		if(findByEmail(email) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
 	public boolean isBkExist(String username)
 	{
 		if(findByBk(username) == null)
@@ -139,6 +148,39 @@ public class AgentDao extends ParentDao{
 		else
 		{
 			return true;
+		}
+	}
+	
+	public boolean passwordVerification(String password) {
+		try {
+			String query = "from Agent where password = :password";
+			
+			Agent agent = (Agent) super.entityManager.createQuery(query).setParameter("password", password)
+					.getSingleResult();
+			
+			if (agent.getId() == null) {
+				return true;
+			} else {
+				return false;
+			}
+		}catch (Exception e) {
+			System.out.println("Wrong password.");
+
+			return false;
+		}
+	}
+	
+	public Agent findByEmail(String email) {
+		try {
+			String query = "from Agent WHERE email = :email";
+			
+			Agent agent = (Agent) super.entityManager.createQuery(query).setParameter("email", email)
+					.getSingleResult();
+			
+			return agent;
+		}
+		catch (Exception e) {
+			return null;
 		}
 	}
 }
