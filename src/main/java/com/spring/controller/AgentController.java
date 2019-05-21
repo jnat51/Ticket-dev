@@ -252,6 +252,8 @@ public class AgentController {
 			
 			agent.setPassword(generatedSecuredPasswordHash);
 			
+			agentService.update(agent);
+			
 			SimpleMailMessage mail = new SimpleMailMessage();
 			// setTo(from, to)
 			mail.setTo("jnat51.jg@gmail.com", email);
