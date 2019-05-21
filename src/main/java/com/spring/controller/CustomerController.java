@@ -12,7 +12,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -154,9 +153,9 @@ public class CustomerController {
 				cust.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 
-			String msg = customerService.insertCustomer(customer);
+			customerService.updateCustomer(customer);
 
-			return new ResponseEntity<>(msg, HttpStatus.OK);
+			return new ResponseEntity<>("Customer successfuly update", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -166,7 +165,7 @@ public class CustomerController {
 	public ResponseEntity<?> deleteCustomer(@PathVariable String id) {
 		try {
 			Customer customer = customerService.findCustomerById(id);
-			
+
 			customerService.deleteCustomer(id);
 
 			if (customer.getImageId() != null) {
@@ -206,17 +205,24 @@ public class CustomerController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Customer customer) {
 		try {
-			System.out.println(customerService.findCustomerByBk(customer.getUsername()).getPassword());
 			boolean matched = BCrypt.checkpw(customer.getPassword(),
 					customerService.findCustomerByBk(customer.getUsername()).getPassword());
 			System.out.println(matched);
+			
+			String msg;
+			
+			if(matched == true) {
+				msg = "Login success!";
+			} else {
+				msg = "Wrong username/password";
+			}
 
-			return new ResponseEntity<>(matched, HttpStatus.OK);
+			return new ResponseEntity<>(msg, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
+
 	@PatchMapping(value = "/password/{id}")
 	public ResponseEntity<?> updatePassword(@RequestBody UpdatePassword updatePassword, @PathVariable String id) {
 		try {
@@ -230,7 +236,7 @@ public class CustomerController {
 				customer.setPassword(generatedSecuredPasswordHash);
 
 				customerService.updateCustomer(customer);
-				
+
 				return new ResponseEntity<>("Update password success", HttpStatus.OK);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
@@ -239,30 +245,36 @@ public class CustomerController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
+
 	@PatchMapping(value = "/reset")
 	public ResponseEntity<?> resetPassword(@RequestParam String email) {
 		try {
 			Customer customer = customerService.resetPassword(email);
-			
+
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
+
 			customer.setPassword(generatedSecuredPasswordHash);
-			
-			SimpleMailMessage mail = new SimpleMailMessage();
-			// setTo(from, to)
-			mail.setTo("jnat51.jg@gmail.com", email);
 
-			mail.setSubject("Hi " + customer.getName());
-			mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
+			customerService.updateCustomer(customer);
 
-			System.out.println("send...");
+			try {
+				SimpleMailMessage mail = new SimpleMailMessage();
+				// setTo(from, to)
+				mail.setTo("jnat51.jg@gmail.com", email);
 
-			javaMailSender.send(mail);
+				mail.setSubject("Hi " + customer.getName());
+				mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
 
-			System.out.println("sent");
-			
+				System.out.println("send...");
+
+				javaMailSender.send(mail);
+
+				System.out.println("sent");
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to send email");
+			}
+
 			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

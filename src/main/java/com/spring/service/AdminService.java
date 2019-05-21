@@ -92,18 +92,6 @@ public class AdminService {
 		}
 	}
 	
-	public Admin login(String username, String password) throws ErrorException
-	{
-		Admin admin = new Admin();
-		
-		if(adminDao.login(username, password) == null) {
-			throw new ErrorException("Wrong username/password!");
-		}
-		else {
-			return admin;
-		}
-	}
-	
 	public boolean passwordVerification(String password) throws ErrorException
 	{
 		if(adminDao.passwordVerification(password) == false) {

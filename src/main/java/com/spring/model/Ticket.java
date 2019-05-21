@@ -1,13 +1,18 @@
 package com.spring.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -31,8 +36,8 @@ public class Ticket {
 	private String ticketCode;
 	
 	@OneToOne
-	@JoinColumn(name="pic_id", referencedColumnName="id")
-	private Mapping pic;
+	@JoinColumn(name="mapping_id", referencedColumnName="id")
+	private Mapping mapping;
 	
 	@Column(name="ticket_date")
 	private Date ticketDate;
@@ -44,9 +49,12 @@ public class Ticket {
 	@JoinColumn(name="customer_id", referencedColumnName="id")
 	private Customer customer;
 	
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name="status")
 	private Status status;
+	
+	@OneToMany(mappedBy="ticket", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	private List<DetailTicket> details;
 
 	public String getId() {
 		return id;
@@ -64,12 +72,12 @@ public class Ticket {
 		this.ticketCode = ticketCode;
 	}
 
-	public Mapping getPic() {
-		return pic;
+	public Mapping getMapping() {
+		return mapping;
 	}
 
-	public void setPic(Mapping pic) {
-		this.pic = pic;
+	public void setMapping(Mapping mapping) {
+		this.mapping = mapping;
 	}
 
 	public Date getTicketDate() {
@@ -102,5 +110,13 @@ public class Ticket {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public List<DetailTicket> getDetails() {
+		return details;
+	}
+
+	public void setDetails(List<DetailTicket> details) {
+		this.details = details;
 	}
 }

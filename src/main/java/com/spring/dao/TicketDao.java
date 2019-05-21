@@ -97,7 +97,7 @@ public class TicketDao extends ParentDao{
 	
 	public DetailTicket findDetailTicketByBk (String ticketId, Date messageDate) {
 		try {
-			String query = "from Ticket where ticketId = :ticketid AND messageDate = :messagedate";
+			String query = "from DetailTicket where ticket.id = :ticketid AND messageDate = :messagedate";
 
 			DetailTicket detailTicket = (DetailTicket) this.entityManager.createQuery(query)
 					.setParameter("ticketid", ticketId)

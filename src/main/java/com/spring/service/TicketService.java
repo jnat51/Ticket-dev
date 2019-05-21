@@ -77,7 +77,7 @@ public class TicketService {
 			throw new ServiceException("Ticket already exist.");
 		}
 		if (ticketDao.isDetailTicketBkExist(detailTicket.getTicket().getId(), detailTicket.getMessageDate()) == true) {
-			throw new ServiceException("Ticket header id already exist!");
+			throw new ServiceException("Ticket detail id already exist!");
 		}
 		ticketDao.saveDetailTicket(detailTicket);
 		return "New ticket successfully added";

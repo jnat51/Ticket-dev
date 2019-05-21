@@ -222,7 +222,6 @@ public class AdminController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Admin admin) {
 		try {
-			adminService.login(admin.getUsername(), admin.getPassword());
 			boolean matched = BCrypt.checkpw(admin.getPassword(),
 					adminService.findByBk(admin.getUsername()).getPassword());
 			System.out.println(matched);

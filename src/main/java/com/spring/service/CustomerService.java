@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CustomerDao;
 import com.spring.exception.ErrorException;
+import com.spring.model.Admin;
 import com.spring.model.Agent;
 import com.spring.model.Customer;
 
@@ -76,6 +77,18 @@ public class CustomerService {
 		}
 		else {
 			return true;
+		}
+	}
+	
+	public Customer login(String username) throws ErrorException
+	{
+		Customer customer = new Customer();
+		
+		if(customerDao.findCustomerByBk(username) == null) {
+			throw new ErrorException("Wrong username/password!");
+		}
+		else {
+			return customer;
 		}
 	}
 	

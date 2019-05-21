@@ -12,7 +12,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.model.Admin;
 import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
@@ -208,12 +206,19 @@ public class AgentController {
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Agent agent) {
 		try {
-			System.out.println(agentService.findByBk(agent.getUsername()).getPassword());
 			boolean matched = BCrypt.checkpw(agent.getPassword(),
 					agentService.findByBk(agent.getUsername()).getPassword());
 			System.out.println(matched);
+			
+			String msg;
+			
+			if(matched == true) {
+				msg = "Login success!";
+			} else {
+				msg = "Wrong username/password";
+			}
 
-			return new ResponseEntity<>(matched, HttpStatus.OK);
+			return new ResponseEntity<>(msg, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

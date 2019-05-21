@@ -5,11 +5,9 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -28,18 +26,13 @@ public class DetailTicket {
 	@JoinColumn(name="ticket_id", referencedColumnName="id")
 	private Ticket ticket;
 	
-	@OneToOne
-	@JoinColumn(name="customer_id", referencedColumnName="id")
-	private Customer customer;
-	
-	@OneToOne
-	@JoinColumn(name="agent_id", referencedColumnName="id")
-	private Agent agent;
+	@Column(name="sender")
+	private String sender;
 	
 	@Column(name="message")
 	private String message;
 	
-	@Column(name="messaage_date")
+	@Column(name="message_date")
 	private Date messageDate;
 
 	public String getId() {
@@ -58,20 +51,12 @@ public class DetailTicket {
 		this.ticket = ticket;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public String getSender() {
+		return sender;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
-	public Agent getAgent() {
-		return agent;
-	}
-
-	public void setAgent(Agent agent) {
-		this.agent = agent;
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
 
 	public String getMessage() {

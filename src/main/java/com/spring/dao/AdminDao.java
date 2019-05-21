@@ -7,9 +7,9 @@ import com.spring.model.Admin;
 @Repository
 public class AdminDao extends ParentDao {
 	public void save(Admin admin) {
-		System.out.println("insert admin");
+		System.out.println("merge admin");
 		super.entityManager.merge(admin);
-		System.out.println("insert success");
+		System.out.println("merge success");
 	}
 
 	public void delete(Admin admin) {
@@ -64,23 +64,6 @@ public class AdminDao extends ParentDao {
 			return false;
 		} else {
 			return true;
-		}
-	}
-
-	public Admin login(String username, String password) {
-		Admin admin = new Admin();
-		try {
-			String query = "from Admin where username = :username";
-
-			admin = (Admin) super.entityManager.createQuery(query).setParameter("username", username).getSingleResult();
-
-			System.out.println("Welcome " + admin.getName());
-
-			return admin;
-		} catch (Exception e) {
-			System.out.println("Wrong username/password.");
-
-			return null;
 		}
 	}
 
