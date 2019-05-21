@@ -43,7 +43,7 @@ public class TicketController {
 			System.out.println(ticket.getTicketCode());
 			System.out.println(ticket.getTicketDate());
 			
-			System.out.println(ticket.getDetails().size());
+			System.out.println(ticket.getDetails().size()); 
 			
 			ticketService.insertTicket(ticket);
 			

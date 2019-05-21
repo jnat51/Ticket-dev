@@ -65,7 +65,7 @@ public class CustomerController {
 	public ResponseEntity<?> insertCustomer(@RequestParam(name = "pp", required = false) MultipartFile image,
 			@ModelAttribute Customer customer) {
 		try {
-			Customer cust = new Customer();
+			Customer cust = customerService.findCustomerById(customer.getId());
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
