@@ -1,5 +1,6 @@
 package com.spring.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -7,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.model.Admin;
 import com.spring.model.Agent;
 
 @Repository
@@ -178,6 +180,21 @@ public class AgentDao extends ParentDao{
 					.getSingleResult();
 			
 			return agent;
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public List<Agent> findAll (){
+		try {
+			String query = "from Agent";
+			
+			List<Agent> agents = new ArrayList<Agent>();
+			
+			agents = super.entityManager.createQuery(query).getResultList();
+
+			return agents;
 		}
 		catch (Exception e) {
 			return null;

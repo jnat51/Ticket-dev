@@ -120,7 +120,6 @@ public class CompanyController {
 			
 			List<Customer> customers = new ArrayList<Customer>();
 			Company comp = new Company();
-			comp.setId(id);
 			for (Customer cust : company.getCustomers()) {
 				cust.setCompany(comp);
 				customers.add(cust);
@@ -133,13 +132,48 @@ public class CompanyController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@GetMapping(value = "/")
+	public ResponseEntity<?> getAllCustomer() {
+		try {
+			System.out.println("find all");
+			
+			List<Company> company = companyService.findAll();
+			
+			System.out.println(company.size());
+			
+			Company comp = new Company();
+			
+			for (Company co : company) {
+				List<Customer> customers = new ArrayList<Customer>();
+				for (Customer cust : co.getCustomers()) {
+					cust.setCompany(comp);
+					customers.add(cust);
+				}
+				co.setCustomers(customers);
+			}
+
+			return new ResponseEntity<>(company, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 
 	@GetMapping(value = "/code/{companyCode}")
 	public ResponseEntity<?> getCompanyByBk(@PathVariable String companyCode) {
 		try {
-			Company comp = companyService.findCompanyByBk(companyCode);
+			Company company = companyService.findCompanyByBk(companyCode);
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			Company comp = new Company();
+			for (Customer cust : company.getCustomers()) {
+				cust.setCompany(comp);
+				customers.add(cust);
+			}
+			
+			company.setCustomers(customers);
 
-			return new ResponseEntity<>(comp, HttpStatus.OK);
+			return new ResponseEntity<>(company, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

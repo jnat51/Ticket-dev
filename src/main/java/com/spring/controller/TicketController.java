@@ -28,13 +28,6 @@ public class TicketController {
 	@Autowired
 	TicketService ticketService;
 
-	/***
-	 * Debug ticket controller
-	 * 
-	 * @param ticket
-	 * @return
-	 */
-
 	// ======================================*Header Ticket*===========================================
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {

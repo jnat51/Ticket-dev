@@ -1,9 +1,11 @@
 package com.spring.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.model.Admin;
 import com.spring.model.Customer;
 
 @Repository
@@ -113,6 +115,21 @@ public class CustomerDao extends ParentDao{
 					.getSingleResult();
 			
 			return customer;
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public List<Customer> findAll (){
+		try {
+			String query = "from Customer";
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			
+			customers = super.entityManager.createQuery(query).getResultList();
+
+			return customers;
 		}
 		catch (Exception e) {
 			return null;

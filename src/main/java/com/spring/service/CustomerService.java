@@ -1,5 +1,8 @@
 package com.spring.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +92,22 @@ public class CustomerService {
 		}
 		else {
 			return customer;
+		}
+	}
+	
+	public List<Customer> findAll ()
+	{
+		List<Customer> customers = new ArrayList<Customer>();
+		
+		if(customerDao.findAll().size() > 0)
+		{
+			customers = customerDao.findAll();
+			
+			return customers;
+		}
+		else
+		{
+			return customers;
 		}
 	}
 	

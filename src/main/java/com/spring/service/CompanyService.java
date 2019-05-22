@@ -1,11 +1,15 @@
 package com.spring.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.CompanyDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.Company;
+import com.spring.model.Customer;
 
 @Service
 public class CompanyService {
@@ -62,6 +66,22 @@ public class CompanyService {
 			return companyDao.findCompanyByBk(companyCode);
 		} else {
 			return comp;
+		}
+	}
+	
+	public List<Company> findAll ()
+	{
+		List<Company> company = new ArrayList<Company>();
+		
+		if(companyDao.findAll().size() > 0)
+		{
+			company = companyDao.findAll();
+			
+			return company;
+		}
+		else
+		{
+			return company;
 		}
 	}
 }

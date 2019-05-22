@@ -47,14 +47,6 @@ public class CompanyDao extends ParentDao{
 
 			company = (Company) super.entityManager.createQuery(query).setParameter("companycode", companyCode)
 					.getSingleResult();
-			
-			List<Customer> customers = new ArrayList<Customer>();
-			Company co = new Company();
-			for (Customer cust : company.getCustomers()) {
-				cust.setCompany(co);
-				customers.add(cust);
-			}
-			company.setCustomers(customers);
 
 			return company;
 		} catch (Exception e) {
@@ -75,6 +67,21 @@ public class CompanyDao extends ParentDao{
 			return false;
 		} else {
 			return true;
+		}
+	}
+	
+	public List<Company> findAll (){
+		try {
+			String query = "from Company";
+			
+			List<Company> Company = new ArrayList<Company>();
+			
+			Company = super.entityManager.createQuery(query).getResultList();
+
+			return Company;
+		}
+		catch (Exception e) {
+			return null;
 		}
 	}
 }

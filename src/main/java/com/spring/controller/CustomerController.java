@@ -2,7 +2,9 @@ package com.spring.controller;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
@@ -185,7 +188,34 @@ public class CustomerController {
 		try {
 			Customer cust = customerService.findCustomerById(id);
 
+			List<Customer> customers = new ArrayList<Customer>();
+
+			Company company = cust.getCompany();
+			company.setCustomers(customers);
+
 			return new ResponseEntity<>(cust, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	@GetMapping(value = "/")
+	public ResponseEntity<?> getAllCustomer() {
+		try {
+			System.out.println("find all");
+
+			List<Customer> customers = customerService.findAll();
+
+			System.out.println(customers.size());
+
+			for (Customer cust : customers) {
+				Company comp = cust.getCompany();
+				comp.setCustomers(new ArrayList<Customer>());
+
+				cust.setCompany(comp);
+			}
+
+			return new ResponseEntity<>(customers, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
@@ -195,6 +225,11 @@ public class CustomerController {
 	public ResponseEntity<?> getCustomerByBk(@PathVariable String username) {
 		try {
 			Customer cust = customerService.findCustomerByBk(username);
+
+			List<Customer> customers = new ArrayList<Customer>();
+
+			Company company = cust.getCompany();
+			company.setCustomers(customers);
 
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} catch (Exception e) {
@@ -208,10 +243,10 @@ public class CustomerController {
 			boolean matched = BCrypt.checkpw(customer.getPassword(),
 					customerService.findCustomerByBk(customer.getUsername()).getPassword());
 			System.out.println(matched);
-			
+
 			String msg;
-			
-			if(matched == true) {
+
+			if (matched == true) {
 				msg = "Login success!";
 			} else {
 				msg = "Wrong username/password";

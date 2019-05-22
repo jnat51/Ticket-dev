@@ -61,6 +61,22 @@ public class AgentService {
 		agentDao.save(agent);
 	}
 	
+	public List<Agent> findAll ()
+	{
+		List<Agent> agents = new ArrayList<Agent>();
+		
+		if(agentDao.findAll().size() > 0)
+		{
+			agents = agentDao.findAll();
+			
+			return agents;
+		}
+		else
+		{
+			return agents;
+		}
+	}
+	
 	public Agent findByBk(String username)
 	{
 		Agent agent = new Agent();

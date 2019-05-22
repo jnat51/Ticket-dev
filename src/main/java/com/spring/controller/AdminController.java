@@ -3,6 +3,7 @@ package com.spring.controller;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +80,18 @@ public class AdminController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
+	@GetMapping(value = "/")
+	public ResponseEntity<?> getAllAdmin(){
+		try {
+			List<Admin> admins = adminService.findAll();
+			
+			return new ResponseEntity<>(admins, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	@PostMapping(value = "/")
 	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin,
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {

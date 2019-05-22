@@ -1,5 +1,8 @@
 package com.spring.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +78,22 @@ public class AdminService {
 		else
 		{
 			return admin;
+		}
+	}
+	
+	public List<Admin> findAll ()
+	{
+		List<Admin> admins = new ArrayList<Admin>();
+		
+		if(adminDao.findAll().size() > 0)
+		{
+			admins = adminDao.findAll();
+			
+			return admins;
+		}
+		else
+		{
+			return admins;
 		}
 	}
 	

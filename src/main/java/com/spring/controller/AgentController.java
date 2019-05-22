@@ -3,6 +3,7 @@ package com.spring.controller;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.model.Admin;
 import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
@@ -183,6 +185,17 @@ public class AgentController {
 			return new ResponseEntity<>("Update success", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/")
+	public ResponseEntity<?> getAllAgent(){
+		try {
+			List<Agent> agents = agentService.findAll();
+			
+			return new ResponseEntity<>(agents, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 

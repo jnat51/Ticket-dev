@@ -1,5 +1,8 @@
 package com.spring.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.spring.model.Admin;
@@ -25,6 +28,21 @@ public class AdminDao extends ParentDao {
 
 			return admin;
 		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public List<Admin> findAll (){
+		try {
+			String query = "from Admin";
+			
+			List<Admin> admins = new ArrayList<Admin>();
+			
+			admins = super.entityManager.createQuery(query).getResultList();
+
+			return admins;
+		}
+		catch (Exception e) {
 			return null;
 		}
 	}
