@@ -32,6 +32,9 @@ public class TicketController {
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
 		try {
+			Date date = new Date();
+			ticket.setTicketDate(date);
+			
 			System.out.println("insert ticket:");
 			System.out.println(ticket.getTicketCode());
 			System.out.println(ticket.getTicketDate());
