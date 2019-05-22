@@ -1,6 +1,6 @@
 package com.spring.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +115,7 @@ public class TicketService {
 		}
 	}
 
-	public DetailTicket findDetailTicketByBk(String ticketId, Date messageDate) {
+	public DetailTicket findDetailTicketByBk(String ticketId, LocalDateTime messageDate) {
 		DetailTicket detailTicket = new DetailTicket();
 
 		if (ticketDao.findDetailTicketByBk(ticketId, messageDate) != null) {

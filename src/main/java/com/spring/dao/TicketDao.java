@@ -1,6 +1,6 @@
 package com.spring.dao;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,7 +95,7 @@ public class TicketDao extends ParentDao{
 		}
 	}
 	
-	public DetailTicket findDetailTicketByBk (String ticketId, Date messageDate) {
+	public DetailTicket findDetailTicketByBk (String ticketId, LocalDateTime messageDate) {
 		try {
 			String query = "from DetailTicket where ticket.id = :ticketid AND messageDate = :messagedate";
 
@@ -122,7 +122,7 @@ public class TicketDao extends ParentDao{
 		}
 	}
 	
-	public boolean isDetailTicketBkExist(String ticketId, Date messageDate)
+	public boolean isDetailTicketBkExist(String ticketId, LocalDateTime messageDate)
 	{
 		if(findDetailTicketByBk(ticketId, messageDate) == null)
 		{

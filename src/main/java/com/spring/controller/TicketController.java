@@ -1,5 +1,6 @@
 package com.spring.controller;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,12 @@ public class TicketController {
 	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
 		try {
 			Date date = new Date();
-			ticket.setTicketDate(date);
+			
+			Date dt = new Date();
+			LocalDateTime localDate = LocalDateTime.now();
+			System.out.println("test");
+			System.out.println(dt);
+			System.out.println(localDate);
 			
 			System.out.println("insert ticket:");
 			System.out.println(ticket.getTicketCode());
@@ -42,6 +48,8 @@ public class TicketController {
 			System.out.println(ticket.getDetails().size()); 
 			
 			ticketService.insertTicket(ticket);
+			
+			
 			
 			Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
 			

@@ -2,6 +2,7 @@ package com.spring.controller;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +80,7 @@ public class CustomerController {
 			cust.setPosition(customer.getPosition());
 			cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
 			System.out.println(customer.getCompany().getId());
-
+			
 			if (image != null) {
 				Image img = new Image();
 				byte[] data = image.getBytes();

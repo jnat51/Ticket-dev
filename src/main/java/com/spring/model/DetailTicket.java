@@ -1,6 +1,6 @@
 package com.spring.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +33,7 @@ public class DetailTicket {
 	private String message;
 	
 	@Column(name="message_date")
-	private Date messageDate;
+	private LocalDateTime messageDate;
 
 	public String getId() {
 		return id;
@@ -67,11 +67,11 @@ public class DetailTicket {
 		this.message = message;
 	}
 
-	public Date getMessageDate() {
+	public LocalDateTime getMessageDate() {
 		return messageDate;
 	}
 
-	public void setMessageDate(Date messageDate) {
+	public void setMessageDate(LocalDateTime messageDate) {
 		this.messageDate = messageDate;
 	}
 }
