@@ -194,6 +194,8 @@ public class CustomerController {
 
 			Company company = cust.getCompany();
 			company.setCustomers(customers);
+			
+			cust.setCompany(company);
 
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} catch (Exception e) {

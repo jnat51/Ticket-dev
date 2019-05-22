@@ -1,7 +1,10 @@
 package com.spring.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.model.Company;
+import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.Ticket;
 import com.spring.service.TicketService;
@@ -34,12 +39,8 @@ public class TicketController {
 	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
 		try {
 			Date date = new Date();
-			
-			Date dt = new Date();
-			LocalDateTime localDate = LocalDateTime.now();
-			System.out.println("test");
-			System.out.println(dt);
-			System.out.println(localDate);
+						
+			ticket.setTicketDate(date);
 			
 			System.out.println("insert ticket:");
 			System.out.println(ticket.getTicketCode());
@@ -116,8 +117,18 @@ public class TicketController {
 	public ResponseEntity<?> findDetailTicketById(@PathVariable String id) {
 		try {
 			DetailTicket dtlticket = ticketService.findDetailTicketById(id);
+			
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
 
-			return new ResponseEntity<>(dtlticket, HttpStatus.OK);
+			Ticket ticket = dtlticket.getTicket();
+			
+			ticket.setDetails(details);
+			
+			dtlticket.setTicket(ticket);
+			
+			DetailTicket detail = dtlticket;
+
+			return new ResponseEntity<>(detail, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -145,12 +156,31 @@ public class TicketController {
 		}
 	}
 
-	@GetMapping(value = "/dtl/{ticketCode}/{messageDate}")
-	public ResponseEntity<?> findDetailTicketByBk(@PathVariable String ticketCode, @PathVariable Date messageDate) {
+	@GetMapping(value = "/dtl/{ticketId}/{messageDate}")
+	public ResponseEntity<?> findDetailTicketByBk(@PathVariable String ticketId, @PathVariable String messageDate) {
 		try {
-			Ticket ticket = ticketService.findTicketByBk(ticketCode);
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			StringBuilder sb = new StringBuilder();
+			String[] date = messageDate.split("\\-");
+			
+			System.out.println(date.length);
+			
+			sb.append(date[0] + "-" + date[1] + "-" + date[2]+ " " + date[3] +":"+date[4]+":"+date[5]);
+			
+			System.out.println(sb.toString());
+			
+			LocalDateTime dateTime = LocalDateTime.parse(sb.toString(), format);
+			
+			DetailTicket detailTicket = ticketService.findDetailTicketByBk(ticketId,dateTime);
+			
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
 
-			return new ResponseEntity<>(ticket, HttpStatus.OK);
+			Ticket ticket = detailTicket.getTicket();
+			ticket.setDetails(details);
+			
+			detailTicket.setTicket(ticket);
+
+			return new ResponseEntity<>(detailTicket, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
