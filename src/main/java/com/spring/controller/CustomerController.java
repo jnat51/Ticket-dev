@@ -126,7 +126,7 @@ public class CustomerController {
 	public ResponseEntity<?> updateCustomer(@RequestParam(name = "pp", required = false) MultipartFile image,
 			@ModelAttribute Customer customer) {
 		try {
-			Customer cust = new Customer();
+			Customer cust = customerService.findCustomerById(customer.getId());
 			String pass = customer.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
@@ -150,13 +150,14 @@ public class CustomerController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 
-				System.out.println(cust.getImageId());
+				if(cust.getImageId() != null) {
 				imageService.delete(cust.getImageId());
+				}
 				imageService.insert(img);
 				cust.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 
-			customerService.updateCustomer(customer);
+			customerService.updateCustomer(cust);
 
 			return new ResponseEntity<>("Customer successfuly update", HttpStatus.OK);
 		} catch (Exception e) {

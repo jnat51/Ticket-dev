@@ -83,7 +83,7 @@ public class TicketService {
 		return "New ticket successfully added";
 	}
 	
-	public void updateTicket(DetailTicket detailTicket) throws ErrorException {
+	public void updateDetailTicket(DetailTicket detailTicket) throws ErrorException {
 		if (ticketDao.isTicketIdExist(detailTicket.getId()) == false) {
 			throw new ServiceException("Detail ticket not found!");
 		}

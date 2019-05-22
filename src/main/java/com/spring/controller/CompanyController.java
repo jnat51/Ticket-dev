@@ -134,7 +134,7 @@ public class CompanyController {
 	}
 	
 	@GetMapping(value = "/")
-	public ResponseEntity<?> getAllCustomer() {
+	public ResponseEntity<?> getAllCompany() {
 		try {
 			System.out.println("find all");
 			

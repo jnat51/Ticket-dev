@@ -111,6 +111,28 @@ public class TicketController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@PostMapping(value = "/dtl/")
+	public ResponseEntity<?> insertDetailTicket(@RequestBody DetailTicket detailTicket){
+		try {
+			ticketService.insertDetailTicket(detailTicket);
+			
+			return new ResponseEntity<>("Insert detail ticket success", HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PutMapping(value = "/dtl/")
+	public ResponseEntity<?> updateDetailTicket(@RequestBody DetailTicket detailTicket){
+		try {
+			ticketService.updateDetailTicket(detailTicket);
+			
+			return new ResponseEntity<>("Insert detail ticket success", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@GetMapping(value = "/dtl/{ticketCode}/{messageDate}")
 	public ResponseEntity<?> findDetailTicketByBk(@PathVariable String ticketCode, @PathVariable Date messageDate) {

@@ -175,7 +175,9 @@ public class AgentController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 				
+				if(ag.getImageId() != null) {
 				imageService.delete(ag.getImageId());
+				}
 				imageService.insert(img);
 				ag.setImageId(imageService.findByBk(fileName, data).getId());
 			}
