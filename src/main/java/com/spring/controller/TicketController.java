@@ -149,14 +149,6 @@ public class TicketController {
 	public ResponseEntity<?> findDetailTicketById(@PathVariable String id) {
 		try {
 			DetailTicket dtlticket = ticketService.findDetailTicketById(id);
-			
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
-
-			Ticket ticket = dtlticket.getTicket();
-			
-			ticket.setDetails(null);
-			
-			dtlticket.setTicket(ticket);
 
 			return new ResponseEntity<>(dtlticket, HttpStatus.OK);
 		} catch (Exception e) {

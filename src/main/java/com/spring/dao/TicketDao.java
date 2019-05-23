@@ -1,10 +1,14 @@
 package com.spring.dao;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.model.Company;
+import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.Ticket;
 
@@ -27,7 +31,21 @@ public class TicketDao extends ParentDao{
 			Ticket ticket = (Ticket) this.entityManager.createQuery(query)
 					.setParameter("id", id)
 					.getSingleResult();
-
+			
+			Customer customer = ticket.getCustomer();
+			Company company = customer.getCompany();
+			
+			company.setCustomers(new ArrayList<Customer>());
+			
+			List<DetailTicket> dtl = new ArrayList<DetailTicket>();
+			Ticket tick = new Ticket();
+			for(DetailTicket details : ticket.getDetails()) {
+				details.setTicket(tick);
+				dtl.add(details);
+			}
+			
+			super.entityManager.clear();
+			
 			return ticket;
 		} catch (Exception e) {
 			return null;
@@ -88,6 +106,19 @@ public class TicketDao extends ParentDao{
 			DetailTicket detailTicket = (DetailTicket) this.entityManager.createQuery(query)
 					.setParameter("id", id)
 					.getSingleResult();
+			
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			
+			Ticket ticket = detailTicket.getTicket();
+			ticket.setDetails(details);
+			
+			Customer customer = ticket.getCustomer();
+			Company company = customer.getCompany();
+			company.setCustomers(new ArrayList<Customer>());
+			
+			detailTicket.setTicket(ticket);
+			
+			super.entityManager.clear();
 
 			return detailTicket;
 		} catch (Exception e) {

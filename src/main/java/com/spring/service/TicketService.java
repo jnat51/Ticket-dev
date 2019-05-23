@@ -1,6 +1,8 @@
 package com.spring.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +111,9 @@ public class TicketService {
 		DetailTicket detailTicket = new DetailTicket();
 
 		if (ticketDao.findDetailTicketById(id) != null) {
-			return ticketDao.findDetailTicketById(id);
+			detailTicket = ticketDao.findDetailTicketById(id);
+			
+			return detailTicket;
 		} else {
 			return detailTicket;
 		}

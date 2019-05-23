@@ -34,8 +34,8 @@ public class Ticket {
 	private String ticketCode;
 	
 	@OneToOne
-	@JoinColumn(name="mapping_id", referencedColumnName="id")
-	private Mapping mapping;
+	@JoinColumn(name="agent_id", referencedColumnName="id")
+	private Agent agent;
 	
 	@Column(name="ticket_date")
 	private Date ticketDate;
@@ -70,12 +70,12 @@ public class Ticket {
 		this.ticketCode = ticketCode;
 	}
 
-	public Mapping getMapping() {
-		return mapping;
+	public Agent getAgent() {
+		return agent;
 	}
 
-	public void setMapping(Mapping mapping) {
-		this.mapping = mapping;
+	public void setAgent(Agent agent) {
+		this.agent = agent;
 	}
 
 	public Date getTicketDate() {
