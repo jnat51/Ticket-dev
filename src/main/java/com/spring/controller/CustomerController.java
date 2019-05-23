@@ -101,8 +101,8 @@ public class CustomerController {
 				cust.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 
-			customerService.updateCustomer(cust);
-
+			customerService.insertCustomer(cust);
+			try {
 			SimpleMailMessage email = new SimpleMailMessage();
 			// setTo(from, to)
 			email.setTo("jnat51.jg@gmail.com", customer.getEmail());
@@ -118,6 +118,9 @@ public class CustomerController {
 			System.out.println("sent");
 
 			return new ResponseEntity<>("Customer successfuly updated", HttpStatus.CREATED);
+			} catch (Exception e) {
+				return new ResponseEntity<>("Failed to send email", HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

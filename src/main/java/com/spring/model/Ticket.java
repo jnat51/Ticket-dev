@@ -19,13 +19,11 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.spring.enumeration.Status.Stat;
+
 @Entity
 @Table(name="tbl_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"ticket_code"}))
-public class Ticket {
-	public enum Status{
-		open,close,reopen
-	}
-	
+public class Ticket {	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "UUID")
@@ -51,7 +49,7 @@ public class Ticket {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="status")
-	private Status status;
+	private Stat status;
 	
 	@OneToMany(mappedBy="ticket", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
 	private List<DetailTicket> details;
@@ -104,11 +102,11 @@ public class Ticket {
 		this.customer = customer;
 	}
 
-	public Status getStatus() {
+	public Stat getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(Stat status) {
 		this.status = status;
 	}
 
