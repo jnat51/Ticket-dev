@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.type.LocalDateTimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,7 +101,7 @@ public class TicketController {
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
 			for(DetailTicket detail: ticket.getDetails()) {
-				detail.setTicket(tick);
+				detail.setTicket(null);
 				details.add(detail);
 			}
 			
@@ -120,7 +121,7 @@ public class TicketController {
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
 			for(DetailTicket detail: ticket.getDetails()) {
-				detail.setTicket(tick);
+				detail.setTicket(null);
 				details.add(detail);
 			}
 
@@ -145,16 +146,6 @@ public class TicketController {
 	}
 
 	// ======================================*Detail Ticket*===========================================
-	@GetMapping(value = "/dtl/{id}")
-	public ResponseEntity<?> findDetailTicketById(@PathVariable String id) {
-		try {
-			DetailTicket dtlticket = ticketService.findDetailTicketById(id);
-
-			return new ResponseEntity<>(dtlticket, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
 	
 	@PostMapping(value = "/dtl/")
 	public ResponseEntity<?> insertDetailTicket(@RequestBody DetailTicket detailTicket){
@@ -177,6 +168,19 @@ public class TicketController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping(value = "/dtl/{id}")
+	public ResponseEntity<?> findDetailTicketById(@PathVariable String id) {
+		try {
+			DetailTicket dtlticket = ticketService.findDetailTicketById(id);
+			
+			System.out.println(dtlticket.getMessageDate());
+
+			return new ResponseEntity<>(dtlticket, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@GetMapping(value = "/dtl/{ticketId}/{messageDate}")
 	public ResponseEntity<?> findDetailTicketByBk(@PathVariable String ticketId, @PathVariable String messageDate) {
@@ -194,13 +198,6 @@ public class TicketController {
 			LocalDateTime dateTime = LocalDateTime.parse(sb.toString(), format);
 			
 			DetailTicket detailTicket = ticketService.findDetailTicketByBk(ticketId,dateTime);
-			
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
-
-			Ticket ticket = detailTicket.getTicket();
-			ticket.setDetails(details);
-			
-			detailTicket.setTicket(ticket);
 
 			return new ResponseEntity<>(detailTicket, HttpStatus.OK);
 		} catch (Exception e) {

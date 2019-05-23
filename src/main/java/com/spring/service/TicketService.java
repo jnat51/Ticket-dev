@@ -123,7 +123,9 @@ public class TicketService {
 		DetailTicket detailTicket = new DetailTicket();
 
 		if (ticketDao.findDetailTicketByBk(ticketId, messageDate) != null) {
-			return ticketDao.findDetailTicketByBk(ticketId, messageDate);
+			detailTicket = ticketDao.findDetailTicketByBk(ticketId, messageDate);
+			
+			return detailTicket;
 		} else {
 			return detailTicket;
 		}
