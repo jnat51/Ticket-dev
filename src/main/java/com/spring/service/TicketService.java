@@ -1,8 +1,6 @@
 package com.spring.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.TicketDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.DetailTicket;
+import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
 
 @Service
@@ -76,7 +75,7 @@ public class TicketService {
 	//===============================*Detail Ticket*==================================
 	public String insertDetailTicket(DetailTicket detailTicket) throws ErrorException{
 		if (ticketDao.isDetailTicketIdExist(detailTicket.getId()) == true) {
-			throw new ServiceException("Ticket already exist.");
+			throw new ServiceException("Ticket detail already exist.");
 		}
 		if (ticketDao.isDetailTicketBkExist(detailTicket.getTicket().getId(), detailTicket.getMessageDate()) == true) {
 			throw new ServiceException("Ticket detail id already exist!");
@@ -87,13 +86,13 @@ public class TicketService {
 	
 	public void updateDetailTicket(DetailTicket detailTicket) throws ErrorException {
 		if (ticketDao.isTicketIdExist(detailTicket.getId()) == false) {
-			throw new ServiceException("Detail ticket not found!");
+			throw new ServiceException("Ticket detail not found!");
 		}
 		if (ticketDao.isTicketBkExist(detailTicket.getTicket().getId()) == false) {
-			throw new ServiceException("Detail ticket not found!");
+			throw new ServiceException("Ticket detail not found!");
 		}
 		if (!detailTicket.getTicket().getId().equals(ticketDao.findDetailTicketById(detailTicket.getId()).getTicket().getId())) {
-			throw new ServiceException("Detail ticket cannot be changed!");
+			throw new ServiceException("Ticket detail header cannot be changed!");
 		}
 
 		ticketDao.saveDetailTicket(detailTicket);
@@ -129,5 +128,31 @@ public class TicketService {
 		} else {
 			return detailTicket;
 		}
+	}
+	
+	//===============================*Detail Ticket*==================================
+	public String insertSubDetailTicket(SubDetailTicket subDetailTicket) throws ErrorException{
+		if (ticketDao.isSubDetailTicketIdExist(subDetailTicket.getId()) == true) {
+			throw new ServiceException("Ticket already exist.");
+		}
+		if (ticketDao.isSubDetailTicketBkExist(subDetailTicket.getTicket().getId(), subDetailTicket.getFileName()) == true) {
+			throw new ServiceException("Ticket detail id already exist!");
+		}
+		ticketDao.saveSubDetailTicket(subDetailTicket);
+		return "New ticket successfully added";
+	}
+	
+	public void updateSubDetailTicket(SubDetailTicket subDetailTicket) throws ErrorException {
+		if (ticketDao.isTicketIdExist(subDetailTicket.getId()) == false) {
+			throw new ServiceException("Detail ticket not found!");
+		}
+		if (ticketDao.isTicketBkExist(subDetailTicket.getTicket().getId()) == false) {
+			throw new ServiceException("Detail ticket not found!");
+		}
+		if (!subDetailTicket.getTicket().getId().equals(ticketDao.findDetailTicketById(subDetailTicket.getId()).getTicket().getId())) {
+			throw new ServiceException("Detail ticket cannot be changed!");
+		}
+
+		ticketDao.saveSubDetailTicket(subDetailTicket);
 	}
 }

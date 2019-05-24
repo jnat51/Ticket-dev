@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
+import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
 
 @Repository
@@ -37,11 +38,11 @@ public class TicketDao extends ParentDao{
 			
 			company.setCustomers(new ArrayList<Customer>());
 			
-			List<DetailTicket> dtl = new ArrayList<DetailTicket>();
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
-			for(DetailTicket details : ticket.getDetails()) {
-				details.setTicket(tick);
-				dtl.add(details);
+			for(DetailTicket detail : ticket.getDetails()) {
+				detail.setTicket(tick);
+				details.add(detail);
 			}
 			
 			super.entityManager.clear();
@@ -105,12 +106,12 @@ public class TicketDao extends ParentDao{
 	}
 	
 	//====================================*Detail Ticket*========================================
-	public void saveDetailTicket(DetailTicket DetailTicket) {
-		super.entityManager.merge(DetailTicket);
+	public void saveDetailTicket(DetailTicket detailTicket) {
+		super.entityManager.merge(detailTicket);
 	}
 	
-	public void removeDetailTicket(DetailTicket DetailTicket) {
-		super.entityManager.remove(DetailTicket);
+	public void removeDetailTicket(DetailTicket detailTicket) {
+		super.entityManager.remove(detailTicket);
 	}
 	
 	public DetailTicket findDetailTicketById (String id) {
@@ -183,6 +184,68 @@ public class TicketDao extends ParentDao{
 	public boolean isDetailTicketBkExist(String ticketId, LocalDateTime messageDate)
 	{
 		if(findDetailTicketByBk(ticketId, messageDate) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	//====================================*Sub Detail Ticket*========================================
+	public void saveSubDetailTicket(SubDetailTicket subDetailTicket) {
+		super.entityManager.merge(subDetailTicket);
+	}
+	
+	public void removeSubDetailTicket(SubDetailTicket subDetailTicket) {
+		super.entityManager.remove(subDetailTicket);
+	} 	
+	
+	public SubDetailTicket findSubDetailTicketById (String id) {
+		try {
+			String query = "from SubDetailTicket where id = :id";
+
+			SubDetailTicket subDetailTicket = (SubDetailTicket) this.entityManager.createQuery(query)
+					.setParameter("id", id)
+					.getSingleResult();
+
+			return subDetailTicket;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public SubDetailTicket findSubDetailTicketByBk (String detailId, String fileName) {
+		try {
+			String query = "FROM SubDetailTicket WHERE detailId = :detailid AND fileName = :filename";
+
+			SubDetailTicket subDetailTicket = (SubDetailTicket) this.entityManager.createQuery(query)
+					.setParameter("detailid", detailId)
+					.setParameter("filename", fileName)
+					.getSingleResult();
+
+			return subDetailTicket;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public boolean isSubDetailTicketIdExist(String id)
+	{
+		if(findSubDetailTicketById(id) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public boolean isSubDetailTicketBkExist(String detailId, String fileName)
+	{
+		if(findSubDetailTicketByBk(detailId, fileName) == null)
 		{
 			return false;
 		}
