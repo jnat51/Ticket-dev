@@ -12,7 +12,7 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="tbl_subdtl_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"detail_ticket_id, file_name"}))
+@Table(name="tbl_subdtl_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"detail_ticket_id", "file_name"}))
 public class SubDetailTicket {
 	@Id
 	@Column(name = "id")
@@ -21,7 +21,7 @@ public class SubDetailTicket {
 	private String id;
 	
 	@Column(name = "detail_ticket_id")
-	private Ticket ticket;
+	private String detailId;
 	
 	@Column(name = "file_name")
 	private String fileName;
@@ -40,12 +40,12 @@ public class SubDetailTicket {
 		this.id = id;
 	}
 
-	public Ticket getTicket() {
-		return ticket;
+	public String getDetailId() {
+		return detailId;
 	}
 
-	public void setTicket(Ticket ticket) {
-		this.ticket = ticket;
+	public void setDetailId(String detailId) {
+		this.detailId = detailId;
 	}
 
 	public String getFileName() {

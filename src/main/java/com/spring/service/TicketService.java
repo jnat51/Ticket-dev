@@ -85,10 +85,10 @@ public class TicketService {
 	}
 	
 	public void updateDetailTicket(DetailTicket detailTicket) throws ErrorException {
-		if (ticketDao.isTicketIdExist(detailTicket.getId()) == false) {
+		if (ticketDao.isDetailTicketIdExist(detailTicket.getId()) == false) {
 			throw new ServiceException("Ticket detail not found!");
 		}
-		if (ticketDao.isTicketBkExist(detailTicket.getTicket().getId()) == false) {
+		if (ticketDao.isDetailTicketBkExist(detailTicket.getTicket().getId(), detailTicket.getMessageDate()) == false) {
 			throw new ServiceException("Ticket detail not found!");
 		}
 		if (!detailTicket.getTicket().getId().equals(ticketDao.findDetailTicketById(detailTicket.getId()).getTicket().getId())) {
@@ -102,7 +102,7 @@ public class TicketService {
 		if (ticketDao.isDetailTicketIdExist(id) == true) {
 			ticketDao.removeDetailTicket(ticketDao.findDetailTicketById(id));
 		} else {
-			throw new ErrorException("Image not found!");
+			throw new ErrorException("Detail ticket");
 		}
 	}
 	
@@ -135,7 +135,7 @@ public class TicketService {
 		if (ticketDao.isSubDetailTicketIdExist(subDetailTicket.getId()) == true) {
 			throw new ServiceException("Ticket already exist.");
 		}
-		if (ticketDao.isSubDetailTicketBkExist(subDetailTicket.getTicket().getId(), subDetailTicket.getFileName()) == true) {
+		if (ticketDao.isSubDetailTicketBkExist(subDetailTicket.getDetailId(), subDetailTicket.getFileName()) == true) {
 			throw new ServiceException("Ticket detail id already exist!");
 		}
 		ticketDao.saveSubDetailTicket(subDetailTicket);
@@ -144,15 +144,23 @@ public class TicketService {
 	
 	public void updateSubDetailTicket(SubDetailTicket subDetailTicket) throws ErrorException {
 		if (ticketDao.isTicketIdExist(subDetailTicket.getId()) == false) {
-			throw new ServiceException("Detail ticket not found!");
+			throw new ServiceException("Sub detail ticket not found!");
 		}
-		if (ticketDao.isTicketBkExist(subDetailTicket.getTicket().getId()) == false) {
-			throw new ServiceException("Detail ticket not found!");
+		if (ticketDao.isTicketBkExist(subDetailTicket.getDetailId()) == false) {
+			throw new ServiceException("Sub detail ticket not found!");
 		}
-		if (!subDetailTicket.getTicket().getId().equals(ticketDao.findDetailTicketById(subDetailTicket.getId()).getTicket().getId())) {
-			throw new ServiceException("Detail ticket cannot be changed!");
+		if (!subDetailTicket.getDetailId().equals(ticketDao.findSubDetailTicketById(subDetailTicket.getId()).getDetailId())) {
+			throw new ServiceException("Sub detail ticket header cannot be changed!");
 		}
 
 		ticketDao.saveSubDetailTicket(subDetailTicket);
+	}
+	
+	public void deleteSubDetailTicket(String id) throws ErrorException {
+		if (ticketDao.isSubDetailTicketIdExist(id) == true) {
+			ticketDao.removeSubDetailTicket(ticketDao.findSubDetailTicketById(id));
+		} else {
+			throw new ErrorException("Sub detail ticket not found!");
+		}
 	}
 }
