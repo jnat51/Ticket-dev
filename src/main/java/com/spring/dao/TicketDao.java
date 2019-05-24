@@ -33,20 +33,6 @@ public class TicketDao extends ParentDao{
 					.setParameter("id", id)
 					.getSingleResult();
 			
-			Customer customer = ticket.getCustomer();
-			Company company = customer.getCompany();
-			
-			company.setCustomers(new ArrayList<Customer>());
-			
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
-			Ticket tick = new Ticket();
-			for(DetailTicket detail : ticket.getDetails()) {
-				detail.setTicket(tick);
-				details.add(detail);
-			}
-			
-			super.entityManager.clear();
-			
 			return ticket;
 		} catch (Exception e) {
 			return null;
@@ -121,19 +107,6 @@ public class TicketDao extends ParentDao{
 			DetailTicket detailTicket = (DetailTicket) this.entityManager.createQuery(query)
 					.setParameter("id", id)
 					.getSingleResult();
-			
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
-			
-			Ticket ticket = detailTicket.getTicket();
-			ticket.setDetails(details);
-			
-			Customer customer = ticket.getCustomer();
-			Company company = customer.getCompany();
-			company.setCustomers(new ArrayList<Customer>());
-			
-			detailTicket.setTicket(ticket);
-			
-			super.entityManager.clear();
 
 			return detailTicket;
 		} catch (Exception e) {
@@ -209,6 +182,20 @@ public class TicketDao extends ParentDao{
 			SubDetailTicket subDetailTicket = (SubDetailTicket) this.entityManager.createQuery(query)
 					.setParameter("id", id)
 					.getSingleResult();
+
+			return subDetailTicket;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public List<SubDetailTicket> findSubDetailTicketByDetail (String detailId) {
+		try {
+			String query = "from SubDetailTicket where detailId = :detailid";
+
+			List<SubDetailTicket> subDetailTicket = this.entityManager.createQuery(query)
+					.setParameter("detailid", detailId)
+					.getResultList();
 
 			return subDetailTicket;
 		} catch (Exception e) {

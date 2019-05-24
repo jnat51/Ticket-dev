@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.spring.enumeration.Status.Stat;
+import com.spring.enumeration.Enum.Stat;
 
 @Entity
 @Table(name = "tbl_ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "ticket_code"}))

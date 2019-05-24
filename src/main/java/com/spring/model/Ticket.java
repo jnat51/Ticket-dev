@@ -19,7 +19,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.spring.enumeration.Status.Stat;
+import com.spring.enumeration.Enum.Stat;
 
 @Entity
 @Table(name="tbl_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"ticket_code"}))

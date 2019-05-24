@@ -1,6 +1,8 @@
 package com.spring.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.TicketDao;
 import com.spring.exception.ErrorException;
+import com.spring.model.Company;
+import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
@@ -56,7 +60,23 @@ public class TicketService {
 		Ticket ticket = new Ticket();
 
 		if (ticketDao.findTicketById(id) != null) {
-			return ticketDao.findTicketById(id);
+			ticket = ticketDao.findTicketById(id);
+			
+			Customer customer = ticket.getCustomer();
+			Company company = customer.getCompany();
+			
+			company.setCustomers(new ArrayList<Customer>());
+			
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			Ticket tick = new Ticket();
+			for(DetailTicket detail : ticket.getDetails()) {
+				detail.setTicket(tick);
+				details.add(detail);
+			}
+			
+			ticket.setDetails(details);
+			
+			return ticket;
 		} else {
 			return ticket;
 		}
@@ -112,6 +132,17 @@ public class TicketService {
 		if (ticketDao.findDetailTicketById(id) != null) {
 			detailTicket = ticketDao.findDetailTicketById(id);
 			
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			
+			Ticket ticket = detailTicket.getTicket();
+			ticket.setDetails(details);
+			
+			Customer customer = ticket.getCustomer();
+			Company company = customer.getCompany();
+			company.setCustomers(new ArrayList<Customer>());
+			
+			detailTicket.setTicket(ticket);
+			
 			return detailTicket;
 		} else {
 			return detailTicket;
@@ -161,6 +192,42 @@ public class TicketService {
 			ticketDao.removeSubDetailTicket(ticketDao.findSubDetailTicketById(id));
 		} else {
 			throw new ErrorException("Sub detail ticket not found!");
+		}
+	}
+	
+	public SubDetailTicket findSubDetailTicketById(String id) throws ErrorException{
+		SubDetailTicket subDetailTicket = new SubDetailTicket();
+
+		if (ticketDao.findDetailTicketById(id) != null) {
+			subDetailTicket = ticketDao.findSubDetailTicketById(id);
+			
+			return subDetailTicket;
+		} else {
+			return subDetailTicket;
+		}
+	}
+	
+	public SubDetailTicket findSubDetailTicketByBk(String detailId, String fileName) throws ErrorException{
+		SubDetailTicket subDetailTicket = new SubDetailTicket();
+
+		if (ticketDao.findSubDetailTicketByBk(detailId, fileName) != null) {
+			subDetailTicket = ticketDao.findSubDetailTicketByBk(detailId, fileName);
+			
+			return subDetailTicket;
+		} else {
+			return subDetailTicket;
+		}
+	}
+	
+	public List<SubDetailTicket> findSubDetailTicketByDetail(String detailId) throws ErrorException {
+		List<SubDetailTicket> subDetailTicket = new ArrayList<SubDetailTicket>();
+		
+		if (ticketDao.findSubDetailTicketByDetail(detailId).size() > 0) {
+			subDetailTicket = ticketDao.findSubDetailTicketByDetail(detailId);
+			
+			return subDetailTicket;
+		} else {
+			return subDetailTicket;
 		}
 	}
 }

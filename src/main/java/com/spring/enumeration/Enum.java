@@ -1,7 +1,11 @@
 package com.spring.enumeration;
 
-public class Status {
+public class Enum {
 	public enum Stat{
 		open,close,reopen;
+	}
+	
+	public enum Sender{
+		A,C;
 	}
 }
