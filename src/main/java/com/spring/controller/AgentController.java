@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.model.Admin;
 import com.spring.model.Agent;
+import com.spring.model.AgentPagination;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
 import com.spring.service.AgentService;
@@ -194,6 +194,17 @@ public class AgentController {
 	public ResponseEntity<?> getAllAgent(){
 		try {
 			List<Agent> agents = agentService.findAll();
+			
+			return new ResponseEntity<>(agents, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/{size}/{page}")
+	public ResponseEntity<?> getAllAgent(@PathVariable int size, @PathVariable int page){
+		try {
+			List<AgentPagination> agents = agentService.findWithPagination(size, page);
 			
 			return new ResponseEntity<>(agents, HttpStatus.OK);
 		} catch (Exception e) {

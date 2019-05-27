@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.spring.model.Admin;
+import com.spring.model.AdminPagination;
 
 @Repository
 public class AdminDao extends ParentDao {
@@ -43,6 +44,23 @@ public class AdminDao extends ParentDao {
 			return admins;
 		}
 		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AdminPagination> getAdminWithPagination(int size, int page){
+		try {			
+			String query = "WITH report as (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_admin)"
+					+ " SELECT * FROM report WHERE no > "+ page*size+ " LIMIT :size";
+			
+			List<AdminPagination> agents = super.entityManager
+					  .createNativeQuery(query, AdminPagination.class)
+					  .setParameter("size",size)
+					  .getResultList();
+			
+			return agents;
+		}catch(Exception e){
 			return null;
 		}
 	}

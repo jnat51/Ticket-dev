@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.AgentDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.Agent;
+import com.spring.model.AgentPagination;
 
 @Service
 public class AgentService {
@@ -68,6 +69,22 @@ public class AgentService {
 		if(agentDao.findAll().size() > 0)
 		{
 			agents = agentDao.findAll();
+			
+			return agents;
+		}
+		else
+		{
+			return agents;
+		}
+	}
+	
+	public List<AgentPagination> findWithPagination (int size, int page)
+	{
+		List<AgentPagination> agents = new ArrayList<AgentPagination>();
+		
+		if(agentDao.getAgentWithPagination(size, page).size() > 0)
+		{
+			agents = agentDao.getAgentWithPagination(size, page);
 			
 			return agents;
 		}

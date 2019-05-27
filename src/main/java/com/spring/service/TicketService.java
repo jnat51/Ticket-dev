@@ -2,6 +2,7 @@ package com.spring.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
@@ -52,7 +53,20 @@ public class TicketService {
 		if (ticketDao.isTicketIdExist(id) == true) {
 			ticketDao.removeTicket(ticketDao.findTicketById(id));
 		} else {
-			throw new ErrorException("Image not found!");
+			throw new ErrorException("Ticket not found!");
+		}
+	}
+	
+	public List<Object[]> findByMonth(int month){
+		List<Object[]> tickets = new ArrayList<Object[]>();
+		
+		if(ticketDao.findByMonth(month).size() > 0) {
+			tickets = ticketDao.findByMonth(month);
+			
+			return tickets;
+		}
+		else {
+			return tickets;
 		}
 	}
 	

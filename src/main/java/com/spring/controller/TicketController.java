@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
 import com.spring.model.UpdateStatus;
+import com.spring.service.CustomerService;
 import com.spring.service.TicketService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -40,12 +42,22 @@ import com.spring.service.TicketService;
 public class TicketController {
 	@Autowired
 	TicketService ticketService;
+	@Autowired
+	CustomerService customerService;
 
-	// ======================================*Header Ticket*===========================================
+	// ======================================*Header
+	// Ticket*===========================================
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
 		try {
 			Date date = new Date();
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
+			SimpleDateFormat month = new SimpleDateFormat("MM");
+			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)).size();
+
+			String ticketCode = "T-" + dateFormat.format(date) + "-" + ticketCount;
+			System.out.println(ticketCode);
 
 			ticket.setTicketDate(date);
 
@@ -77,9 +89,22 @@ public class TicketController {
 			@RequestParam(name = "ss", required = false) MultipartFile[] ss) {
 		try {
 			Date date = new Date();
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
+			
+			System.out.println(Calendar.getInstance().get(Calendar.MONTH)+1);
+			System.out.println(ticketCount);
+			
 			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 			Ticket ticketObject = mapper.readValue(ticket, Ticket.class);
+			
+			Customer customer = customerService.findCustomerById(ticketObject.getCustomer().getId());
 
+			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
+			System.out.println(ticketCode);
+			
+			ticketObject.setTicketCode(ticketCode);
 			ticketObject.setTicketDate(date);
 
 			System.out.println("insert ticket:");
@@ -131,7 +156,7 @@ public class TicketController {
 	}
 
 	@PutMapping(value = "/hdr")
-	public ResponseEntity<?> updateTicket(Ticket ticket) {
+	public ResponseEntity<?> updateTicket(@RequestBody Ticket ticket) {
 		try {
 			ticketService.updateTicket(ticket);
 
@@ -144,16 +169,6 @@ public class TicketController {
 	@DeleteMapping(value = "/hdr/{id}")
 	public ResponseEntity<?> deleteTicket(@PathVariable String id) {
 		try {
-			Ticket ticket = ticketService.findTicketById(id);
-
-			List<DetailTicket> details = ticket.getDetails();
-			for (DetailTicket detail : details) {
-				List<SubDetailTicket> subs = ticketService.findSubDetailTicketByDetail(detail.getId());
-				for (SubDetailTicket sub : subs) {
-					ticketService.deleteSubDetailTicket(sub.getId());
-				}
-			}
-
 			ticketService.deleteTicket(id);
 
 			return new ResponseEntity<>("Ticket successfully deleted", HttpStatus.CREATED);
@@ -214,11 +229,12 @@ public class TicketController {
 		}
 	}
 
-	// ======================================*Detail Ticket*===========================================
+	// ======================================*Detail
+	// Ticket*===========================================
 
-	@PostMapping(value = "/dtl/")
+	@PostMapping(value = "/dtl/{idHeader}")
 	public ResponseEntity<?> insertDetailTicket(@RequestParam String detailTicket,
-			@RequestParam(name = "ss", required = false) MultipartFile[] ss) {
+			@RequestParam(name = "ss", required = false) MultipartFile[] ss, @PathVariable String idHeader) {
 		try {
 			Date date = new Date();
 			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -226,6 +242,8 @@ public class TicketController {
 
 			System.out.print("ss length:");
 			System.out.println(ss.length);
+			
+			detailObject.setTicket(ticketService.findTicketById(idHeader));
 
 			ticketService.insertDetailTicket(detailObject);
 			if (ss.length > 0) {
@@ -244,8 +262,9 @@ public class TicketController {
 					subDetailTicket.setFileName(fileName);
 					subDetailTicket.setMime(mime);
 					subDetailTicket.setSs(data);
-					subDetailTicket.setDetailId(
-					ticketService.findDetailTicketByBk(detailObject.getTicket().getId(), detailObject.getMessageDate()).getId());
+					subDetailTicket.setDetailId(ticketService
+							.findDetailTicketByBk(detailObject.getTicket().getId(), detailObject.getMessageDate())
+							.getId());
 
 					ticketService.insertSubDetailTicket(subDetailTicket);
 				}
@@ -304,7 +323,8 @@ public class TicketController {
 		}
 	}
 
-	// ======================================*Detail Ticket*===========================================
+	// ======================================*Detail
+	// Ticket*===========================================
 	@GetMapping(value = "/sub/{id}")
 	public ResponseEntity<?> findSubDetailTicketById(@PathVariable String id) {
 		try {

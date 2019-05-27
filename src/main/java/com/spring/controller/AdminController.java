@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Admin;
+import com.spring.model.AdminPagination;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
 import com.spring.service.AdminService;
@@ -92,6 +93,17 @@ public class AdminController {
 		}
 	}
 	
+	@GetMapping(value = "/{size}/{page}")
+	public ResponseEntity<?> getAllAgent(@PathVariable int size, @PathVariable int page){
+		try {
+			List<AdminPagination> admins = adminService.findWithPagination(size, page);
+			
+			return new ResponseEntity<>(admins, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	@PostMapping(value = "/")
 	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin,
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {
@@ -110,6 +122,8 @@ public class AdminController {
 
 			if (pp != null) {
 				Image img = new Image();
+				System.out.println(pp.getResource());
+				System.out.println(pp.getInputStream());
 				byte[] data = pp.getBytes();
 				Date date = new Date();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");

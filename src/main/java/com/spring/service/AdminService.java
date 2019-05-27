@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.AdminDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.Admin;
+import com.spring.model.AdminPagination;
 
 @Service
 public class AdminService {
@@ -88,6 +89,22 @@ public class AdminService {
 		if(adminDao.findAll().size() > 0)
 		{
 			admins = adminDao.findAll();
+			
+			return admins;
+		}
+		else
+		{
+			return admins;
+		}
+	}
+	
+	public List<AdminPagination> findWithPagination (int size, int page)
+	{
+		List<AdminPagination> admins = new ArrayList<AdminPagination>();
+		
+		if(adminDao.getAdminWithPagination(size, page).size() > 0)
+		{
+			admins = adminDao.getAdminWithPagination(size, page);
 			
 			return admins;
 		}

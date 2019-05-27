@@ -2,6 +2,7 @@ package com.spring.dao;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -35,6 +36,21 @@ public class TicketDao extends ParentDao{
 			
 			return ticket;
 		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> findByMonth (int month) {
+		try {
+			String query = "SELECT * FROM tbl_ticket WHERE EXTRACT(MONTH FROM tbl_ticket.ticket_date) = :month";
+			
+			List<Object[]> tickets = this.entityManager.createNativeQuery(query)
+					.setParameter("month", month)
+					.getResultList();
+			
+			return tickets;
+		}catch (Exception e) {
 			return null;
 		}
 	}
@@ -189,6 +205,7 @@ public class TicketDao extends ParentDao{
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<SubDetailTicket> findSubDetailTicketByDetail (String detailId) {
 		try {
 			String query = "from SubDetailTicket where detailId = :detailid";
