@@ -144,6 +144,36 @@ public class AgentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@PatchMapping(value = "/{id}")
+	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
+		try {
+			Agent agent = agentService.findById(id);
+			Image img = new Image();
+			
+			byte[] data = pp.getBytes();
+			Date date = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+			String dateNow = dateFormat.format(date);
+			String[] originalName = pp.getOriginalFilename().split("\\.");
+			String fileName = originalName[0] + dateNow + "." + originalName[1];
+			String mime = pp.getContentType();
+			
+			img.setImage(data);
+			img.setFileName(fileName);
+			img.setMime(mime);
+			
+			imageService.delete(agent.getImageId());
+			imageService.insert(img);
+			
+			agent.setImageId(imageService.findByBk(fileName, data).getId());
+			agentService.update(agent);
+			
+			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 
 	@PutMapping(value = "/")
 	public ResponseEntity<?> updateAgent(@ModelAttribute Agent agent, @RequestParam(name= "pp", required = false) MultipartFile pp) {

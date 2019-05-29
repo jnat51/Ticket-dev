@@ -36,7 +36,10 @@ public class TicketService {
 	}
 	
 	public void updateTicket(Ticket ticket) throws ErrorException {
+		System.out.println("Update ticket");
 		if (ticketDao.isTicketIdExist(ticket.getId()) == false) {
+			boolean test = ticketDao.isTicketIdExist(ticket.getId());
+			System.out.println(test);
 			throw new ServiceException("Ticket not found!");
 		}
 		if (ticketDao.isTicketBkExist(ticket.getTicketCode()) == false) {

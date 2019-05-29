@@ -11,6 +11,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +29,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.enumeration.Enum.Stat;
+import com.spring.model.Admin;
+import com.spring.model.Agent;
 import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
 import com.spring.model.UpdateStatus;
+import com.spring.service.AdminService;
+import com.spring.service.AgentService;
 import com.spring.service.CustomerService;
 import com.spring.service.TicketService;
 
@@ -44,6 +51,12 @@ public class TicketController {
 	TicketService ticketService;
 	@Autowired
 	CustomerService customerService;
+	@Autowired
+	AdminService adminService;
+	@Autowired
+	AgentService agentService;
+	@Autowired
+	private JavaMailSender javaMailSender;
 
 	// ======================================*Header
 	// Ticket*===========================================
@@ -90,21 +103,33 @@ public class TicketController {
 			@RequestParam(name = "ss", required = false) MultipartFile[] ss) {
 		try {
 			Date date = new Date();
+			List<String> emails = new ArrayList<String>();
 			
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
 			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
-			
-			System.out.println(Calendar.getInstance().get(Calendar.MONTH)+1);
-			System.out.println(ticketCount);
 			
 			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 			Ticket ticketObject = mapper.readValue(ticket, Ticket.class);
 			
 			Customer customer = customerService.findCustomerById(ticketObject.getCustomer().getId());
+			Agent agent = agentService.findById(ticketObject.getAgent().getId());
 
+			ticketObject.setStatus(Stat.open);
 			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
 			System.out.println(ticketCode);
 			
+			emails.add(agent.getEmail());
+			System.out.println(agent.getEmail());
+			emails.add(customer.getEmail());
+			System.out.println(customer.getEmail());
+			
+			for(Admin admin : adminService.findAll())
+			{
+				emails.add(admin.getEmail());
+			}
+			
+			System.out.println(emails.size());
+						
 			ticketObject.setTicketCode(ticketCode);
 			ticketObject.setTicketDate(date);
 
@@ -148,6 +173,24 @@ public class TicketController {
 						}
 					}
 				}
+			}
+			int i = 1;
+			SimpleMailMessage mail = new SimpleMailMessage();
+			// setTo(from, to)
+			for(String email : emails) {
+				System.out.println("test " + i);
+				System.out.println(email);
+			mail.setTo("jnat51.jg@gmail.com", email);
+
+			mail.setSubject("New ticket," + ticketCode);
+			mail.setText("Ticket with code:" + ticketCode + " has been made.");
+
+			System.out.println("send...");
+
+			javaMailSender.send(mail);
+
+			System.out.println("sent");
+			i++;
 			}
 
 			return new ResponseEntity<>("insert success", HttpStatus.CREATED);
@@ -215,12 +258,13 @@ public class TicketController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
 	@PatchMapping(value = "/hdr/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody UpdateStatus updateStatus) {
 		try {
 			Ticket ticket = ticketService.findTicketById(id);
 
+			System.out.println(updateStatus.getStatus());
 			ticket.setStatus(updateStatus.getStatus());
 
 			ticketService.updateTicket(ticket);

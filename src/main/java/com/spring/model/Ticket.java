@@ -19,6 +19,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.EnumDeserializer;
 import com.spring.enumeration.Enum.Stat;
 
 @Entity

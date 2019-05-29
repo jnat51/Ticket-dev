@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.model.Admin;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.Image;
@@ -166,6 +167,36 @@ public class CustomerController {
 			return new ResponseEntity<>("Customer successfuly update", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PatchMapping(value = "/{id}")
+	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
+		try {
+			Customer customer = customerService.findCustomerById(id);
+			Image img = new Image();
+			
+			byte[] data = pp.getBytes();
+			Date date = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+			String dateNow = dateFormat.format(date);
+			String[] originalName = pp.getOriginalFilename().split("\\.");
+			String fileName = originalName[0] + dateNow + "." + originalName[1];
+			String mime = pp.getContentType();
+			
+			img.setImage(data);
+			img.setFileName(fileName);
+			img.setMime(mime);
+			
+			imageService.delete(customer.getImageId());
+			imageService.insert(img);
+			
+			customer.setImageId(imageService.findByBk(fileName, data).getId());
+			customerService.updateCustomer(customer);
+			
+			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 

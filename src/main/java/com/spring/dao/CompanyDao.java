@@ -67,7 +67,7 @@ public class CompanyDao extends ParentDao{
 	
 	public List<Company> findAll (){
 		try {
-			String query = "from Company WHERE status = active";
+			String query = "from Company WHERE status = 'active'";
 			
 			List<Company> Company = new ArrayList<Company>();
 			

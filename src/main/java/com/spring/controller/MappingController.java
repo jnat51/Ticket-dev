@@ -35,7 +35,7 @@ public class MappingController {
 		try {
 			mappingService.insert(pic);
 			
-			return new ResponseEntity<>("Pic successfuly inserted", HttpStatus.OK);
+			return new ResponseEntity<>("Map successfuly set", HttpStatus.OK);
 		}catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
 		}

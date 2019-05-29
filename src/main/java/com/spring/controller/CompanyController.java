@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.enumeration.Enum.Active;
 import com.spring.model.Company;
+import com.spring.model.CompanyStatus;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
@@ -120,6 +124,7 @@ public class CompanyController {
 	{
 		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 		Company companyObject = mapper.readValue(company, Company.class);
+		companyObject.setStatus(Active.active);
 		
 		try {
 			if (logo != null) {
@@ -176,25 +181,44 @@ public class CompanyController {
 			@ModelAttribute Company company) {
 		try {
 			Company comp = companyService.findCompanyById(company.getId());
-			Image image = new Image();
-
-			byte[] data = logo.getBytes();
-			String fileName = logo.getOriginalFilename();
-			image.setImage(data);
-			image.setFileName(fileName);
-			image.setMime(logo.getContentType());
-
+			
+			comp.setCompanyName(company.getCompanyName());
+			comp.setCompanyCode(company.getCompanyCode());
+			comp.setAddress(company.getAddress());
+			
 			if (logo != null) {
+				Image image = new Image();
+				
+				byte[] data = logo.getBytes();
+				String fileName = logo.getOriginalFilename();
+				image.setImage(data);
+				image.setFileName(fileName);
+				image.setMime(logo.getContentType());
+				
 				imageService.delete(comp.getImageId());
 				imageService.insert(image);
-				company.setImageId(imageService.findByBk(fileName, data).getId());
+				comp.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 
-			String msg = companyService.insertCompany(company);
+			companyService.updateCompany(comp);
 
-			return new ResponseEntity<>(msg, HttpStatus.OK);
+			return new ResponseEntity<>("Company successfully updated", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/{id}")
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody CompanyStatus companyStatus) {
+		try {
+			Company company= companyService.findCompanyById(id);
+
+			company.setStatus(companyStatus.getActive());
+
+			companyService.updateCompany(company);
+			return new ResponseEntity<>("Status changed to " + companyStatus.getActive(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
