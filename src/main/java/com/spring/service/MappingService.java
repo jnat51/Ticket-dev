@@ -1,11 +1,15 @@
 package com.spring.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.MappingDao;
 import com.spring.model.Mapping;
+import com.spring.model.MappingReport;
 
 @Service
 public class MappingService {
@@ -78,6 +82,19 @@ public class MappingService {
 		else
 		{
 			return pic;
+		}
+	}
+	
+	public List<MappingReport> findWithCompanyLogo(){
+		List<MappingReport> maps = new ArrayList<MappingReport>();
+		
+		if(mappingDao.findMappingWithLogo() != null)
+		{
+			return mappingDao.findMappingWithLogo();
+		}
+		else
+		{
+			return maps;
 		}
 	}
 }

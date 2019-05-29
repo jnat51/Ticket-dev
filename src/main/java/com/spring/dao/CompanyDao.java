@@ -3,15 +3,10 @@ package com.spring.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.Company;
-import com.spring.model.Customer;
 
 @Repository
 @Transactional
@@ -72,7 +67,7 @@ public class CompanyDao extends ParentDao{
 	
 	public List<Company> findAll (){
 		try {
-			String query = "from Company";
+			String query = "from Company WHERE status = active";
 			
 			List<Company> Company = new ArrayList<Company>();
 			

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.Customer;
 import com.spring.model.Mapping;
+import com.spring.model.MappingReport;
 
 @Repository
 @Transactional
@@ -70,6 +71,25 @@ public class MappingDao extends ParentDao {
 			{
 				return null;
 			}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MappingReport> findMappingWithLogo() {
+		List<MappingReport> mappings;
+		try {
+
+			String query = "SELECT tbl_mapping.id, tbl_company.company_name, tbl_agent.name, tbl_image.image "
+					+ "FROM tbl_mapping "
+					+ "JOIN tbl_company ON tbl_mapping.company_id = tbl_company.id "
+					+ "JOIN tbl_agent ON tbl_mapping.agent_id = tbl_agent.id "
+					+ "JOIN tbl_image ON tbl_company.image_id = tbl_image.id";
+
+			mappings = super.entityManager.createNativeQuery(query, MappingReport.class).getResultList();			
+
+			return mappings;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	public boolean isIdExist(String id) {

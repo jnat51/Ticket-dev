@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.spring.enumeration.Enum.Active;
 
 @Entity
 @Table(name = "tbl_company", uniqueConstraints = @UniqueConstraint(columnNames = {"company_code"}))
@@ -34,6 +38,10 @@ public class Company {
 	
 	@Column(name = "image_id")
 	private String imageId;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
+	private Active status;
 	
 	@OneToMany(mappedBy="company", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
 	private List<Customer> customers;
@@ -94,4 +102,14 @@ public class Company {
 	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
 	}
+
+	public Active getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Active status) {
+		this.status = status;
+	}
+	
 }

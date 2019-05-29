@@ -1,15 +1,20 @@
 package com.spring.controller;
 
+import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
+import com.spring.service.CustomerService;
 import com.spring.service.ImageService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -36,7 +46,25 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 	@Autowired
+	CustomerService customerService;
+	@Autowired
 	ImageService imageService;
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
+	public String passwordGenerator() {
+		Random RANDOM = new SecureRandom();
+		String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		int passwordLength = 8;
+
+		StringBuilder returnValue = new StringBuilder(passwordLength);
+
+		for (int i = 0; i < passwordLength; i++) {
+			returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+		}
+
+		return returnValue.toString();
+	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteCompany(@PathVariable String id) {
@@ -85,7 +113,64 @@ public class CompanyController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@PostMapping(value = "/test/")
+	public ResponseEntity<?> insertNewCompany(@RequestParam String company,
+			@RequestParam(name = "logo", required = false) MultipartFile logo) throws JsonParseException, JsonMappingException, IOException
+	{
+		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+		Company companyObject = mapper.readValue(company, Company.class);
+		
+		try {
+			if (logo != null) {
+				Image img = new Image();
+				byte[] data = logo.getBytes();
+				
+				
+				Date date = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+				String dateNow = dateFormat.format(date);
+				String[] originalName = logo.getOriginalFilename().split("\\.");
+				String fileName = originalName[0] + dateNow + "." + originalName[1];
+				String mime = logo.getContentType();
+				
+				img.setImage(data);
+				img.setFileName(fileName);
+				img.setMime(mime);
+				
+				imageService.insert(img);
+				companyObject.setImageId(imageService.findByBk(fileName, data).getId());
+			}
+			
+			String msg = companyService.insertCompany(companyObject);
+			
+			for(Customer customer : companyObject.getCustomers()) {
+				String pass = passwordGenerator();
+				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
+				
+				customer.setPassword(generatedSecuredPasswordHash);
+				customer.setCompany(companyService.findCompanyByBk(companyObject.getCompanyCode()));
+				
+				customerService.insertCustomer(customer);
+				
+				SimpleMailMessage email = new SimpleMailMessage();
+				// setTo(from, to)
+				email.setTo("jnat51.jg@gmail.com", customer.getEmail());
 
+				email.setSubject("Welcome to Linov Support, " + customer.getName() + "!");
+				email.setText("Here is your username and password to login to your account.\nUsername: "
+						+ customer.getUsername() + "\nPassword: " + pass);
+
+				System.out.println("send...");
+
+				javaMailSender.send(email);
+			}
+
+			return new ResponseEntity<>(msg, HttpStatus.CREATED);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 	@PutMapping(value = "/")
 	public ResponseEntity<?> updateCompany(@RequestParam(name = "logo", required = false) MultipartFile logo,
 			@ModelAttribute Company company) {

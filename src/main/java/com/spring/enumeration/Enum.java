@@ -8,4 +8,8 @@ public class Enum {
 	public enum Sender{
 		A,C;
 	}
+	
+	public enum Active{
+		active, nonactive;
+	}
 }

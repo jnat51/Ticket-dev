@@ -47,8 +47,8 @@ public class AgentDao extends ParentDao{
 	@SuppressWarnings("unchecked")
 	public List<AgentPagination> getAgentWithPagination(int size, int page){
 		try {			
-			String query = "WITH report as (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_agent)"
-					+ " SELECT * FROM report WHERE no > "+ page*size+ " LIMIT :size";
+			String query = "WITH report AS (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_agent)"
+					+ " SELECT * FROM report WHERE no <= "+ page*size+ " LIMIT :size";
 			
 			List<AgentPagination> agents = super.entityManager
 					  .createNativeQuery(query, AgentPagination.class)
@@ -58,6 +58,22 @@ public class AgentDao extends ParentDao{
 			return agents;
 		}catch(Exception e){
 			return null;
+		}
+	}
+	
+	public long getMaxPage() {
+		try {
+			String query = "SELECT COUNT(*) FROM tbl_agent";
+			
+			long row = (long) super.entityManager
+					  .createNativeQuery(query).getSingleResult();
+			
+			System.out.println("test");
+			System.out.println(row);
+			
+			return row;			
+		} catch(Exception e) {
+			return 0;
 		}
 	}
 	

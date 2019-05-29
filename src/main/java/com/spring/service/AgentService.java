@@ -94,6 +94,17 @@ public class AgentService {
 		}
 	}
 	
+	public long getMaxPage() {
+		if(agentDao.getMaxPage() > 0)
+		{
+			return agentDao.getMaxPage();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
 	public Agent findByBk(String username)
 	{
 		Agent agent = new Agent();

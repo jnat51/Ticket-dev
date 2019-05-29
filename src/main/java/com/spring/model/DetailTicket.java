@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -12,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.spring.enumeration.Enum.Sender;
 
 @Entity
 @Table(name="tbl_detail_ticket", uniqueConstraints = @UniqueConstraint(columnNames = {"ticket_id"}))
@@ -26,8 +30,9 @@ public class DetailTicket {
 	@JoinColumn(name="ticket_id", referencedColumnName="id")
 	private Ticket ticket;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name="sender")
-	private String sender;
+	private Sender sender;
 	
 	@Column(name="message")
 	private String message;
@@ -51,11 +56,11 @@ public class DetailTicket {
 		this.ticket = ticket;
 	}
 
-	public String getSender() {
+	public Sender getSender() {
 		return sender;
 	}
 
-	public void setSender(String sender) {
+	public void setSender(Sender sender) {
 		this.sender = sender;
 	}
 

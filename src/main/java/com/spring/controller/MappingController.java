@@ -1,5 +1,7 @@
 package com.spring.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.model.Mapping;
+import com.spring.model.MappingReport;
 import com.spring.service.MappingService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -77,6 +80,17 @@ public class MappingController {
 		Mapping pic = mappingService.findByBk(companyId);
 		
 		return new ResponseEntity<>(pic , HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/")
+	public ResponseEntity<?> findMapWithLogo() {
+		try {
+		List<MappingReport> maps = mappingService.findWithCompanyLogo();
+		
+		return new ResponseEntity<>(maps , HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
 		}

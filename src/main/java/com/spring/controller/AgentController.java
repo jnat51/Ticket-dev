@@ -193,7 +193,7 @@ public class AgentController {
 	@GetMapping(value = "/")
 	public ResponseEntity<?> getAllAgent(){
 		try {
-			List<Agent> agents = agentService.findAll();
+			List<Agent> agents = agentService.findAll();			
 			
 			return new ResponseEntity<>(agents, HttpStatus.OK);
 		} catch (Exception e) {
@@ -205,6 +205,19 @@ public class AgentController {
 	public ResponseEntity<?> getAllAgent(@PathVariable int size, @PathVariable int page){
 		try {
 			List<AgentPagination> agents = agentService.findWithPagination(size, page);
+			
+			long max = 0;
+			
+			if(agentService.getMaxPage()%size == 0)
+			{
+				max = agentService.getMaxPage()/size;
+			}
+			else
+			{
+				max = (agentService.getMaxPage()/size)+1;
+			}
+			
+			System.out.println(max);
 			
 			return new ResponseEntity<>(agents, HttpStatus.OK);
 		} catch (Exception e) {

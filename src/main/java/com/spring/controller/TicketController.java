@@ -52,13 +52,14 @@ public class TicketController {
 		try {
 			Date date = new Date();
 
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
-			SimpleDateFormat month = new SimpleDateFormat("MM");
-			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)).size();
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
+			Customer customer = customerService.findCustomerById(ticket.getCustomer().getId());
 
-			String ticketCode = "T-" + dateFormat.format(date) + "-" + ticketCount;
+			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
 			System.out.println(ticketCode);
-
+			
+			ticket.setTicketCode(ticketCode);
 			ticket.setTicketDate(date);
 
 			System.out.println("insert ticket:");
