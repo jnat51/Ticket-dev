@@ -2,7 +2,6 @@ package com.spring.controller;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,10 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.model.Admin;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.Image;
+import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
 import com.spring.service.CompanyService;
 import com.spring.service.CustomerService;
@@ -188,7 +189,9 @@ public class CustomerController {
 			img.setFileName(fileName);
 			img.setMime(mime);
 			
-			imageService.delete(customer.getImageId());
+			if(customer.getImageId() != null) {
+				imageService.delete(customer.getImageId());
+				}
 			imageService.insert(img);
 			
 			customer.setImageId(imageService.findByBk(fileName, data).getId());
@@ -197,6 +200,23 @@ public class CustomerController {
 			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/{id}/status")
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody String strStatus) {
+		try {
+			Customer customer = customerService.findCustomerById(id);
+
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+			Status status = mapper.readValue(strStatus, Status.class);
+			
+			customer.setStatus(status.getStatus());
+
+			customerService.updateCustomer(customer);
+			return new ResponseEntity<>("Status changed to " + status.getStatus(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 

@@ -34,8 +34,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Active;
+import com.spring.model.Agent;
 import com.spring.model.Company;
-import com.spring.model.CompanyStatus;
+import com.spring.model.Status;
 import com.spring.model.Customer;
 import com.spring.model.Image;
 import com.spring.service.CompanyService;
@@ -87,38 +88,38 @@ public class CompanyController {
 		}
 	}
 
-	@PostMapping(value = "/")
-	public ResponseEntity<?> insertCompany(@RequestParam(name = "logo", required = false) MultipartFile logo,
-			@ModelAttribute Company company) {
-		try {
-			if (logo != null) {
-				Image img = new Image();
-				byte[] data = logo.getBytes();
-				
-				Date date = new Date();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
-				String dateNow = dateFormat.format(date);
-				String[] originalName = logo.getOriginalFilename().split("\\.");
-				String fileName = originalName[0] + dateNow + "." + originalName[1];
-				String mime = logo.getContentType();
-				
-				img.setImage(data);
-				img.setFileName(fileName);
-				img.setMime(mime);
-				
-				imageService.insert(img);
-				company.setImageId(imageService.findByBk(fileName, data).getId());
-			}
-
-			String msg = companyService.insertCompany(company);
-
-			return new ResponseEntity<>(msg, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
+//	@PostMapping(value = "/")
+//	public ResponseEntity<?> insertCompany(@RequestParam(name = "logo", required = false) MultipartFile logo,
+//			@ModelAttribute Company company) {
+//		try {
+//			if (logo != null) {
+//				Image img = new Image();
+//				byte[] data = logo.getBytes();
+//				
+//				Date date = new Date();
+//				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+//				String dateNow = dateFormat.format(date);
+//				String[] originalName = logo.getOriginalFilename().split("\\.");
+//				String fileName = originalName[0] + dateNow + "." + originalName[1];
+//				String mime = logo.getContentType();
+//				
+//				img.setImage(data);
+//				img.setFileName(fileName);
+//				img.setMime(mime);
+//				
+//				imageService.insert(img);
+//				company.setImageId(imageService.findByBk(fileName, data).getId());
+//			}
+//
+//			String msg = companyService.insertCompany(company);
+//
+//			return new ResponseEntity<>(msg, HttpStatus.CREATED);
+//		} catch (Exception e) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//		}
+//	}
 	
-	@PostMapping(value = "/test/")
+	@PostMapping(value = "/")
 	public ResponseEntity<?> insertNewCompany(@RequestParam String company,
 			@RequestParam(name = "logo", required = false) MultipartFile logo) throws JsonParseException, JsonMappingException, IOException
 	{
@@ -208,17 +209,52 @@ public class CompanyController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}")
-	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody CompanyStatus companyStatus) {
+	@PatchMapping(value = "/{id}/status")
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String strStatus) {
 		try {
 			Company company= companyService.findCompanyById(id);
+			
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+			Status status = mapper.readValue(strStatus, Status.class);
 
-			company.setStatus(companyStatus.getStatus());
+			company.setStatus(status.getStatus());
 
 			companyService.updateCompany(company);
-			return new ResponseEntity<>("Status changed to " + companyStatus.getStatus(), HttpStatus.OK);
+			return new ResponseEntity<>("Status changed to " + status.getStatus(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PatchMapping(value = "/{id}/image")
+	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
+		try {
+			Company company = companyService.findCompanyById(id);
+			Image img = new Image();
+			
+			byte[] data = pp.getBytes();
+			Date date = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+			String dateNow = dateFormat.format(date);
+			String[] originalName = pp.getOriginalFilename().split("\\.");
+			String fileName = originalName[0] + dateNow + "." + originalName[1];
+			String mime = pp.getContentType();
+			
+			img.setImage(data);
+			img.setFileName(fileName);
+			img.setMime(mime);
+			
+			if(company.getImageId()!= null) {
+			imageService.delete(company.getImageId());
+			}
+			imageService.insert(img);
+			
+			company.setImageId(imageService.findByBk(fileName, data).getId());
+			companyService.updateCompany(company);
+			
+			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 

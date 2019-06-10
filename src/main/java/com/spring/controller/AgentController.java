@@ -27,10 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.enumeration.Enum.Active;
 import com.spring.model.Agent;
 import com.spring.model.AgentPage;
 import com.spring.model.AgentPagination;
+import com.spring.model.Company;
 import com.spring.model.Image;
+import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
@@ -99,7 +104,7 @@ public class AgentController {
 			ag.setUsername(agent.getUsername());
 			ag.setPassword(encryptedPassword);
 			ag.setName(agent.getName());
-			
+			ag.setStatus(Active.active);
 			
 			String msg = agentService.insert(ag);
 			
@@ -146,7 +151,7 @@ public class AgentController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}")
+	@PatchMapping(value = "/{id}/image")
 	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
 		try {
 			Agent agent = agentService.findById(id);
@@ -164,7 +169,9 @@ public class AgentController {
 			img.setFileName(fileName);
 			img.setMime(mime);
 			
-			imageService.delete(agent.getImageId());
+			if(agent.getImageId() != null) {
+				imageService.delete(agent.getImageId());
+			}
 			imageService.insert(img);
 			
 			agent.setImageId(imageService.findByBk(fileName, data).getId());
@@ -173,6 +180,23 @@ public class AgentController {
 			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/{id}/status")
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String strStatus) {
+		try {
+			Agent agent = agentService.findById(id);
+			
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+			Status status = mapper.readValue(strStatus, Status.class);
+
+			agent.setStatus(status.getStatus());
+
+			agentService.update(agent);
+			return new ResponseEntity<>("Status changed to " + status.getStatus(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -191,6 +215,7 @@ public class AgentController {
 			ag.setUsername(agent.getUsername());
 			ag.setPassword(generatedSecuredPasswordHash);
 			ag.setName(agent.getName());
+			ag.setStatus(agent.getStatus());
 
 			if (pp != null) {
 				Image img = new Image();

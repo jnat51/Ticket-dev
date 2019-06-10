@@ -2,7 +2,7 @@ package com.spring.model;
 
 import com.spring.enumeration.Enum.Active;
 
-public class CompanyStatus {	
+public class Status {	
 	private Active status;
 
 	public Active getStatus() {
