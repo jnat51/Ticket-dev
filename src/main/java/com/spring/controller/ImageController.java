@@ -35,7 +35,7 @@ public class ImageController {
 	ImageService imageService;
 	
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@RequestParam("image") MultipartFile file) {
+	public ResponseEntity<?> insertImage(@RequestParam("image") MultipartFile file) {
 		try {
 			Image img = new Image();
 			String fileName = file.getOriginalFilename();

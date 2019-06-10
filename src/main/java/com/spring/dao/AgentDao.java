@@ -61,19 +61,18 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
-	public long getMaxPage() {
+	public Object getMaxPage() {
 		try {
 			String query = "SELECT COUNT(*) FROM tbl_agent";
 			
-			long row = (long) super.entityManager
+			Object row = (Object) super.entityManager
 					  .createNativeQuery(query).getSingleResult();
 			
 			System.out.println("test");
-			System.out.println(row);
 			
 			return row;			
 		} catch(Exception e) {
-			return 0;
+			return null;
 		}
 	}
 	

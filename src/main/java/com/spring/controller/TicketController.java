@@ -32,6 +32,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Stat;
 import com.spring.model.Admin;
 import com.spring.model.Agent;
+import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
@@ -245,12 +246,17 @@ public class TicketController {
 	public ResponseEntity<?> findTicketByBk(@PathVariable String ticketCode) {
 		try {
 			Ticket ticket = ticketService.findTicketByBk(ticketCode);
-
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			
+			Customer customer = ticket.getCustomer();
+			Company company = customer.getCompany();
+			
+			company.setCustomers(new ArrayList<Customer>());
+			
+			List<DetailTicket> dtl = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
-			for (DetailTicket detail : ticket.getDetails()) {
-				detail.setTicket(null);
-				details.add(detail);
+			for(DetailTicket details : ticket.getDetails()) {
+				details.setTicket(tick);
+				dtl.add(details);
 			}
 
 			return new ResponseEntity<>(ticket, HttpStatus.OK);
@@ -274,14 +280,14 @@ public class TicketController {
 		}
 	}
 
-	// ======================================*Detail
-	// Ticket*===========================================
+	// ======================================*Detail Ticket*===========================================
 
 	@PostMapping(value = "/dtl/{idHeader}")
 	public ResponseEntity<?> insertDetailTicket(@RequestParam String detailTicket,
 			@RequestParam(name = "ss", required = false) MultipartFile[] ss, @PathVariable String idHeader) {
 		try {
 			Date date = new Date();
+			LocalDateTime messageDate = LocalDateTime.now();
 			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 			DetailTicket detailObject = mapper.readValue(detailTicket, DetailTicket.class);
 
@@ -289,6 +295,7 @@ public class TicketController {
 			System.out.println(ss.length);
 			
 			detailObject.setTicket(ticketService.findTicketById(idHeader));
+			detailObject.setMessageDate(messageDate);
 
 			ticketService.insertDetailTicket(detailObject);
 			if (ss.length > 0) {

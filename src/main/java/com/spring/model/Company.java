@@ -109,7 +109,6 @@ public class Company {
 		return status;
 	}
 
-	@JsonDeserialize(using = EnumDeserializer.class)
 	public void setStatus(Active status) {
 		this.status = status;
 	}

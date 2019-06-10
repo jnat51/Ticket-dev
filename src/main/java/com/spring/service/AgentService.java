@@ -1,5 +1,6 @@
 package com.spring.service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,10 +95,11 @@ public class AgentService {
 		}
 	}
 	
-	public long getMaxPage() {
-		if(agentDao.getMaxPage() > 0)
+	public int getMaxPage() {
+		System.out.println(agentDao.getMaxPage());
+		if(((BigInteger) agentDao.getMaxPage()).intValue() > 0)
 		{
-			return agentDao.getMaxPage();
+			return ((BigInteger)agentDao.getMaxPage()).intValue();
 		}
 		else
 		{

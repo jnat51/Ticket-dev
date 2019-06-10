@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Agent;
+import com.spring.model.AgentPage;
 import com.spring.model.AgentPagination;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
@@ -232,11 +233,12 @@ public class AgentController {
 	}
 	
 	@GetMapping(value = "/{size}/{page}")
-	public ResponseEntity<?> getAllAgent(@PathVariable int size, @PathVariable int page){
+	public ResponseEntity<?> getAgentPagination(@PathVariable int size, @PathVariable int page){
 		try {
 			List<AgentPagination> agents = agentService.findWithPagination(size, page);
+			AgentPage agentsPage = new AgentPage();
 			
-			long max = 0;
+			int max = 0;
 			
 			if(agentService.getMaxPage()%size == 0)
 			{
@@ -247,9 +249,13 @@ public class AgentController {
 				max = (agentService.getMaxPage()/size)+1;
 			}
 			
+			System.out.println(agentService.getMaxPage());
 			System.out.println(max);
 			
-			return new ResponseEntity<>(agents, HttpStatus.OK);
+			agentsPage.setMaxPage(max);
+			agentsPage.setAgents(agents);
+			
+			return new ResponseEntity<>(agentsPage, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

@@ -10,7 +10,9 @@ public class MappingReport {
 	
 	private String name;
 	
-	private String company_name;
+	private String companyName;
+	
+	private String companyCode;
 	
 	private byte[] image;
 
@@ -30,12 +32,20 @@ public class MappingReport {
 		this.name = name;
 	}
 
-	public String getCompany_name() {
-		return company_name;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public void setCompany_name(String company_name) {
-		this.company_name = company_name;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
 	}
 
 	public byte[] getImage() {

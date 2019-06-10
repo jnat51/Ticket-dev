@@ -62,20 +62,6 @@ public class TicketDao extends ParentDao{
 			Ticket ticket = (Ticket) this.entityManager.createQuery(query)
 					.setParameter("ticketcode", ticketCode)
 					.getSingleResult();
-			
-			Customer customer = ticket.getCustomer();
-			Company company = customer.getCompany();
-			
-			company.setCustomers(new ArrayList<Customer>());
-			
-			List<DetailTicket> dtl = new ArrayList<DetailTicket>();
-			Ticket tick = new Ticket();
-			for(DetailTicket details : ticket.getDetails()) {
-				details.setTicket(tick);
-				dtl.add(details);
-			}
-			
-			super.entityManager.clear();
 
 			return ticket;
 		} catch (Exception e) {
