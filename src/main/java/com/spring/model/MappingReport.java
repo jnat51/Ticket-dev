@@ -14,6 +14,8 @@ public class MappingReport {
 	
 	private String companyCode;
 	
+	private String status;
+	
 	private byte[] image;
 
 	public String getId() {
@@ -46,6 +48,14 @@ public class MappingReport {
 
 	public void setCompanyCode(String companyCode) {
 		this.companyCode = companyCode;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public byte[] getImage() {

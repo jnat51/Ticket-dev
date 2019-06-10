@@ -135,4 +135,20 @@ public class CustomerDao extends ParentDao{
 			return null;
 		}
 	}
+	
+	public List<Customer> findAllWithStatus(String status){
+		try {
+			String query = "SELECT * FROM tbl_customer WHERE status = :status";
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			
+			customers = super.entityManager.createNativeQuery(query, Customer.class)
+					.setParameter("status", status)
+					.getResultList();
+
+			return customers;
+		}catch(Exception e){
+			return null;
+		}
+	}
 }

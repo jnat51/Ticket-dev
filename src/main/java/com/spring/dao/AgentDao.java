@@ -232,4 +232,20 @@ public class AgentDao extends ParentDao{
 			return null;
 		}
 	}
+	
+	public List<Agent> findAllWithStatus(String status){
+		try {
+			String query = "SELECT * FROM tbl_agent WHERE status = :status";
+			
+			List<Agent> agents = new ArrayList<Agent>();
+			
+			agents = super.entityManager.createNativeQuery(query, Agent.class)
+					.setParameter("status", status)
+					.getResultList();
+
+			return agents;
+		} catch(Exception e) {
+			return null;
+		}
+	}
 }

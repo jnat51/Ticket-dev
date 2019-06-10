@@ -232,6 +232,17 @@ public class AgentController {
 		}
 	}
 	
+	@GetMapping(value = "/status/{status}")
+	public ResponseEntity<?> getAllWithStatus(@PathVariable String status){
+		try {
+			List<Agent> agents = agentService.findAllWithStatus(status);			
+			
+			return new ResponseEntity<>(agents, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	@GetMapping(value = "/{size}/{page}")
 	public ResponseEntity<?> getAgentPagination(@PathVariable int size, @PathVariable int page){
 		try {
@@ -277,6 +288,8 @@ public class AgentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	
 
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Agent agent) {

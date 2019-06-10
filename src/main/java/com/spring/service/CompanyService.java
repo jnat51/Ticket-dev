@@ -84,4 +84,20 @@ public class CompanyService {
 			return company;
 		}
 	}
+	
+	public List<Company> findWithStatus (String status)
+	{
+		List<Company> companies = new ArrayList<Company>();
+		
+		if(companyDao.findAllWithStatus(status).size() > 0)
+		{
+			companies = companyDao.findAllWithStatus(status);
+			
+			return companies;
+		}
+		else
+		{
+			return companies;
+		}
+	}
 }

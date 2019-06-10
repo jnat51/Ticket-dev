@@ -3,14 +3,14 @@ package com.spring.model;
 import com.spring.enumeration.Enum.Active;
 
 public class CompanyStatus {	
-	private Active active;
+	private Active status;
 
-	public Active getActive() {
-		return active;
+	public Active getStatus() {
+		return status;
 	}
 
-	public void setActive(Active active) {
-		this.active = active;
+	public void setStatus(Active status) {
+		this.status = status;
 	}
 	
 }

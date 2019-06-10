@@ -78,7 +78,7 @@ public class MappingDao extends ParentDao {
 		List<MappingReport> mappings;
 		try {
 
-			String query = "SELECT tbl_mapping.id, tbl_company.company_code,tbl_company.company_name, tbl_agent.name, tbl_image.image "
+			String query = "SELECT tbl_mapping.id, tbl_company.company_code, tbl_company.company_name, tbl_company.status, tbl_agent.name, tbl_image.image "
 					+ "FROM tbl_mapping "
 					+ "JOIN tbl_company ON tbl_mapping.company_id = tbl_company.id "
 					+ "JOIN tbl_agent ON tbl_mapping.agent_id = tbl_agent.id "

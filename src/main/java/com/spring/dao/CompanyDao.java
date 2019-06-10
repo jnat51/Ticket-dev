@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.Company;
+import com.spring.model.Customer;
 
 @Repository
 @Transactional
@@ -76,6 +77,22 @@ public class CompanyDao extends ParentDao{
 			return Company;
 		}
 		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public List<Company> findAllWithStatus(String status){
+		try {
+			String query = "SELECT * FROM tbl_company WHERE status = :status";
+			
+			List<Company> companies = new ArrayList<Company>();
+			
+			companies = super.entityManager.createNativeQuery(query, Company.class)
+					.setParameter("status", status)
+					.getResultList();
+
+			return companies;
+		}catch(Exception e){
 			return null;
 		}
 	}

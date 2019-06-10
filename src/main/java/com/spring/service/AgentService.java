@@ -153,6 +153,22 @@ public class AgentService {
 		}
 	}
 	
+	public List<Agent> findAllWithStatus(String status)
+	{
+		List<Agent> agents = new ArrayList<Agent>();
+		
+		if(agentDao.findAllWithStatus(status).size() > 0)
+		{
+			agents = agentDao.findAllWithStatus(status);
+			
+			return agents;
+		}
+		else
+		{
+			return agents;
+		}
+	}
+	
 	public boolean passwordVerification(String password) throws ErrorException
 	{
 		if(agentDao.passwordVerification(password) == false) {

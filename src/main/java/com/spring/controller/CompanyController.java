@@ -213,10 +213,10 @@ public class CompanyController {
 		try {
 			Company company= companyService.findCompanyById(id);
 
-			company.setStatus(companyStatus.getActive());
+			company.setStatus(companyStatus.getStatus());
 
 			companyService.updateCompany(company);
-			return new ResponseEntity<>("Status changed to " + companyStatus.getActive(), HttpStatus.OK);
+			return new ResponseEntity<>("Status changed to " + companyStatus.getStatus(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -281,6 +281,31 @@ public class CompanyController {
 			}
 			
 			company.setCustomers(customers);
+
+			return new ResponseEntity<>(company, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/status/{status}")
+	public ResponseEntity<?> getAllCompanyWithStatus(@PathVariable String status) {
+		try {			
+			List<Company> company = companyService.findWithStatus(status);
+			System.out.println(status);
+			
+			System.out.println(company.size());
+			
+			Company comp = new Company();
+			
+			for (Company co : company) {
+				List<Customer> customers = new ArrayList<Customer>();
+				for (Customer cust : co.getCustomers()) {
+					cust.setCompany(comp);
+					customers.add(cust);
+				}
+				co.setCustomers(customers);
+			}
 
 			return new ResponseEntity<>(company, HttpStatus.OK);
 		} catch (Exception e) {

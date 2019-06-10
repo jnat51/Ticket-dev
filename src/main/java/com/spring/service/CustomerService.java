@@ -111,6 +111,21 @@ public class CustomerService {
 		}
 	}
 	
+	public List<Customer> findWithStatus(String status){
+		List<Customer> customers = new ArrayList<Customer>();
+		
+		if(customerDao.findAllWithStatus(status).size() > 0)
+		{
+			customers = customerDao.findAllWithStatus(status);
+			
+			return customers;
+		}
+		else
+		{
+			return customers;
+		}
+	}
+	
 	public Customer resetPassword(String email) throws ErrorException
 	{
 		if(customerDao.findByEmail(email) != null)

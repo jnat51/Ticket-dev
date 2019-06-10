@@ -353,4 +353,24 @@ public class CustomerController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@GetMapping(value = "/status/{status}")
+	public ResponseEntity<?> getAllCustomerWithStatus(@PathVariable String status) {
+		try {
+			List<Customer> customers = customerService.findWithStatus(status);
+
+			System.out.println(customers.size());
+
+			for (Customer cust : customers) {
+				Company comp = cust.getCompany();
+				comp.setCustomers(new ArrayList<Customer>());
+
+				cust.setCompany(comp);
+			}
+
+			return new ResponseEntity<>(customers, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 }
