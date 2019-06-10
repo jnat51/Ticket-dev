@@ -171,7 +171,7 @@ public class CustomerController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}")
+	@PatchMapping(value = "/image/{id}")
 	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
 		try {
 			Customer customer = customerService.findCustomerById(id);
@@ -203,7 +203,7 @@ public class CustomerController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}/status")
+	@PatchMapping(value = "/status/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody String strStatus) {
 		try {
 			Customer customer = customerService.findCustomerById(id);

@@ -209,7 +209,7 @@ public class CompanyController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}/status")
+	@PatchMapping(value = "/status/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String strStatus) {
 		try {
 			Company company= companyService.findCompanyById(id);
@@ -226,7 +226,7 @@ public class CompanyController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}/image")
+	@PatchMapping(value = "/image/{id}")
 	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
 		try {
 			Company company = companyService.findCompanyById(id);

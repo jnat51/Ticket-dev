@@ -151,7 +151,7 @@ public class AgentController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}/image")
+	@PatchMapping(value = "/image/{id}")
 	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
 		try {
 			Agent agent = agentService.findById(id);
@@ -183,7 +183,7 @@ public class AgentController {
 		}
 	}
 	
-	@PatchMapping(value = "/{id}/status")
+	@PatchMapping(value = "/status/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String strStatus) {
 		try {
 			Agent agent = agentService.findById(id);
