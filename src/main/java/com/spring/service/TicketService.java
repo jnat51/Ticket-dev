@@ -75,23 +75,8 @@ public class TicketService {
 	
 	public Ticket findTicketById(String id) {
 		Ticket ticket = new Ticket();
-
-		if (ticketDao.findTicketById(id) != null) {
+		if(ticketDao.findTicketById(id) != null) {
 			ticket = ticketDao.findTicketById(id);
-			
-			Customer customer = ticket.getCustomer();
-			Company company = customer.getCompany();
-			
-			company.setCustomers(new ArrayList<Customer>());
-			
-			List<DetailTicket> details = new ArrayList<DetailTicket>();
-			Ticket tick = new Ticket();
-			for(DetailTicket detail : ticket.getDetails()) {
-				detail.setTicket(tick);
-				details.add(detail);
-			}
-			
-			ticket.setDetails(details);
 			
 			return ticket;
 		} else {

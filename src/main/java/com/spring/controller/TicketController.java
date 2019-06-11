@@ -175,6 +175,7 @@ public class TicketController {
 					}
 				}
 			}
+			
 			int i = 1;
 			SimpleMailMessage mail = new SimpleMailMessage();
 			// setTo(from, to)
@@ -298,6 +299,7 @@ public class TicketController {
 			detailObject.setMessageDate(messageDate);
 
 			ticketService.insertDetailTicket(detailObject);
+			
 			if (ss.length > 0) {
 				for (MultipartFile mf : ss) {
 					byte[] data = mf.getBytes();
@@ -314,9 +316,8 @@ public class TicketController {
 					subDetailTicket.setFileName(fileName);
 					subDetailTicket.setMime(mime);
 					subDetailTicket.setSs(data);
-					subDetailTicket.setDetailId(ticketService
-							.findDetailTicketByBk(detailObject.getTicket().getId(), detailObject.getMessageDate())
-							.getId());
+					subDetailTicket.setDetailId(
+					ticketService.findDetailTicketByBk(idHeader, detailObject.getMessageDate()).getId());
 
 					ticketService.insertSubDetailTicket(subDetailTicket);
 				}

@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.enumeration.Enum.Active;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.Image;
@@ -301,8 +302,12 @@ public class CustomerController {
 
 			String msg;
 
-			if (matched == true) {
-				msg = "Login success!";
+			if(matched == true) {
+				if(customerService.findCustomerByBk(customer.getUsername()).getStatus().equals(Active.active)) {
+					msg = "Login success!";
+				}else {
+					msg = "Your account is non-active.";
+				}
 			} else {
 				msg = "Wrong username/password";
 			}
