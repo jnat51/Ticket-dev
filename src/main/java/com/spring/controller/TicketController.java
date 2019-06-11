@@ -61,43 +61,43 @@ public class TicketController {
 
 	// ======================================*Header
 	// Ticket*===========================================
-	@PostMapping(value = "/hdr")
-	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
-		try {
-			Date date = new Date();
-
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
-			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
-			Customer customer = customerService.findCustomerById(ticket.getCustomer().getId());
-
-			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
-			System.out.println(ticketCode);
-			
-			ticket.setTicketCode(ticketCode);
-			ticket.setTicketDate(date);
-
-			System.out.println("insert ticket:");
-			System.out.println(ticket.getTicketCode());
-			System.out.println(ticket.getTicketDate());
-
-			System.out.println(ticket.getDetails().size());
-
-			ticketService.insertTicket(ticket);
-
-			Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
-
-			if (ticket.getDetails().size() > 0) {
-				for (DetailTicket dtl : ticket.getDetails()) {
-					dtl.setTicket(tick);
-					ticketService.insertDetailTicket(dtl);
-				}
-			}
-
-			return new ResponseEntity<>("insert success", HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@PostMapping(value = "/hdr")
+//	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
+//		try {
+//			Date date = new Date();
+//
+//			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+//			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
+//			Customer customer = customerService.findCustomerById(ticket.getCustomer().getId());
+//
+//			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
+//			System.out.println(ticketCode);
+//			
+//			ticket.setTicketCode(ticketCode);
+//			ticket.setTicketDate(date);
+//
+//			System.out.println("insert ticket:");
+//			System.out.println(ticket.getTicketCode());
+//			System.out.println(ticket.getTicketDate());
+//
+//			System.out.println(ticket.getDetails().size());
+//
+//			ticketService.insertTicket(ticket);
+//
+//			Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
+//
+//			if (ticket.getDetails().size() > 0) {
+//				for (DetailTicket dtl : ticket.getDetails()) {
+//					dtl.setTicket(tick);
+//					ticketService.insertDetailTicket(dtl);
+//				}
+//			}
+//
+//			return new ResponseEntity<>("insert success", HttpStatus.CREATED);
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//		}
+//	}
 
 	@PostMapping(value = "/hdr/sub")
 	public ResponseEntity<?> insertTicketWithSs(@RequestParam String ticket,

@@ -310,8 +310,6 @@ public class AgentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
-	
 
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Agent agent) {
@@ -323,7 +321,11 @@ public class AgentController {
 			String msg;
 			
 			if(matched == true) {
-				msg = "Login success!";
+				if(agentService.findByBk(agent.getUsername()).getStatus().equals(Active.active)) {
+					msg = "Login success!";
+				}else {
+					msg = "Your account is non-active.";
+				}
 			} else {
 				msg = "Wrong username/password";
 			}
