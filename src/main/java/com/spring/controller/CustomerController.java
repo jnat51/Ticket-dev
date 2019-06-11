@@ -204,12 +204,9 @@ public class CustomerController {
 	}
 	
 	@PatchMapping(value = "/status/{id}")
-	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody String strStatus) {
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody Status status) {
 		try {
 			Customer customer = customerService.findCustomerById(id);
-
-			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-			Status status = mapper.readValue(strStatus, Status.class);
 			
 			customer.setStatus(status.getStatus());
 

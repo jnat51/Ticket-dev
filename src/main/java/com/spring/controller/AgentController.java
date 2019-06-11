@@ -184,13 +184,10 @@ public class AgentController {
 	}
 	
 	@PatchMapping(value = "/status/{id}")
-	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String strStatus) {
+	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody Status status) {
 		try {
 			Agent agent = agentService.findById(id);
 			
-			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-			Status status = mapper.readValue(strStatus, Status.class);
-
 			agent.setStatus(status.getStatus());
 
 			agentService.update(agent);
