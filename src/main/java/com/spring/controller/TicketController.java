@@ -227,6 +227,13 @@ public class TicketController {
 	public ResponseEntity<?> findTicketById(@PathVariable String id) {
 		try {
 			Ticket ticket = ticketService.findTicketById(id);
+			
+			Company company = ticket.getCustomer().getCompany();
+			
+			List<Customer> customers = new ArrayList<Customer>();
+			company.setCustomers(customers);
+			
+			ticket.getCustomer().setCompany(company);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
@@ -238,6 +245,64 @@ public class TicketController {
 			ticket.setDetails(details);
 
 			return new ResponseEntity<>(ticket, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/hdr/customer/{customerId}")
+	public ResponseEntity<?> findTicketByCustomer(@PathVariable String customerId) {
+		try {
+			List<Ticket> tickets = ticketService.findByCustomer(customerId);
+
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			Ticket tick = new Ticket();
+			for(Ticket ticket : tickets) {
+				Company company = ticket.getCustomer().getCompany();
+				
+				List<Customer> customers = new ArrayList<Customer>();
+				company.setCustomers(customers);
+				
+				ticket.getCustomer().setCompany(company);
+				
+				for (DetailTicket detail : ticket.getDetails()) {
+					detail.setTicket(null);
+					details.add(detail);
+				}
+				
+				ticket.setDetails(details);
+			}
+
+			return new ResponseEntity<>(tickets, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/hdr/company/{companyId}")
+	public ResponseEntity<?> findTicketByCompany(@PathVariable String companyId) {
+		try {
+			List<Ticket> tickets = ticketService.findByCustomer(companyId);
+
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			Ticket tick = new Ticket();
+			for(Ticket ticket : tickets) {
+				Company company = ticket.getCustomer().getCompany();
+				
+				List<Customer> customers = new ArrayList<Customer>();
+				company.setCustomers(customers);
+				
+				ticket.getCustomer().setCompany(company);
+				
+				for (DetailTicket detail : ticket.getDetails()) {
+					detail.setTicket(null);
+					details.add(detail);
+				}
+				
+				ticket.setDetails(details);
+			}
+
+			return new ResponseEntity<>(tickets, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

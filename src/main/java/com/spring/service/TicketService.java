@@ -73,6 +73,32 @@ public class TicketService {
 		}
 	}
 	
+	public List<Ticket> findByCustomer(String customerId){
+		List<Ticket> tickets = new ArrayList<Ticket>();
+		
+		if(ticketDao.findByCustomer(customerId).size() > 0) {
+			tickets = ticketDao.findByCustomer(customerId);
+			
+			return tickets;
+		}
+		else {
+			return tickets;
+		}
+	}
+	
+	public List<Ticket> findByCompany(String companyId){
+		List<Ticket> tickets = new ArrayList<Ticket>();
+		
+		if(ticketDao.findByCompany(companyId).size() > 0) {
+			tickets = ticketDao.findByCompany(companyId);
+			
+			return tickets;
+		}
+		else {
+			return tickets;
+		}
+	}
+	
 	public Ticket findTicketById(String id) {
 		Ticket ticket = new Ticket();
 		if(ticketDao.findTicketById(id) != null) {

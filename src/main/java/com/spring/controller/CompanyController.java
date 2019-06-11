@@ -34,14 +34,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Agent;
 import com.spring.model.Company;
-import com.spring.model.Status;
 import com.spring.model.Customer;
 import com.spring.model.Image;
+import com.spring.model.Mapping;
+import com.spring.model.Status;
 import com.spring.service.CompanyService;
 import com.spring.service.CustomerService;
 import com.spring.service.ImageService;
+import com.spring.service.MappingService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -54,6 +55,8 @@ public class CompanyController {
 	CustomerService customerService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+	MappingService mappingService;
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
@@ -171,6 +174,12 @@ public class CompanyController {
 
 				javaMailSender.send(email);
 			}
+			Company comp = new Company();
+			comp.setId(companyService.findCompanyByBk(companyObject.getCompanyCode()).getId());
+			Mapping mapping = new Mapping();
+			mapping.setCompany(comp);
+			
+			mappingService.insert(mapping);
 
 			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		}catch(Exception e) {
