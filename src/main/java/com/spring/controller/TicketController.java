@@ -99,7 +99,7 @@ public class TicketController {
 //		}
 //	}
 
-	@PostMapping(value = "/hdr/sub")
+	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicketWithSs(@RequestParam String ticket,
 			@RequestParam(name = "ss", required = false) MultipartFile[] ss) {
 		try {
@@ -257,6 +257,36 @@ public class TicketController {
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
+			for(Ticket ticket : tickets) {
+				Company company = ticket.getCustomer().getCompany();
+				
+				List<Customer> customers = new ArrayList<Customer>();
+				company.setCustomers(customers);
+				
+				ticket.getCustomer().setCompany(company);
+				
+				for (DetailTicket detail : ticket.getDetails()) {
+					detail.setTicket(null);
+					details.add(detail);
+				}
+				
+				ticket.setDetails(details);
+			}
+
+			return new ResponseEntity<>(tickets, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/hdr/status/{status}")
+	public ResponseEntity<?> findTicketStatus(@PathVariable String status) {
+		try {
+			System.out.println(ticketService.findByStatus(status).size());
+			
+			List<Ticket> tickets = ticketService.findByStatus(status);
+
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			for(Ticket ticket : tickets) {
 				Company company = ticket.getCustomer().getCompany();
 				

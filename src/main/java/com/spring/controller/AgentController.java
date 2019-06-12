@@ -96,9 +96,6 @@ public class AgentController {
 			
 			String pass = passwordGenerator();
 			String encryptedPassword = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
-			System.out.println(pass);
-			System.out.println(encryptedPassword);
 
 			ag.setEmail(agent.getEmail());
 			ag.setUsername(agent.getUsername());
@@ -107,8 +104,6 @@ public class AgentController {
 			ag.setStatus(Active.active);
 			
 			String msg = agentService.insert(ag);
-			
-			System.out.println("test");
 			
 			Image img = new Image();
 			
@@ -139,11 +134,7 @@ public class AgentController {
 	        email.setSubject("Welcome "+ agent.getName() +", New Agent!");
 	        email.setText("Here is your username and password to login to your account.\nUsername: "+ agent.getUsername()+ "\nPassword: " + pass);
 	        
-	        System.out.println("send...");
-	        
 	        javaMailSender.send(email);
-	        
-	        System.out.println("sent");
 			
 			return new ResponseEntity<>(msg, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -203,9 +194,6 @@ public class AgentController {
 			Agent ag = agentService.findById(agent.getId());
 			String pass = agent.getPassword();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-			System.out.println(pass);
-			System.out.println(generatedSecuredPasswordHash);
 			
 			ag.setId(agent.getId());
 			ag.setEmail(agent.getEmail());
@@ -282,9 +270,6 @@ public class AgentController {
 				max = (agentService.getMaxPage()/size)+1;
 			}
 			
-			System.out.println(agentService.getMaxPage());
-			System.out.println(max);
-			
 			agentsPage.setMaxPage(max);
 			agentsPage.setAgents(agents);
 			
@@ -316,7 +301,6 @@ public class AgentController {
 		try {
 			boolean matched = BCrypt.checkpw(agent.getPassword(),
 					agentService.findByBk(agent.getUsername()).getPassword());
-			System.out.println(matched);
 			
 			String msg;
 			

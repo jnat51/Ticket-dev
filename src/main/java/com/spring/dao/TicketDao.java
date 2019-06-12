@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.enumeration.Enum.Stat;
 import com.spring.model.Company;
 import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
@@ -95,6 +96,35 @@ public class TicketDao extends ParentDao{
 
 			return ticket;
 		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Ticket> findByStatus (String status) {
+		try {
+			String query = "FROM Ticket WHERE status = :status";
+			
+			List<Ticket> tickets = new ArrayList<Ticket>();
+			
+			if(status.equals("open")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.open)
+					.getResultList();
+			}
+			else if(status.equals("reopen")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.reopen)
+					.getResultList();
+			}
+			else if(status.equals("close")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.close)
+					.getResultList();
+			}
+			
+			return tickets;
+		}catch (Exception e) {
 			return null;
 		}
 	}

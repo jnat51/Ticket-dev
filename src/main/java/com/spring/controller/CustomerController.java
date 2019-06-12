@@ -82,6 +82,7 @@ public class CustomerController {
 			cust.setName(customer.getName());
 			cust.setPosition(customer.getPosition());
 			cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
+			cust.setStatus(Active.active);
 			System.out.println(customer.getCompany().getId());
 			
 			if (image != null) {
