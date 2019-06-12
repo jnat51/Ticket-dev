@@ -281,9 +281,7 @@ public class TicketController {
 	
 	@GetMapping(value = "/hdr/status/{status}")
 	public ResponseEntity<?> findTicketStatus(@PathVariable String status) {
-		try {
-			System.out.println(ticketService.findByStatus(status).size());
-			
+		try {			
 			List<Ticket> tickets = ticketService.findByStatus(status);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();

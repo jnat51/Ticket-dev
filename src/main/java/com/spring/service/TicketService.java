@@ -102,8 +102,6 @@ public class TicketService {
 	public List<Ticket> findByStatus(String ticketStatus){
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		
-		System.out.println(tickets.size());
-		
 		if(ticketDao.findByStatus(ticketStatus).size() > 0) {
 			tickets = ticketDao.findByStatus(ticketStatus);
 			
