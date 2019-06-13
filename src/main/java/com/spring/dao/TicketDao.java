@@ -103,14 +103,7 @@ public class TicketDao extends ParentDao{
 	@SuppressWarnings("unchecked")
 	public List<Ticket> findByStatus (String status) {
 		try {
-			//String query = "FROM Ticket WHERE status = :status";
-			
-			String query = "SELECT tbl_ticket.*, tbl_customer.*, tbl_agent.*, tbl_image.image " + 
-					"FROM tbl_ticket " + 
-					"JOIN tbl_customer ON tbl_ticket.customer_id = tbl_customer.id " + 
-					"JOIN tbl_agent ON tbl_ticket.agent_id = tbl_agent.id " + 
-					"JOIN tbl_image ON tbl_agent.image_id = tbl_image.id " + 
-					"WHERE tbl_ticket.status = :status";
+			String query = "FROM Ticket WHERE status = :status";
 			
 			List<Ticket> tickets = new ArrayList<Ticket>();
 			
@@ -118,21 +111,21 @@ public class TicketDao extends ParentDao{
 					.setParameter("status", status)
 					.getResultList();
 			
-//			if(status.equals("open")) {
-//			tickets = this.entityManager.createQuery(query)
-//					.setParameter("status", Stat.open)
-//					.getResultList();
-//			}
-//			else if(status.equals("reopen")) {
-//			tickets = this.entityManager.createQuery(query)
-//					.setParameter("status", Stat.reopen)
-//					.getResultList();
-//			}
-//			else if(status.equals("close")) {
-//			tickets = this.entityManager.createQuery(query)
-//					.setParameter("status", Stat.close)
-//					.getResultList();
-//			}
+			if(status.equals("open")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.open)
+					.getResultList();
+			}
+			else if(status.equals("reopen")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.reopen)
+					.getResultList();
+			}
+			else if(status.equals("close")) {
+			tickets = this.entityManager.createQuery(query)
+					.setParameter("status", Stat.close)
+					.getResultList();
+			}
 			
 			return tickets;
 		}catch (Exception e) {
