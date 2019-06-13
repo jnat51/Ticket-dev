@@ -205,7 +205,9 @@ public class CompanyController {
 				image.setFileName(fileName);
 				image.setMime(logo.getContentType());
 				
+				if(comp.getImageId() != null) {
 				imageService.delete(comp.getImageId());
+				}
 				imageService.insert(image);
 				comp.setImageId(imageService.findByBk(fileName, data).getId());
 			}
