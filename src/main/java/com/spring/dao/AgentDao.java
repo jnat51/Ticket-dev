@@ -8,10 +8,10 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.model.AdminLogin;
-import com.spring.model.Agent;
-import com.spring.model.AgentLogin;
-import com.spring.model.AgentPagination;
+import com.spring.model.agent.Agent;
+import com.spring.model.agent.AgentLogin;
+import com.spring.model.agent.AgentPagination;
+import com.spring.model.agent.AgentWithImage;
 
 @Repository
 @Transactional
@@ -36,6 +36,25 @@ public class AgentDao extends ParentDao{
 			
 			Agent agent = (Agent) super.entityManager
 					  .createQuery(query)
+					  .setParameter("id",id).getSingleResult();
+			
+			return agent;
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+	}
+	
+	public AgentWithImage findWithImage(String id)
+	{
+		try {
+			String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_agent.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " + 
+					"LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id " + 
+					"WHERE tbl_agent.id = :id";
+			
+			AgentWithImage agent = (AgentWithImage) super.entityManager
+					  .createNativeQuery(query)
 					  .setParameter("id",id).getSingleResult();
 			
 			return agent;
@@ -94,28 +113,6 @@ public class AgentDao extends ParentDao{
 			catch(Exception e)
 			{
 				return null;
-			}
-	}
-	
-	public boolean login(String username, String password)
-	{
-		try {
-			String query = "from Agent where username = :username";
-			
-			Agent agent = (Agent) super.entityManager
-					  .createQuery(query)
-					  .setParameter("username",username)
-					  .getSingleResult();
-			
-			System.out.println("Welcome " + agent.getName());
-			
-			return true;
-			}
-			catch(Exception e)
-			{
-				System.out.println("Wrong username/password.");
-				
-				return false;
 			}
 	}
 	

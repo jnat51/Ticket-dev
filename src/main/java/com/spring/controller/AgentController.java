@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Agent;
-import com.spring.model.AgentLogin;
-import com.spring.model.AgentPage;
-import com.spring.model.AgentPagination;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
+import com.spring.model.agent.Agent;
+import com.spring.model.agent.AgentLogin;
+import com.spring.model.agent.AgentPage;
+import com.spring.model.agent.AgentPagination;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
 

@@ -1,4 +1,4 @@
-package com.spring.model;
+package com.spring.model.agent;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Entity
-public class AdminPagination {
+public class AgentPagination {
 	@Id
 	private String id;	
 	private String username;	

@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.model.Admin;
-import com.spring.model.AdminLogin;
-import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
+import com.spring.model.admin.Admin;
+import com.spring.model.admin.AdminLogin;
+import com.spring.model.agent.Agent;
 import com.spring.service.AdminService;
 import com.spring.service.ImageService;
 

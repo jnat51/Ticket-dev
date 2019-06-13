@@ -1,4 +1,4 @@
-package com.spring.model;
+package com.spring.model.agent;
 
 import java.util.List;
 

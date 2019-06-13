@@ -1,4 +1,4 @@
-package com.spring.model;
+package com.spring.model.customer;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,7 +19,7 @@ public class CustomerWithImage {
 	private String email;
 	private String position;
 	private String imageId;
-	private Active status;
+	private String status;
 	private byte[] image;
 
 	public String getId() {
@@ -85,11 +85,11 @@ public class CustomerWithImage {
 		this.imageId = imageId;
 	}
 
-	public Active getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Active status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CustomerDao;
 import com.spring.exception.ErrorException;
-import com.spring.model.Customer;
-import com.spring.model.CustomerLogin;
-import com.spring.model.CustomerWithImage;
+import com.spring.model.customer.Customer;
+import com.spring.model.customer.CustomerLogin;
+import com.spring.model.customer.CustomerWithImage;
 
 @Service
 public class CustomerService {

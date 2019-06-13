@@ -1,4 +1,4 @@
-package com.spring.model;
+package com.spring.model.customer;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,13 +7,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Entity
-public class AdminLogin {
+public class CustomerLogin {
 	@Id
 	private String id;
 	private String username;
 	private String password;
 	private String name;
 	private String email;
+	private String status;
+	private String position;
+	private String companyName;
+	private String companyCode;
+	private String companyId;
 	private byte[] image;
 
 	public String getId() {
@@ -56,11 +61,51 @@ public class AdminLogin {
 		this.email = email;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public byte[] getImage() {
 		return image;
 	}
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+
+	public String getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 }

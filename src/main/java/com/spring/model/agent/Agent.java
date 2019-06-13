@@ -1,24 +1,45 @@
-package com.spring.model;
+package com.spring.model.agent;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import org.springframework.stereotype.Component;
+import org.hibernate.annotations.GenericGenerator;
 
 import com.spring.enumeration.Enum.Active;
 
 @Entity
-@Component
-public class AgentWithImage {
+@Table(name = "tbl_agent", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
+public class Agent {
 	@Id
+	@Column(name = "id")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
 	private String id;
+
+	@Column(name = "username")
 	private String username;
+
+	@Column(name = "password")
 	private String password;
+
+	@Column(name = "name")
 	private String name;
+
+	@Column(name = "email")
 	private String email;
+
+	@Column(name = "image_id")
 	private String imageId;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
 	private Active status;
-	private byte[] image;
 
 	public String getId() {
 		return id;
@@ -74,13 +95,5 @@ public class AgentWithImage {
 
 	public void setStatus(Active status) {
 		this.status = status;
-	}
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
 	}
 }

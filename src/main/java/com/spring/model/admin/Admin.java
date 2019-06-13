@@ -1,21 +1,18 @@
-package com.spring.model;
+package com.spring.model.admin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.spring.enumeration.Enum.Active;
-
 @Entity
-@Table(name = "tbl_agent", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
-public class Agent {
+@Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
+public class Admin {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "UUID")
@@ -24,7 +21,6 @@ public class Agent {
 
 	@Column(name = "username")
 	private String username;
-
 	@Column(name = "password")
 	private String password;
 
@@ -36,10 +32,6 @@ public class Agent {
 
 	@Column(name = "image_id")
 	private String imageId;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
-	private Active status;
 
 	public String getId() {
 		return id;
@@ -87,13 +79,5 @@ public class Agent {
 
 	public void setImageId(String imageId) {
 		this.imageId = imageId;
-	}
-
-	public Active getStatus() {
-		return status;
-	}
-
-	public void setStatus(Active status) {
-		this.status = status;
 	}
 }

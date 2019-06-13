@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.spring.model.agent.Agent;
+
 @Entity
 @Table(name = "tbl_mapping")
 public class Mapping {

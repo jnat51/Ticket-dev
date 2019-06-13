@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.AgentDao;
 import com.spring.enumeration.Enum.Active;
 import com.spring.exception.ErrorException;
-import com.spring.model.Agent;
-import com.spring.model.AgentLogin;
-import com.spring.model.AgentPagination;
+import com.spring.model.agent.Agent;
+import com.spring.model.agent.AgentLogin;
+import com.spring.model.agent.AgentPagination;
 
 @Service
 public class AgentService {

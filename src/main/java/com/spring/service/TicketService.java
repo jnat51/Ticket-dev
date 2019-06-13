@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.TicketDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.Company;
-import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.customer.Customer;
 
 @Service
 public class TicketService {

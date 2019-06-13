@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.enumeration.Enum.Stat;
 import com.spring.model.Company;
-import com.spring.model.Customer;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.customer.Customer;
 
 @Repository
 @Transactional
@@ -106,10 +106,6 @@ public class TicketDao extends ParentDao{
 			String query = "FROM Ticket WHERE status = :status";
 			
 			List<Ticket> tickets = new ArrayList<Ticket>();
-			
-			tickets = this.entityManager.createNativeQuery(query)
-					.setParameter("status", status)
-					.getResultList();
 			
 			if(status.equals("open")) {
 			tickets = this.entityManager.createQuery(query)

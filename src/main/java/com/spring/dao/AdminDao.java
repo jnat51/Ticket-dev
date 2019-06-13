@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.spring.model.Admin;
-import com.spring.model.AdminLogin;
-import com.spring.model.AdminPagination;
+import com.spring.model.admin.Admin;
+import com.spring.model.admin.AdminLogin;
+import com.spring.model.admin.AdminPagination;
 
 @Repository
 public class AdminDao extends ParentDao {

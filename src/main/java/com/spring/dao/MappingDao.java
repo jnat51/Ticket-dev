@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.model.Customer;
 import com.spring.model.Mapping;
 import com.spring.model.MappingReport;
+import com.spring.model.customer.Customer;
 
 @Repository
 @Transactional

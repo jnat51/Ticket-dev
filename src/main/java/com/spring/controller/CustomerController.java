@@ -30,12 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.enumeration.Enum.Active;
 import com.spring.model.Company;
-import com.spring.model.Customer;
-import com.spring.model.CustomerLogin;
-import com.spring.model.CustomerWithImage;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
+import com.spring.model.customer.Customer;
+import com.spring.model.customer.CustomerLogin;
+import com.spring.model.customer.CustomerWithImage;
 import com.spring.service.CompanyService;
 import com.spring.service.CustomerService;
 import com.spring.service.ImageService;

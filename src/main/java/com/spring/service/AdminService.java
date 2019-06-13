@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.AdminDao;
 import com.spring.exception.ErrorException;
-import com.spring.model.Admin;
-import com.spring.model.AdminLogin;
-import com.spring.model.AdminPagination;
+import com.spring.model.admin.Admin;
+import com.spring.model.admin.AdminLogin;
+import com.spring.model.admin.AdminPagination;
 
 @Service
 public class AdminService {

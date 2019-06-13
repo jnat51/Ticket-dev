@@ -19,6 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.EnumDeserializer;
 import com.spring.enumeration.Enum.Active;
+import com.spring.model.customer.Customer;
 
 @Entity
 @Table(name = "tbl_company", uniqueConstraints = @UniqueConstraint(columnNames = {"company_code"}))

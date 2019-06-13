@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.Company;
-import com.spring.model.Customer;
+import com.spring.model.customer.Customer;
 
 @Repository
 @Transactional
