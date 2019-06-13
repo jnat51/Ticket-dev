@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CustomerDao;
 import com.spring.exception.ErrorException;
-import com.spring.model.Admin;
-import com.spring.model.Agent;
 import com.spring.model.Customer;
+import com.spring.model.CustomerLogin;
+import com.spring.model.CustomerWithImage;
 
 @Service
 public class CustomerService {
@@ -62,6 +62,33 @@ public class CustomerService {
 			return cust;
 		}
 	}
+	
+	public CustomerWithImage findCustomerWithImage(String idCustomer) {
+		CustomerWithImage cust = new CustomerWithImage();
+
+		if (customerDao.findByIdWithImage(idCustomer) != null) {
+			return customerDao.findByIdWithImage(idCustomer);
+		} else {
+			return cust;
+		}
+	}
+	
+	public CustomerLogin login(String username) throws ErrorException {
+		CustomerLogin customer = new CustomerLogin();
+		
+		if(customerDao.login(username) != null)
+		{
+			customer = customerDao.login(username);
+		}
+		if(customer.getStatus().equals("active"))
+		{
+			return customer;
+		}
+		else
+		{
+			throw new ErrorException("User is non-active");
+		}
+	}
 
 	public Customer findCustomerByBk(String username) {
 		Customer cust = new Customer();
@@ -80,18 +107,6 @@ public class CustomerService {
 		}
 		else {
 			return true;
-		}
-	}
-	
-	public Customer login(String username) throws ErrorException
-	{
-		Customer customer = new Customer();
-		
-		if(customerDao.findCustomerByBk(username) == null) {
-			throw new ErrorException("Wrong username/password!");
-		}
-		else {
-			return customer;
 		}
 	}
 	

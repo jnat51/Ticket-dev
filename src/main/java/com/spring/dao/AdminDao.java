@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.spring.model.Admin;
+import com.spring.model.AdminLogin;
 import com.spring.model.AdminPagination;
 
 @Repository
@@ -71,6 +72,22 @@ public class AdminDao extends ParentDao {
 			String query = "from Admin where username = :username";
 
 			Admin admin = (Admin) super.entityManager.createQuery(query).setParameter("username", username)
+					.getSingleResult();
+
+			return admin;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public AdminLogin login(String username) {
+		try {
+			System.out.println("login");
+			String query = "SELECT tbl_admin.id, tbl_admin.username, tbl_admin.password, tbl_admin.name, tbl_admin.email, tbl_image.image FROM tbl_admin " + 
+					"LEFT JOIN tbl_image ON tbl_admin.image_id = tbl_image.id " + 
+					"WHERE tbl_admin.username = :username";
+
+			AdminLogin admin = (AdminLogin) super.entityManager.createNativeQuery(query, AdminLogin.class).setParameter("username", username)
 					.getSingleResult();
 
 			return admin;

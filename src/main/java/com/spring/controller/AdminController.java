@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Admin;
+import com.spring.model.AdminLogin;
 import com.spring.model.Agent;
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
@@ -247,20 +248,6 @@ public class AdminController {
 		}
 	}
 
-//	@GetMapping(value = "/login")
-//	public ResponseEntity<?> login(@RequestBody Admin admin) {
-//		try {
-//			System.out.println(adminService.findByBk(admin.getUsername()).getPassword());
-//			boolean matched = BCrypt.checkpw(admin.getPassword(),
-//					adminService.findByBk(admin.getUsername()).getPassword());
-//			System.out.println(matched);
-//
-//			return new ResponseEntity<>(matched, HttpStatus.OK);
-//		} catch (Exception e) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//		}
-//	}
-
 	@GetMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Admin admin) {
 		try {
@@ -268,15 +255,15 @@ public class AdminController {
 					adminService.findByBk(admin.getUsername()).getPassword());
 			System.out.println(matched);
 			
-			String msg;
+			AdminLogin adm;
 			
 			if(matched == true) {
-				msg = "Login success!";
+				adm = adminService.login(admin.getUsername());
 			} else {
-				msg = "Wrong username/password";
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
 			}
 
-			return new ResponseEntity<>(msg, HttpStatus.OK);
+			return new ResponseEntity<>(adm, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

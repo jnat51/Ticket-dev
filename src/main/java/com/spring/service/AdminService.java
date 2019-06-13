@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.spring.dao.AdminDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.Admin;
+import com.spring.model.AdminLogin;
 import com.spring.model.AdminPagination;
 
 @Service
@@ -121,6 +122,22 @@ public class AdminService {
 		if(adminDao.findById(id) != null)
 		{
 			return adminDao.findById(id);
+		}
+		else
+		{
+			return admin;
+		}
+	}
+	
+	public AdminLogin login(String username)
+	{
+		AdminLogin admin = new AdminLogin();
+		
+		if(adminDao.login(username) != null)
+		{
+			admin = adminDao.login(username);
+			
+			return admin;
 		}
 		else
 		{

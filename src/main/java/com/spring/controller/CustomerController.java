@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Active;
 import com.spring.model.Company;
 import com.spring.model.Customer;
+import com.spring.model.CustomerLogin;
+import com.spring.model.CustomerWithImage;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
@@ -255,6 +255,17 @@ public class CustomerController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@GetMapping(value = "/test/{id}")
+	public ResponseEntity<?> test(@PathVariable String id) {
+		try {
+			CustomerWithImage cust = customerService.findCustomerWithImage(id);
+
+			return new ResponseEntity<>(cust, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 
 	@GetMapping(value = "/")
 	public ResponseEntity<?> getAllCustomer() {
@@ -301,19 +312,15 @@ public class CustomerController {
 					customerService.findCustomerByBk(customer.getUsername()).getPassword());
 			System.out.println(matched);
 
-			String msg;
-
+			CustomerLogin cust;
+			
 			if(matched == true) {
-				if(customerService.findCustomerByBk(customer.getUsername()).getStatus().equals(Active.active)) {
-					msg = "Login success!";
-				}else {
-					msg = "Your account is non-active.";
-				}
+				cust = customerService.login(customer.getUsername());
+				
+				return new ResponseEntity<>(cust, HttpStatus.OK);
 			} else {
-				msg = "Wrong username/password";
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
 			}
-
-			return new ResponseEntity<>(msg, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

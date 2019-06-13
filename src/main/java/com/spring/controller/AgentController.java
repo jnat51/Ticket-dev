@@ -27,13 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Active;
 import com.spring.model.Agent;
+import com.spring.model.AgentLogin;
 import com.spring.model.AgentPage;
 import com.spring.model.AgentPagination;
-import com.spring.model.Company;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
@@ -301,20 +299,17 @@ public class AgentController {
 		try {
 			boolean matched = BCrypt.checkpw(agent.getPassword(),
 					agentService.findByBk(agent.getUsername()).getPassword());
+			System.out.println(matched);
 			
-			String msg;
+			AgentLogin agt;
 			
 			if(matched == true) {
-				if(agentService.findByBk(agent.getUsername()).getStatus().equals(Active.active)) {
-					msg = "Login success!";
-				}else {
-					msg = "Your account is non-active.";
-				}
+				agt = agentService.login(agent.getUsername());
+				
+				return new ResponseEntity<>(agt, HttpStatus.OK);
 			} else {
-				msg = "Wrong username/password";
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
 			}
-
-			return new ResponseEntity<>(msg, HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

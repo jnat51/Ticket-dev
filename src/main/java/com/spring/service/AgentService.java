@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.AgentDao;
+import com.spring.enumeration.Enum.Active;
 import com.spring.exception.ErrorException;
 import com.spring.model.Agent;
+import com.spring.model.AgentLogin;
 import com.spring.model.AgentPagination;
 
 @Service
@@ -134,6 +136,23 @@ public class AgentService {
 		else
 		{
 			return agent;
+		}
+	}
+	
+	public AgentLogin login(String username) throws ErrorException {
+		AgentLogin agent = new AgentLogin();
+		
+		if(agentDao.login(username) != null)
+		{
+			agent = agentDao.login(username);
+		}
+		if(agent.getStatus().equals("active"))
+		{
+			return agent;
+		}
+		else
+		{
+			throw new ErrorException("User is non-active");
 		}
 	}
 	

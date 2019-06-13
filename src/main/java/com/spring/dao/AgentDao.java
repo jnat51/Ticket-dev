@@ -8,7 +8,9 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.model.AdminLogin;
 import com.spring.model.Agent;
+import com.spring.model.AgentLogin;
 import com.spring.model.AgentPagination;
 
 @Repository
@@ -214,6 +216,22 @@ public class AgentDao extends ParentDao{
 			return agent;
 		}
 		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public AgentLogin login(String username) {
+		try {
+			System.out.println("login");
+			String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_agent.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " + 
+					"LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id " + 
+					"WHERE tbl_agent.username = :username";
+
+			AgentLogin agent = (AgentLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
+					.getSingleResult();
+
+			return agent;
+		} catch (Exception e) {
 			return null;
 		}
 	}
