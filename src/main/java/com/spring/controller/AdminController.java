@@ -248,17 +248,17 @@ public class AdminController {
 		}
 	}
 
-	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody Admin admin) {
+	@PostMapping(value = "/login/{username}/{password}")
+	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
 		try {
-			boolean matched = BCrypt.checkpw(admin.getPassword(),
-					adminService.findByBk(admin.getUsername()).getPassword());
+			boolean matched = BCrypt.checkpw(password,
+					adminService.findByBk(username).getPassword());
 			System.out.println(matched);
 			
 			AdminLogin adm;
 			
 			if(matched == true) {
-				adm = adminService.login(admin.getUsername());
+				adm = adminService.login(username);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
 			}
