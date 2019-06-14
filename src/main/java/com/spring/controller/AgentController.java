@@ -294,7 +294,7 @@ public class AgentController {
 		}
 	}
 
-	@GetMapping(value = "/login")
+	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Agent agent) {
 		try {
 			boolean matched = BCrypt.checkpw(agent.getPassword(),

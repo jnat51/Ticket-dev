@@ -248,7 +248,7 @@ public class AdminController {
 		}
 	}
 
-	@GetMapping(value = "/login")
+	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Admin admin) {
 		try {
 			boolean matched = BCrypt.checkpw(admin.getPassword(),

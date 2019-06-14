@@ -305,17 +305,17 @@ public class CustomerController {
 		}
 	}
 
-	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody Customer customer) {
+	@GetMapping(value = "/login/{username}/{password}")
+	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
 		try {
-			boolean matched = BCrypt.checkpw(customer.getPassword(),
-					customerService.findCustomerByBk(customer.getUsername()).getPassword());
+			boolean matched = BCrypt.checkpw(password,
+					customerService.findCustomerByBk(username).getPassword());
 			System.out.println(matched);
 
 			CustomerLogin cust;
 			
 			if(matched == true) {
-				cust = customerService.login(customer.getUsername());
+				cust = customerService.login(username);
 				
 				return new ResponseEntity<>(cust, HttpStatus.OK);
 			} else {
