@@ -305,7 +305,7 @@ public class CustomerController {
 		}
 	}
 
-	@GetMapping(value = "/login")
+	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody Customer customer) {
 		try {
 			boolean matched = BCrypt.checkpw(customer.getPassword(),
