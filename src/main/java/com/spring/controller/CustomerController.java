@@ -305,7 +305,7 @@ public class CustomerController {
 		}
 	}
 
-	@GetMapping(value = "/login/{username}/{password}")
+	@PosttMapping(value = "/login/{username}/{password}")
 	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
 		try {
 			boolean matched = BCrypt.checkpw(password,
