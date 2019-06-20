@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.User;
+import com.spring.model.admin.AdminLogin;
+import com.spring.model.agent.AgentLogin;
+import com.spring.model.customer.CustomerLogin;
 
 @Repository
 public class UserDao extends ParentDao{
@@ -85,6 +89,72 @@ public class UserDao extends ParentDao{
 			return false;
 		} else {
 			return true;
+		}
+	}
+	
+	public AdminLogin loginAdmin(String username) {
+		try {
+			System.out.println("login");
+			String query = "SELECT update_admin.id, tbl_user.username, tbl_user.password, update_admin.name, update_admin.email, update_admin.status, tbl_image.image FROM update_admin " 
+					+ "INNER JOIN tbl_user ON update_admin.id = tbl_user.user_id"
+					+ "LEFT JOIN tbl_image ON update_admin.image_id = tbl_image.id " + 
+					"WHERE tbl_user.username = :username";
+
+			AdminLogin agent = (AdminLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
+					.getSingleResult();
+
+			return agent;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public Object login(String username, Role role) {
+		try {
+			Object object = new Object();
+			
+			if(role == role.admin) {
+			System.out.println("login admin");
+				
+			String query = "SELECT update_admin.id, tbl_user.username, tbl_user.password, update_admin.name, update_admin.email, update_admin.status, tbl_image.image FROM update_admin " 
+					+ "INNER JOIN tbl_user ON update_admin.id = tbl_user.user_id "
+					+ "LEFT JOIN tbl_image ON update_admin.image_id = tbl_image.id "
+					+ "WHERE tbl_user.username = :username";
+
+			object = (AdminLogin) super.entityManager.createNativeQuery(query, AdminLogin.class).setParameter("username", username)
+					.getSingleResult();
+			}
+			if(role == role.agent){
+				System.out.println("login agent");
+				
+				String query = "SELECT update_agent.id, tbl_user.username, tbl_user.password, update_agent.name, update_agent.email, update_agent.status, tbl_image.image FROM update_agent " 
+						+ "INNER JOIN tbl_user ON update_agent.id = tbl_user.user_id "
+						+ "LEFT JOIN tbl_image ON update_agent.image_id = tbl_image.id "
+						+ "WHERE tbl_user.username = :username";
+				
+				object = (AgentLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
+						.getSingleResult();
+			}
+			if(role == role.customer) {
+				System.out.println("login customer");
+				
+				String query = "SELECT update_customer.id, update_customer.name, update_customer.company_id, update_customer.position, update_customer.email, update_customer.status, "
+						+ "tbl_user.username, tbl_user.password, "
+						+ "tbl_image.image, "
+						+ "tbl_company.company_name, tbl_company.company_code " +
+						"FROM update_customer "
+						+ "INNER JOIN tbl_user ON update_customer.id = tbl_user.user_id " + 
+						"LEFT JOIN tbl_image ON update_customer.image_id = tbl_image.id " +
+						"JOIN tbl_company ON update_customer.company_id = tbl_company.id " + 
+						"WHERE tbl_user.username = :username";
+
+				object = (CustomerLogin) super.entityManager.createNativeQuery(query, CustomerLogin.class).setParameter("username", username)
+						.getSingleResult();
+			}
+			
+			return object;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 }

@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.dao.UserDao;
+import com.spring.enumeration.Enum.Role;
 import com.spring.exception.ErrorException;
 import com.spring.model.User;
+import com.spring.model.admin.AdminLogin;
 
 @Service
 public class UserService {
@@ -114,6 +116,22 @@ public class UserService {
 		if(userDao.findById(id) != null)
 		{
 			return userDao.findById(id);
+		}
+		else
+		{
+			return user;
+		}
+	}
+	
+	public Object login(String username, Role role)
+	{
+		Object user = new Object();
+		
+		if(userDao.login(username, role) != null)
+		{
+			user = userDao.login(username, role);
+			
+			return user;
 		}
 		else
 		{

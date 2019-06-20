@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.spring.model.admin.AdminLogin;
 import com.spring.model.admin.AdminUpdate;
+import com.spring.model.agent.AgentLogin;
 
 @Repository
 public class AdminUpdateDao extends ParentDao{
@@ -71,6 +73,23 @@ public class AdminUpdateDao extends ParentDao{
 			return false;
 		} else {
 			return true;
+		}
+	}
+	
+	public AdminLogin login(String username) {
+		try {
+			System.out.println("login");
+			String query = "SELECT update_admin.id, tbl_user.username, tbl_user.password, update_admin.name, update_admin.email, update_admin.status, tbl_image.image FROM update_admin " 
+					+ "INNER JOIN tbl_user ON update_admin.id = tbl_user.user_id"
+					+ "LEFT JOIN tbl_image ON update_admin.image_id = tbl_image.id " + 
+					"WHERE update_admin.username = :username";
+
+			AdminLogin agent = (AdminLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
+					.getSingleResult();
+
+			return agent;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 }

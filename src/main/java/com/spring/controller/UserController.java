@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.UpdatePassword;
 import com.spring.model.User;
+import com.spring.model.admin.AdminLogin;
+import com.spring.model.agent.AgentLogin;
+import com.spring.model.customer.CustomerLogin;
 import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -58,6 +63,35 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
 			}
 		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PostMapping(value = "/login/{username}/{password}")
+	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
+		try {
+			boolean matched = BCrypt.checkpw(password,
+					userService.findByBk(username).getPassword());
+			System.out.println(matched);
+			
+			User login = userService.findByBk(username);
+			Object user = new Object();
+			
+			System.out.println(login.getRole());
+			
+			if(matched == true) {
+				if(login.getRole() == Role.admin ) {
+				user = (AdminLogin) userService.login(username, login.getRole());}
+				if(login.getRole() == Role.agent ) {
+				user = (AgentLogin) userService.login(username, login.getRole());}
+				if(login.getRole() == Role.customer ) {
+					user = (CustomerLogin) userService.login(username, login.getRole());}
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
+			}
+
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.AdminUpdateDao;
 import com.spring.exception.ErrorException;
+import com.spring.model.admin.AdminLogin;
 import com.spring.model.admin.AdminUpdate;
 
 @Service
@@ -96,6 +97,22 @@ public class AdminUpdateService {
 		else
 		{
 			return adminUpdate;
+		}
+	}
+	
+	public AdminLogin login(String username)
+	{
+		AdminLogin admin = new AdminLogin();
+		
+		if(adminUpdateDao.login(username) != null)
+		{
+			admin = adminUpdateDao.login(username);
+			
+			return admin;
+		}
+		else
+		{
+			return admin;
 		}
 	}
 }

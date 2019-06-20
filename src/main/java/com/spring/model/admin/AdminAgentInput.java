@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import com.spring.enumeration.Enum.Active;
 
 @Entity
-public class AdminInput {
+public class AdminAgentInput {
 	@Id
 	private String id;
 	private String name;

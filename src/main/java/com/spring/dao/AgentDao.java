@@ -204,7 +204,7 @@ public class AgentDao extends ParentDao{
 			System.out.println("login");
 			String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_agent.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " + 
 					"LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id " + 
-					"WHERE tbl_agent.username = :username";
+					"WHERE tbl_user.username = :username";
 
 			AgentLogin agent = (AgentLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
 					.getSingleResult();

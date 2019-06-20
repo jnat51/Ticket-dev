@@ -13,7 +13,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,27 +30,25 @@ import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.User;
 import com.spring.model.admin.AdminAgentInput;
-import com.spring.model.admin.AdminLogin;
-import com.spring.model.admin.AdminUpdate;
-import com.spring.model.agent.Agent;
-import com.spring.service.AdminUpdateService;
+import com.spring.model.agent.AgentUpdate;
+import com.spring.service.AgentUpdateService;
 import com.spring.service.ImageService;
 import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
-@RequestMapping("/xadmin")
-public class AdminUpdateController {
+@RequestMapping("/xagent")
+public class AgentUpdateController {
 	@Autowired
-	AdminUpdateService adminUpdateService;
+	AgentUpdateService agentUpdateService;
 	@Autowired
 	ImageService imageService;
 	@Autowired
 	UserService userService;
 	@Autowired
 	JavaMailSender javaMailSender;
-
+	
 	public String passwordGenerator() {
 		Random RANDOM = new SecureRandom();
 		String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -67,25 +64,25 @@ public class AdminUpdateController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAdmin(@ModelAttribute AdminAgentInput adminInput,
+	public ResponseEntity<?> insertAgent(@ModelAttribute AdminAgentInput adminAgentInput,
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
-			AdminUpdate adminUpdate = new AdminUpdate();
+			AgentUpdate agentUpdate = new AgentUpdate();
 			User user = new User();
 
-			adminUpdate.setStatus(Active.active);
-			adminUpdate.setEmail(adminInput.getEmail());
-			adminUpdate.setName(adminInput.getName());
+			agentUpdate.setStatus(Active.active);
+			agentUpdate.setEmail(adminAgentInput.getEmail());
+			agentUpdate.setName(adminAgentInput.getName());
 
-			adminUpdateService.insert(adminUpdate);
+			agentUpdateService.insert(agentUpdate);
 
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			user.setUsername(adminInput.getUsername());
+			user.setUsername(adminAgentInput.getUsername());
 			user.setPassword(generatedSecuredPasswordHash);
-			user.setRole(Role.admin);
-			user.setUser(adminUpdateService.findByBk(adminInput.getEmail()).getId());
+			user.setRole(Role.agent);
+			user.setUser(agentUpdateService.findByBk(agentUpdate.getEmail()).getId());
 
 			userService.insert(user);
 
@@ -103,20 +100,20 @@ public class AdminUpdateController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 
-				AdminUpdate admin = adminUpdateService.findByBk(adminUpdate.getEmail());
+				AgentUpdate agent = agentUpdateService.findByBk(agentUpdate.getEmail());
 
 				imageService.insert(img);
-				admin.setImageId(imageService.findByBk(fileName, data).getId());
-				adminUpdateService.update(admin);
+				agent.setImageId(imageService.findByBk(fileName, data).getId());
+				agentUpdateService.update(agent);
 			}
 
 			SimpleMailMessage email = new SimpleMailMessage();
 			// setTo(from, to)
-			email.setTo("jnat51.jg@gmail.com", adminInput.getEmail());
+			email.setTo("jnat51.jg@gmail.com", adminAgentInput.getEmail());
 
-			email.setSubject("Welcome " + adminInput.getName() + ", New Admin!");
+			email.setSubject("Welcome " + adminAgentInput.getName() + ", New Agent!");
 			email.setText("Here is your username and password to login to your account.\nUsername: "
-					+ adminInput.getUsername() + "\nPassword: " + pass);
+					+ adminAgentInput.getUsername() + "\nPassword: " + pass);
 
 			System.out.println("send...");
 
@@ -129,12 +126,12 @@ public class AdminUpdateController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-
+	
 	@PutMapping(value = "/")
-	public ResponseEntity<?> updateAdmin(@ModelAttribute AdminUpdate adminUpdate,
+	public ResponseEntity<?> updateAdmin(@ModelAttribute AgentUpdate agentUpdate,
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
-			adminUpdateService.update(adminUpdate);
+			agentUpdateService.update(agentUpdate);
 
 			return new ResponseEntity<>("Admin successfuly updated", HttpStatus.OK);
 		} catch (Exception e) {
@@ -145,7 +142,7 @@ public class AdminUpdateController {
 	@PatchMapping(value = "/{id}")
 	public ResponseEntity<?> patchImage(@PathVariable String id, @RequestParam MultipartFile pp){
 		try {
-			AdminUpdate adminUpdate = adminUpdateService.findById(id);
+			AgentUpdate agentUpdate = agentUpdateService.findById(id);
 			Image img = new Image();
 			
 			byte[] data = pp.getBytes();
@@ -160,13 +157,13 @@ public class AdminUpdateController {
 			img.setFileName(fileName);
 			img.setMime(mime);
 			
-			if (adminUpdate.getImageId() == null) {
-			imageService.delete(adminUpdate.getImageId());
+			if (agentUpdate.getImageId() == null) {
+			imageService.delete(agentUpdate.getImageId());
 			}
 			imageService.insert(img);
 			
-			adminUpdate.setImageId(imageService.findByBk(fileName, data).getId());
-			adminUpdateService.update(adminUpdate);
+			agentUpdate.setImageId(imageService.findByBk(fileName, data).getId());
+			agentUpdateService.update(agentUpdate);
 			
 			return new ResponseEntity<>("Profile picture updated", HttpStatus.OK);
 		}catch(Exception e) {
@@ -177,11 +174,11 @@ public class AdminUpdateController {
 	@PatchMapping(value = "/status/{id}")
 	public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody Status status) {
 		try {
-			AdminUpdate adminUpdate = adminUpdateService.findById(id);
+			AgentUpdate agentUpdate = agentUpdateService.findById(id);
 			
-			adminUpdate.setStatus(status.getStatus());
+			agentUpdate.setStatus(status.getStatus());
 
-			adminUpdateService.update(adminUpdate);
+			agentUpdateService.update(agentUpdate);
 			return new ResponseEntity<>("Status changed to " + status.getStatus(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
