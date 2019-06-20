@@ -35,11 +35,8 @@ public class AgentService {
 		{
 			throw new ErrorException("Agent already exist.");
 		}
-		if(agentDao.isBkExist(agent.getUsername()) == true)
+		if(agentDao.isBkExist(agent.getEmail()) == true)
 		{
-			throw new ErrorException("Username already exist!");
-		}
-		if(agentDao.isEmailExist(agent.getEmail()) == true) {
 			throw new ErrorException("Email already exist!");
 		}
 			agentDao.save(agent);
@@ -52,13 +49,13 @@ public class AgentService {
 		{
 			throw new ErrorException("Agent not found!");
 		}
-		if(agentDao.isBkExist(agent.getUsername()) == false)
+		if(agentDao.isBkExist(agent.getEmail()) == false)
 		{
 			throw new ErrorException("Agent not found!");
 		}
-		if(!agent.getUsername().equals(agentDao.findById(agent.getId()).getUsername()))
+		if(!agent.getEmail().equals(agentDao.findById(agent.getId()).getEmail()))
 		{
-			throw new ErrorException("Username cannot be changed!");
+			throw new ErrorException("Email cannot be changed!");
 		}
 		agentDao.save(agent);
 	}
@@ -91,13 +88,13 @@ public class AgentService {
 		}
 	}
 	
-	public Agent findByBk(String username)
+	public Agent findByBk(String email)
 	{
 		Agent agent = new Agent();
 		
-		if(agentDao.findByBk(username) != null)
+		if(agentDao.findByBk(email) != null)
 		{
-			agent = agentDao.findByBk(username);
+			agent = agentDao.findByBk(email);
 			
 			return agent;
 		}
@@ -118,39 +115,6 @@ public class AgentService {
 		else
 		{
 			return agent;
-		}
-	}
-	
-	public AgentLogin login(String username) throws ErrorException {
-		AgentLogin agent = new AgentLogin();
-		
-		if(agentDao.login(username) != null)
-		{
-			agent = agentDao.login(username);
-		}
-		if(agent.getStatus().equals("active"))
-		{
-			return agent;
-		}
-		else
-		{
-			throw new ErrorException("User is non-active");
-		}
-	}
-	
-	public List<Agent> findByFilter(String namaAgent, String username)
-	{
-		List<Agent> agents = new ArrayList<Agent>();
-		
-		if(agentDao.findByFilter(namaAgent, username).size() > 0)
-		{
-			agents = agentDao.findByFilter(namaAgent, username);
-			
-			return agents;
-		}
-		else
-		{
-			return agents;
 		}
 	}
 	
@@ -177,17 +141,6 @@ public class AgentService {
 		}
 		else {
 			return true;
-		}
-	}
-	
-	public Agent resetPassword(String email) throws ErrorException
-	{
-		if(agentDao.findByEmail(email) != null)
-		{
-			return agentDao.findByEmail(email);
-		}
-		else {
-			return null;
 		}
 	}
 }

@@ -29,9 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Image;
 import com.spring.model.UpdatePassword;
+import com.spring.model.User;
 import com.spring.model.admin.Admin;
+import com.spring.model.admin.AdminAgentInput;
 import com.spring.model.admin.AdminLogin;
-import com.spring.model.agent.Agent;
 import com.spring.service.AdminService;
 import com.spring.service.ImageService;
 
@@ -95,17 +96,18 @@ public class AdminController {
 	}
 	
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAdmin(@ModelAttribute Admin admin,
+	public ResponseEntity<?> insertAdmin(@ModelAttribute AdminAgentInput admin,
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
 			Admin adm = new Admin();
+			User user = new User();
 
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
 			adm.setEmail(admin.getEmail());
-			adm.setUsername(admin.getUsername());
-			adm.setPassword(generatedSecuredPasswordHash);
+			user.setUsername(admin.getUsername());
+			user.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
 
 			String msg = adminService.insert(adm);
@@ -124,7 +126,7 @@ public class AdminController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 
-				Admin ad = adminService.findByBk(adm.getUsername());
+				Admin ad = adminService.findByBk(adm.getEmail());
 
 				imageService.insert(img);
 				ad.setImageId(imageService.findByBk(fileName, data).getId());
@@ -156,18 +158,7 @@ public class AdminController {
 			@RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
 			Admin adm = adminService.findById(admin.getId());
-			String pass = admin.getPassword();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-			System.out.println(pass);
-			System.out.println(generatedSecuredPasswordHash);
-
-			adm.setId(admin.getId());
-			adm.setEmail(admin.getEmail());
-			adm.setUsername(admin.getUsername());
-			adm.setPassword(generatedSecuredPasswordHash);
-			adm.setName(admin.getName());
-
+			
 			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
@@ -193,7 +184,7 @@ public class AdminController {
 				}
 			}
 
-			adminService.update(adm);
+			adminService.update(admin);
 
 			return new ResponseEntity<>("Update success", HttpStatus.OK);
 		} catch (Exception e) {
@@ -245,82 +236,6 @@ public class AdminController {
 			return new ResponseEntity<>("Admin successfully deleted!", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PostMapping(value = "/login/{username}/{password}")
-	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
-		try {
-			boolean matched = BCrypt.checkpw(password,
-					adminService.findByBk(username).getPassword());
-			System.out.println(matched);
-			
-			AdminLogin adm;
-			
-			if(matched == true) {
-				adm = adminService.login(username);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
-			}
-
-			return new ResponseEntity<>(adm, HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PatchMapping(value = "/password/{id}")
-	public ResponseEntity<?> updatePassword(@RequestBody UpdatePassword updatePassword, @PathVariable String id) {
-		try {
-			Admin adm = adminService.findById(id);
-			if (BCrypt.checkpw(updatePassword.getOldPassword(), adm.getPassword()) == true) {
-
-				String pass = updatePassword.getNewPassword();
-				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-				adm.setPassword(generatedSecuredPasswordHash);
-
-				adminService.update(adm);
-				
-				return new ResponseEntity<>("Update password success", HttpStatus.OK);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@PatchMapping(value = "/reset")
-	public ResponseEntity<?> resetPassword(@RequestParam String email) {
-		try {
-			Admin admin = adminService.findByEmail(email);
-			
-			System.out.println(admin.getId());
-			
-			String pass = passwordGenerator();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
-			admin.setPassword(generatedSecuredPasswordHash);
-			
-			adminService.update(admin);
-			
-			SimpleMailMessage mail = new SimpleMailMessage();
-			// setTo(from, to)
-			mail.setTo("jnat51.jg@gmail.com", email);
-
-			mail.setSubject("Hi " + admin.getName());
-			mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
-
-			System.out.println("send...");
-
-			javaMailSender.send(mail);
-
-			System.out.println("sent");
-			
-			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 }

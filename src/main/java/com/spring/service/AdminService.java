@@ -34,11 +34,8 @@ public class AdminService {
 		{
 			throw new ErrorException("Admin already exist.");
 		}
-		if(adminDao.isBkExist(admin.getUsername()) == true)
+		if(adminDao.isBkExist(admin.getEmail()) == true)
 		{
-			throw new ErrorException("Username already exist!");
-		}
-		if(adminDao.isEmailExist(admin.getEmail()) == true) {
 			throw new ErrorException("Email already exist!");
 		}
 		
@@ -52,14 +49,11 @@ public class AdminService {
 		{
 			throw new ErrorException("Admin not found!");
 		}
-		if(adminDao.isBkExist(admin.getUsername()) == false)
+		if(adminDao.isBkExist(admin.getEmail()) == false)
 		{
 			throw new ErrorException("Admin not found!");
 		}
-		if(adminDao.isEmailExist(admin.getEmail()) == false) {
-			throw new ErrorException("Email not registered!");
-		}
-		if(!admin.getUsername().equals(adminDao.findById(admin.getId()).getUsername()))
+		if(!admin.getEmail().equals(adminDao.findById(admin.getId()).getEmail()))
 		{
 			throw new ErrorException("Username cannot be changed!");
 		}

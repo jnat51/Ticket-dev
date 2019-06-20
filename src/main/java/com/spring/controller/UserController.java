@@ -1,8 +1,13 @@
 package com.spring.controller;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,14 +18,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.enumeration.Enum.Role;
 import com.spring.model.UpdatePassword;
 import com.spring.model.User;
+import com.spring.model.admin.Admin;
 import com.spring.model.admin.AdminLogin;
+import com.spring.model.agent.Agent;
 import com.spring.model.agent.AgentLogin;
+import com.spring.model.customer.Customer;
 import com.spring.model.customer.CustomerLogin;
+import com.spring.service.AdminService;
+import com.spring.service.AgentService;
+import com.spring.service.CustomerService;
 import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -30,6 +42,29 @@ import com.spring.service.UserService;
 public class UserController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	AgentService agentService;
+	@Autowired
+	AdminService adminService;
+	@Autowired
+	CustomerService customerService;
+	@Autowired
+    private JavaMailSender javaMailSender;
+	
+	public String passwordGenerator()
+	{
+		Random RANDOM = new SecureRandom();
+	    String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	        int passwordLength = 8;
+	        
+	        StringBuilder returnValue = new StringBuilder(passwordLength);
+	        
+	        for (int i = 0; i < passwordLength; i++) {
+	            returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+	        }
+	        
+	        return returnValue.toString();
+	}
 	
 	@PutMapping(value = "/")
 	public ResponseEntity<?> updateUser(@ModelAttribute User user){
@@ -91,6 +126,90 @@ public class UserController {
 			}
 
 			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping(value = "/reset")
+	public ResponseEntity<?> resetPassword(@RequestParam String username) {
+		try {
+			User user = userService.findByBk(username);
+			String name;
+			String email;
+			
+			String pass = passwordGenerator();
+			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
+			if(user.getRole() == Role.admin)
+			{
+				Admin admin = adminService.findById(user.getId());
+				name = admin.getName();
+				email = admin.getEmail();
+				
+				user.setPassword(generatedSecuredPasswordHash);
+				
+				userService.update(user);
+				
+				SimpleMailMessage mail = new SimpleMailMessage();
+				// setTo(from, to)
+				mail.setTo("jnat51.jg@gmail.com", email);
+	
+				mail.setSubject("Hi " + name);
+				mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
+	
+				System.out.println("send...");
+	
+				javaMailSender.send(mail);
+	
+				System.out.println("sent");
+			}
+			else if(user.getRole() == Role.agent) {
+				Agent agent = agentService.findById(user.getId());
+				name = agent.getName();
+				email = agent.getEmail();
+				
+				user.setPassword(generatedSecuredPasswordHash);
+				
+				userService.update(user);
+				
+				SimpleMailMessage mail = new SimpleMailMessage();
+				// setTo(from, to)
+				mail.setTo("jnat51.jg@gmail.com", email);
+	
+				mail.setSubject("Hi " + name);
+				mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
+	
+				System.out.println("send...");
+	
+				javaMailSender.send(mail);
+	
+				System.out.println("sent");
+				}
+			else if(user.getRole() == Role.customer)
+			{
+				Customer customer = customerService.findCustomerById(user.getId());
+				name = customer.getName();
+				email = customer.getEmail();
+				
+				user.setPassword(generatedSecuredPasswordHash);
+				
+				userService.update(user);
+				
+				SimpleMailMessage mail = new SimpleMailMessage();
+				// setTo(from, to)
+				mail.setTo("jnat51.jg@gmail.com", email);
+	
+				mail.setSubject("Hi " + name);
+				mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
+	
+				System.out.println("send...");
+	
+				javaMailSender.send(mail);
+	
+				System.out.println("sent");
+			}
+			
+			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
