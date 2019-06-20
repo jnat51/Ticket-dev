@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "username"}))
+@Table(name = "tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = { "email"}))
 public class UpdatePassword {
 	@Id
 	private String id;
