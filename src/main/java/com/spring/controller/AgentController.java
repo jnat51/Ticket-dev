@@ -33,8 +33,6 @@ import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
 import com.spring.model.agent.Agent;
 import com.spring.model.agent.AgentLogin;
-import com.spring.model.agent.AgentPage;
-import com.spring.model.agent.AgentPagination;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
 
@@ -246,32 +244,6 @@ public class AgentController {
 			List<Agent> agents = agentService.findAllWithStatus(status);			
 			
 			return new ResponseEntity<>(agents, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	@GetMapping(value = "/{size}/{page}")
-	public ResponseEntity<?> getAgentPagination(@PathVariable int size, @PathVariable int page){
-		try {
-			List<AgentPagination> agents = agentService.findWithPagination(size, page);
-			AgentPage agentsPage = new AgentPage();
-			
-			int max = 0;
-			
-			if(agentService.getMaxPage()%size == 0)
-			{
-				max = agentService.getMaxPage()/size;
-			}
-			else
-			{
-				max = (agentService.getMaxPage()/size)+1;
-			}
-			
-			agentsPage.setMaxPage(max);
-			agentsPage.setAgents(agents);
-			
-			return new ResponseEntity<>(agentsPage, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

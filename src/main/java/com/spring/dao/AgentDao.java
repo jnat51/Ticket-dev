@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.agent.Agent;
 import com.spring.model.agent.AgentLogin;
-import com.spring.model.agent.AgentPagination;
 import com.spring.model.agent.AgentWithImage;
 
 @Repository
@@ -63,23 +62,6 @@ public class AgentDao extends ParentDao{
 			{
 				return null;
 			}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<AgentPagination> getAgentWithPagination(int size, int page){
-		try {			
-			String query = "WITH report AS (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_agent)"
-					+ " SELECT * FROM report WHERE no <= "+ page*size+ " LIMIT :size";
-			
-			List<AgentPagination> agents = super.entityManager
-					  .createNativeQuery(query, AgentPagination.class)
-					  .setParameter("size",size)
-					  .getResultList();
-			
-			return agents;
-		}catch(Exception e){
-			return null;
-		}
 	}
 	
 	public Object getMaxPage() {

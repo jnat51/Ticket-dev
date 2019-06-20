@@ -75,6 +75,22 @@ public class UserService {
 		}
 	}
 	
+	public User findByUserId(String userId)
+	{
+		User user = new User();
+		
+		if(userDao.findByUser(userId) != null)
+		{
+			user = userDao.findByUser(userId);
+			
+			return user;
+		}
+		else
+		{
+			return user;
+		}
+	}
+	
 	public List<User> findAll ()
 	{
 		List<User> users = new ArrayList<User>();

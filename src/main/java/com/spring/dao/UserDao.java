@@ -44,6 +44,20 @@ public class UserDao extends ParentDao{
 		}
 	}
 	
+	public User findByUser(String userId) {
+		try {
+			String query = "FROM User WHERE user = :userid";
+			
+			User user = (User) super.entityManager.createQuery(query)
+					.setParameter("userid", userId)
+					.getSingleResult();
+			
+			return user;
+		}catch(Exception e) {
+			return null;
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<User> findAll() {
 		try {
