@@ -29,16 +29,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Company;
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
+import com.spring.model.User;
+import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
+import com.spring.model.customer.CustomerInput;
 import com.spring.model.customer.CustomerLogin;
 import com.spring.model.customer.CustomerWithImage;
 import com.spring.service.CompanyService;
 import com.spring.service.CustomerService;
 import com.spring.service.ImageService;
+import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -49,6 +53,8 @@ public class CustomerController {
 	CompanyService companyService;
 	@Autowired
 	CustomerService customerService;
+	@Autowired
+	UserService userService;
 	@Autowired
 	ImageService imageService;
 	@Autowired
@@ -70,20 +76,29 @@ public class CustomerController {
 
 	@PostMapping(value = "/")
 	public ResponseEntity<?> insertCustomer(@RequestParam(name = "pp", required = false) MultipartFile image,
-			@ModelAttribute Customer customer) {
+			@ModelAttribute CustomerInput customerInput) {
 		try {
-			Customer cust = customerService.findCustomerById(customer.getId());
+			Customer cust = new Customer();
+			User user = new User();
+			
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			cust.setEmail(customer.getEmail());
-			cust.setUsername(customer.getUsername());
-			cust.setPassword(generatedSecuredPasswordHash);
-			cust.setName(customer.getName());
-			cust.setPosition(customer.getPosition());
-			cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
+			cust.setEmail(customerInput.getEmail());
+			cust.setName(customerInput.getName());
+			cust.setPosition(customerInput.getPosition());
+			cust.setCompany(companyService.findCompanyById(customerInput.getCompany().getId()));
 			cust.setStatus(Active.active);
-			System.out.println(customer.getCompany().getId());
+			System.out.println(customerInput.getCompany().getId());
+			
+			customerService.insertCustomer(cust);
+			
+			user.setUsername(customerInput.getUsername());
+			user.setPassword(generatedSecuredPasswordHash);
+			user.setRole(Role.customer);
+			user.setUser(customerService.findCustomerByBk(customerInput.getEmail()).getId());
+			
+			userService.insert(user);
 			
 			if (image != null) {
 				Image img = new Image();
@@ -109,11 +124,11 @@ public class CustomerController {
 			try {
 			SimpleMailMessage email = new SimpleMailMessage();
 			// setTo(from, to)
-			email.setTo("jnat51.jg@gmail.com", customer.getEmail());
+			email.setTo("jnat51.jg@gmail.com", customerInput.getEmail());
 
-			email.setSubject("Welcome to Linov Support, " + customer.getName() + "!");
+			email.setSubject("Welcome to Linov Support, " + customerInput.getName() + "!");
 			email.setText("Here is your username and password to login to your account.\nUsername: "
-					+ customer.getUsername() + "\nPassword: " + pass);
+					+ customerInput.getUsername() + "\nPassword: " + pass);
 
 			System.out.println("send...");
 
@@ -135,13 +150,6 @@ public class CustomerController {
 			@ModelAttribute Customer customer) {
 		try {
 			Customer cust = customerService.findCustomerById(customer.getId());
-			String pass = customer.getPassword();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-			cust.setEmail(customer.getEmail());
-			cust.setUsername(customer.getUsername());
-			cust.setPassword(generatedSecuredPasswordHash);
-			cust.setName(customer.getName());
 
 			if (image != null) {
 				Image img = new Image();
@@ -165,7 +173,7 @@ public class CustomerController {
 				cust.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 
-			customerService.updateCustomer(cust);
+			customerService.updateCustomer(customer);
 
 			return new ResponseEntity<>("Customer successfuly update", HttpStatus.OK);
 		} catch (Exception e) {
@@ -300,85 +308,6 @@ public class CustomerController {
 			company.setCustomers(customers);
 
 			return new ResponseEntity<>(cust, HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PostMapping(value = "/login/{username}/{password}")
-	public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
-		try {
-			boolean matched = BCrypt.checkpw(password,
-					customerService.findCustomerByBk(username).getPassword());
-			System.out.println(matched);
-
-			CustomerLogin cust;
-			
-			if(matched == true) {
-				cust = customerService.login(username);
-				
-				return new ResponseEntity<>(cust, HttpStatus.OK);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PatchMapping(value = "/password/{id}")
-	public ResponseEntity<?> updatePassword(@RequestBody UpdatePassword updatePassword, @PathVariable String id) {
-		try {
-			Customer customer = customerService.findCustomerById(id);
-
-			if (BCrypt.checkpw(updatePassword.getOldPassword(), customer.getPassword()) == true) {
-
-				String pass = updatePassword.getNewPassword();
-				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-				customer.setPassword(generatedSecuredPasswordHash);
-
-				customerService.updateCustomer(customer);
-
-				return new ResponseEntity<>("Update password success", HttpStatus.OK);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PatchMapping(value = "/reset")
-	public ResponseEntity<?> resetPassword(@RequestParam String email) {
-		try {
-			Customer customer = customerService.resetPassword(email);
-
-			String pass = passwordGenerator();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-			customer.setPassword(generatedSecuredPasswordHash);
-
-			customerService.updateCustomer(customer);
-
-			try {
-				SimpleMailMessage mail = new SimpleMailMessage();
-				// setTo(from, to)
-				mail.setTo("jnat51.jg@gmail.com", email);
-
-				mail.setSubject("Hi " + customer.getName());
-				mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
-
-				System.out.println("send...");
-
-				javaMailSender.send(mail);
-
-				System.out.println("sent");
-			} catch (Exception e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to send email");
-			}
-
-			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

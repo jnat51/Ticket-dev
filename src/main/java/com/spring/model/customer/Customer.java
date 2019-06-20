@@ -15,33 +15,28 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Company;
+import com.spring.model.company.Company;
 
 @Entity
-@Table(name = "tbl_customer", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
+@Table(name = "tbl_customer", uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
 public class Customer {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name="UUID", strategy="org.hibernate.id.UUIDGenerator")
 	private String id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "company_id", referencedColumnName = "id")
 	private Company company;
 	
-	@Column(name = "username")
-	private String username;
-
-	@Column(name = "password")
-	private String password;
-
 	@Column(name = "name")
 	private String name;
-
+	
 	@Column(name = "email")
 	private String email;
 	
+
 	@Column(name = "position")
 	private String position;
 	
@@ -66,21 +61,6 @@ public class Customer {
 
 	public void setCompany(Company company) {
 		this.company = company;
-	}
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getName() {

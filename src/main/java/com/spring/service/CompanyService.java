@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CompanyDao;
 import com.spring.exception.ErrorException;
-import com.spring.model.Company;
+import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
 
 @Service

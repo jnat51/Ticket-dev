@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Company;
+import com.spring.model.company.Company;
 
 @Entity
 @Table(name = "update_customer", uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))

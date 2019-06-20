@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.spring.enumeration.Enum.Active;
 
 @Entity
-@Table(name="update_admin", uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
+@Table(name="tbl_admin", uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
 public class Admin {
 	@Id
 	@Column(name = "id")

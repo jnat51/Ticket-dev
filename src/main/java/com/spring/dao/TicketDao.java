@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.enumeration.Enum.Stat;
-import com.spring.model.Company;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
 
 @Repository

@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Company;
+import com.spring.model.company.Company;
 
 public class CustomerInput {
 	private String id;

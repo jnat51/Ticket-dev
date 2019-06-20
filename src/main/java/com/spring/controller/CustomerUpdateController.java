@@ -29,11 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.enumeration.Enum.Active;
 import com.spring.enumeration.Enum.Role;
-import com.spring.model.Company;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.User;
 import com.spring.model.admin.AdminUpdate;
+import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
 import com.spring.model.customer.CustomerInput;
 import com.spring.model.customer.CustomerUpdate;
