@@ -116,9 +116,9 @@ public class UserDao extends ParentDao{
 			if(role == role.admin) {
 			System.out.println("login admin");
 				
-			String query = "SELECT update_admin.id, tbl_user.username, tbl_user.password, update_admin.name, update_admin.email, update_admin.status, tbl_image.image FROM update_admin " 
-					+ "INNER JOIN tbl_user ON update_admin.id = tbl_user.user_id "
-					+ "LEFT JOIN tbl_image ON update_admin.image_id = tbl_image.id "
+			String query = "SELECT tbl_admin.id, tbl_user.username, tbl_user.password, tbl_admin.name, tbl_admin.email, tbl_admin.status, tbl_image.image FROM tbl_admin " 
+					+ "INNER JOIN tbl_user ON tbl_admin.id = tbl_user.user_id "
+					+ "LEFT JOIN tbl_image ON tbl_admin.image_id = tbl_image.id "
 					+ "WHERE tbl_user.username = :username";
 
 			object = (AdminLogin) super.entityManager.createNativeQuery(query, AdminLogin.class).setParameter("username", username)
@@ -127,9 +127,9 @@ public class UserDao extends ParentDao{
 			if(role == role.agent){
 				System.out.println("login agent");
 				
-				String query = "SELECT update_agent.id, tbl_user.username, tbl_user.password, update_agent.name, update_agent.email, update_agent.status, tbl_image.image FROM update_agent " 
-						+ "INNER JOIN tbl_user ON update_agent.id = tbl_user.user_id "
-						+ "LEFT JOIN tbl_image ON update_agent.image_id = tbl_image.id "
+				String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_user.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " 
+						+ "INNER JOIN tbl_user ON tbl_agent.id = tbl_user.user_id "
+						+ "LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id "
 						+ "WHERE tbl_user.username = :username";
 				
 				object = (AgentLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
@@ -138,14 +138,14 @@ public class UserDao extends ParentDao{
 			if(role == role.customer) {
 				System.out.println("login customer");
 				
-				String query = "SELECT update_customer.id, update_customer.name, update_customer.company_id, update_customer.position, update_customer.email, update_customer.status, "
+				String query = "SELECT tbl_customer.id, tbl_customer.name, tbl_customer.company_id, tbl_customer.position, tbl_customer.email, tbl_customer.status, "
 						+ "tbl_user.username, tbl_user.password, "
 						+ "tbl_image.image, "
 						+ "tbl_company.company_name, tbl_company.company_code " +
-						"FROM update_customer "
-						+ "INNER JOIN tbl_user ON update_customer.id = tbl_user.user_id " + 
-						"LEFT JOIN tbl_image ON update_customer.image_id = tbl_image.id " +
-						"JOIN tbl_company ON update_customer.company_id = tbl_company.id " + 
+						"FROM tbl_customer "
+						+ "INNER JOIN tbl_user ON tbl_customer.id = tbl_user.user_id " + 
+						"LEFT JOIN tbl_image ON tbl_customer.image_id = tbl_image.id " +
+						"JOIN tbl_company ON tbl_customer.company_id = tbl_company.id " + 
 						"WHERE tbl_user.username = :username";
 
 				object = (CustomerLogin) super.entityManager.createNativeQuery(query, CustomerLogin.class).setParameter("username", username)
