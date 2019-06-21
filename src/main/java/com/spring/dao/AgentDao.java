@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.model.agent.Agent;
 import com.spring.model.agent.AgentLogin;
-import com.spring.model.agent.AgentPagination;
 import com.spring.model.agent.AgentWithImage;
 
 @Repository
@@ -65,23 +64,6 @@ public class AgentDao extends ParentDao{
 			}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<AgentPagination> getAgentWithPagination(int size, int page){
-		try {			
-			String query = "WITH report AS (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_agent)"
-					+ " SELECT * FROM report WHERE no <= "+ page*size+ " LIMIT :size";
-			
-			List<AgentPagination> agents = super.entityManager
-					  .createNativeQuery(query, AgentPagination.class)
-					  .setParameter("size",size)
-					  .getResultList();
-			
-			return agents;
-		}catch(Exception e){
-			return null;
-		}
-	}
-	
 	public Object getMaxPage() {
 		try {
 			String query = "SELECT COUNT(*) FROM tbl_agent";
@@ -97,15 +79,15 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
-	public Agent findByBk(String username)
+	public Agent findByBk(String email)
 	{
 		try {
 			System.out.println("find agent by bk");
-			String query = "from Agent where username = :username";
+			String query = "from Agent where email = :email";
 			
 			Agent agent = (Agent) super.entityManager
 					  .createQuery(query)
-					  .setParameter("username", username)
+					  .setParameter("email", email)
 					  .getSingleResult();
 			
 			return agent;
@@ -114,38 +96,6 @@ public class AgentDao extends ParentDao{
 			{
 				return null;
 			}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<Agent> findByFilter(String nama,String username)
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("FROM Barang WHERE 1=1");
-		
-		if (!nama.trim().isEmpty())
-		{
-			sb.append(" AND nama LIKE :nama");
-		}
-		if(!username.trim().isEmpty())
-		{
-			sb.append(" AND username LIKE :username");
-		}
-		
-		Query query = super.entityManager
-		  .createQuery(sb.toString());
-		if (!nama.trim().isEmpty())
-	  	{
-		  	query.setParameter("nama", nama);
-		}
-		if(!username.trim().isEmpty())
-		{
-		  	query.setParameter("username", username);
-		}
-			
-		  List<Agent> agents = query.getResultList();
-		
-		return agents;
 	}
 	
 	public boolean isIdExist(String id)
@@ -160,21 +110,9 @@ public class AgentDao extends ParentDao{
 		}
 	}
 	
-	public boolean isEmailExist(String email)
+	public boolean isBkExist(String email)
 	{
-		if(findByEmail(email) == null)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	
-	public boolean isBkExist(String username)
-	{
-		if(findByBk(username) == null)
+		if(findByBk(email) == null)
 		{
 			return false;
 		}
@@ -200,36 +138,6 @@ public class AgentDao extends ParentDao{
 			System.out.println("Wrong password.");
 
 			return false;
-		}
-	}
-	
-	public Agent findByEmail(String email) {
-		try {
-			String query = "from Agent WHERE email = :email";
-			
-			Agent agent = (Agent) super.entityManager.createQuery(query).setParameter("email", email)
-					.getSingleResult();
-			
-			return agent;
-		}
-		catch (Exception e) {
-			return null;
-		}
-	}
-	
-	public AgentLogin login(String username) {
-		try {
-			System.out.println("login");
-			String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_agent.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " + 
-					"LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id " + 
-					"WHERE tbl_agent.username = :username";
-
-			AgentLogin agent = (AgentLogin) super.entityManager.createNativeQuery(query, AgentLogin.class).setParameter("username", username)
-					.getSingleResult();
-
-			return agent;
-		} catch (Exception e) {
-			return null;
 		}
 	}
 	

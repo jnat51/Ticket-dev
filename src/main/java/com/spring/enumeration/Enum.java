@@ -12,4 +12,8 @@ public class Enum {
 	public enum Active{
 		active, nonactive;
 	}
+	
+	public enum Role{
+		admin, agent, customer;
+	}
 }

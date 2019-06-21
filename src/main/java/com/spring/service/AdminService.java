@@ -10,7 +10,6 @@ import com.spring.dao.AdminDao;
 import com.spring.exception.ErrorException;
 import com.spring.model.admin.Admin;
 import com.spring.model.admin.AdminLogin;
-import com.spring.model.admin.AdminPagination;
 
 @Service
 public class AdminService {
@@ -35,11 +34,8 @@ public class AdminService {
 		{
 			throw new ErrorException("Admin already exist.");
 		}
-		if(adminDao.isBkExist(admin.getUsername()) == true)
+		if(adminDao.isBkExist(admin.getEmail()) == true)
 		{
-			throw new ErrorException("Username already exist!");
-		}
-		if(adminDao.isEmailExist(admin.getEmail()) == true) {
 			throw new ErrorException("Email already exist!");
 		}
 		
@@ -53,27 +49,24 @@ public class AdminService {
 		{
 			throw new ErrorException("Admin not found!");
 		}
-		if(adminDao.isBkExist(admin.getUsername()) == false)
+		if(adminDao.isBkExist(admin.getEmail()) == false)
 		{
 			throw new ErrorException("Admin not found!");
 		}
-		if(adminDao.isEmailExist(admin.getEmail()) == false) {
-			throw new ErrorException("Email not registered!");
-		}
-		if(!admin.getUsername().equals(adminDao.findById(admin.getId()).getUsername()))
+		if(!admin.getEmail().equals(adminDao.findById(admin.getId()).getEmail()))
 		{
 			throw new ErrorException("Username cannot be changed!");
 		}
 		adminDao.save(admin);
 	}
 	
-	public Admin findByBk(String username)
+	public Admin findByBk(String email)
 	{
 		Admin admin = new Admin();
 		
-		if(adminDao.findByBk(username) != null)
+		if(adminDao.findByBk(email) != null)
 		{
-			admin = adminDao.findByBk(username);
+			admin = adminDao.findByBk(email);
 			
 			return admin;
 		}
@@ -90,22 +83,6 @@ public class AdminService {
 		if(adminDao.findAll().size() > 0)
 		{
 			admins = adminDao.findAll();
-			
-			return admins;
-		}
-		else
-		{
-			return admins;
-		}
-	}
-	
-	public List<AdminPagination> findWithPagination (int size, int page)
-	{
-		List<AdminPagination> admins = new ArrayList<AdminPagination>();
-		
-		if(adminDao.getAdminWithPagination(size, page).size() > 0)
-		{
-			admins = adminDao.getAdminWithPagination(size, page);
 			
 			return admins;
 		}

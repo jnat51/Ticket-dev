@@ -97,4 +97,17 @@ public class MappingService {
 			return maps;
 		}
 	}
+	
+	public List<MappingReport> getAllWithStatus(){
+		List<MappingReport> maps = new ArrayList<MappingReport>();
+		
+		if(mappingDao.getAllWithStatus() != null)
+		{
+			return mappingDao.getAllWithStatus();
+		}
+		else
+		{
+			return maps;
+		}
+	}
 }

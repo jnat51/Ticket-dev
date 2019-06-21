@@ -60,14 +60,14 @@ public class CustomerDao extends ParentDao{
 			}
 	}
 	
-	public Customer findCustomerByBk(String username) {
+	public Customer findCustomerByBk(String email) {
 		try {
 			System.out.println("find customer by bk");
-			String query = "from Customer where username = :username";
+			String query = "from Customer where email = :email";
 			
 			Customer customer = (Customer) super.entityManager
 					  .createQuery(query)
-					  .setParameter("username", username).getSingleResult();
+					  .setParameter("email", email).getSingleResult();
 			
 			return customer;
 			}

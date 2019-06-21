@@ -21,10 +21,7 @@ public class CustomerService {
 		if (customerDao.isCustomerIdExist(customer.getId()) == true) {
 			throw new ErrorException("Customer already exist.");
 		}
-		if (customerDao.isCustomerBkExist(customer.getUsername()) == true) {
-			throw new ErrorException("Username already exist!");
-		}
-		if(customerDao.isCustomerEmailExist(customer.getEmail()) == true) {
+		if (customerDao.isCustomerBkExist(customer.getEmail()) == true) {
 			throw new ErrorException("Email already exist!");
 		}
 		customerDao.saveCustomer(customer);
@@ -43,10 +40,10 @@ public class CustomerService {
 		if (customerDao.isCustomerIdExist(customer.getId()) == false) {
 			throw new ErrorException("Customer not found!");
 		}
-		if (customerDao.isCustomerBkExist(customer.getUsername()) == false) {
+		if (customerDao.isCustomerBkExist(customer.getEmail()) == false) {
 			throw new ErrorException("Customer not found!");
 		}
-		if (!customer.getUsername().equals(customerDao.findCustomerById(customer.getId()).getUsername())) {
+		if (!customer.getEmail().equals(customerDao.findCustomerById(customer.getId()).getEmail())) {
 			throw new ErrorException("Username cannot be changed!");
 		}
 
@@ -90,11 +87,11 @@ public class CustomerService {
 		}
 	}
 
-	public Customer findCustomerByBk(String username) {
+	public Customer findCustomerByBk(String email) {
 		Customer cust = new Customer();
 
-		if (customerDao.findCustomerByBk(username) != null) {
-			return customerDao.findCustomerByBk(username);
+		if (customerDao.findCustomerByBk(email) != null) {
+			return customerDao.findCustomerByBk(email);
 		} else {
 			return cust;
 		}

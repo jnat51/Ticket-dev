@@ -95,4 +95,14 @@ public class MappingController {
 			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/status/active")public ResponseEntity<?> getAllWithStatus(){
+		try {
+			List<MappingReport> maps = mappingService.getAllWithStatus();
+			
+			return new ResponseEntity<>(maps , HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			}
+	}
 }

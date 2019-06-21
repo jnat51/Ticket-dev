@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.spring.model.admin.Admin;
 import com.spring.model.admin.AdminLogin;
-import com.spring.model.admin.AdminPagination;
 
 @Repository
 public class AdminDao extends ParentDao {
@@ -48,30 +47,13 @@ public class AdminDao extends ParentDao {
 			return null;
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	public List<AdminPagination> getAdminWithPagination(int size, int page){
-		try {			
-			String query = "WITH report as (SELECT row_number() OVER () AS no, id, email, image_id, name, password, username FROM tbl_admin)"
-					+ " SELECT * FROM report WHERE no > "+ page*size+ " LIMIT :size";
-			
-			List<AdminPagination> agents = super.entityManager
-					  .createNativeQuery(query, AdminPagination.class)
-					  .setParameter("size",size)
-					  .getResultList();
-			
-			return agents;
-		}catch(Exception e){
-			return null;
-		}
-	}
 
-	public Admin findByBk(String username) {
+	public Admin findByBk(String email) {
 		try {
-			System.out.println("find admin by username");
-			String query = "from Admin where username = :username";
+			System.out.println("find admin by email");
+			String query = "from Admin where email = :email";
 
-			Admin admin = (Admin) super.entityManager.createQuery(query).setParameter("username", username)
+			Admin admin = (Admin) super.entityManager.createQuery(query).setParameter("email", email)
 					.getSingleResult();
 
 			return admin;
@@ -85,7 +67,7 @@ public class AdminDao extends ParentDao {
 			System.out.println("login");
 			String query = "SELECT tbl_admin.id, tbl_admin.username, tbl_admin.password, tbl_admin.name, tbl_admin.email, tbl_image.image FROM tbl_admin " + 
 					"LEFT JOIN tbl_image ON tbl_admin.image_id = tbl_image.id " + 
-					"WHERE tbl_admin.username = :username";
+					"WHERE tbl_user.email = :email";
 
 			AdminLogin admin = (AdminLogin) super.entityManager.createNativeQuery(query, AdminLogin.class).setParameter("username", username)
 					.getSingleResult();

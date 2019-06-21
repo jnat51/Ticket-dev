@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.spring.model.agent.Agent;
+import com.spring.model.company.Company;
 
 @Entity
 @Table(name = "tbl_mapping")

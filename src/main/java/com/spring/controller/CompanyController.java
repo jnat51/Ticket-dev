@@ -34,15 +34,20 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.spring.enumeration.Enum.Active;
-import com.spring.model.Company;
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.Image;
 import com.spring.model.Mapping;
 import com.spring.model.Status;
+import com.spring.model.User;
+import com.spring.model.company.Company;
+import com.spring.model.company.CompanyInput;
 import com.spring.model.customer.Customer;
+import com.spring.model.customer.CustomerInput;
 import com.spring.service.CompanyService;
 import com.spring.service.CustomerService;
 import com.spring.service.ImageService;
 import com.spring.service.MappingService;
+import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -53,6 +58,8 @@ public class CompanyController {
 	CompanyService companyService;
 	@Autowired
 	CustomerService customerService;
+	@Autowired
+	UserService userService;
 	@Autowired
 	ImageService imageService;
 	@Autowired
@@ -127,8 +134,16 @@ public class CompanyController {
 			@RequestParam(name = "logo", required = false) MultipartFile logo) throws JsonParseException, JsonMappingException, IOException
 	{
 		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-		Company companyObject = mapper.readValue(company, Company.class);
+		CompanyInput companyObject = mapper.readValue(company, CompanyInput.class);
 		companyObject.setStatus(Active.active);
+		
+		Company comp = new Company();
+		comp.setId(companyObject.getId());
+		comp.setAddress(companyObject.getAddress());
+		comp.setCompanyCode(companyObject.getCompanyCode());
+		comp.setCompanyName(companyObject.getCompanyName());
+		comp.setStatus(companyObject.getStatus());
+		comp.setImageId(companyObject.getImageId());
 		
 		try {
 			if (logo != null) {
@@ -151,16 +166,29 @@ public class CompanyController {
 				companyObject.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 			
-			String msg = companyService.insertCompany(companyObject);
+			String msg = companyService.insertCompany(comp);
 			
-			for(Customer customer : companyObject.getCustomers()) {
+			for(CustomerInput customer : companyObject.getCustomers()) {
+				User user = new User();
+				Customer cust = new Customer();
+				
+				cust.setEmail(customer.getEmail());
+				cust.setName(customer.getName());
+				cust.setPosition(customer.getPosition());
+				cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
+				cust.setStatus(Active.active);
+				
+				customerService.insertCustomer(cust);
+				
 				String pass = passwordGenerator();
 				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 				
-				customer.setPassword(generatedSecuredPasswordHash);
-				customer.setCompany(companyService.findCompanyByBk(companyObject.getCompanyCode()));
+				user.setUsername(customer.getUsername());
+				user.setPassword(generatedSecuredPasswordHash);
+				user.setRole(Role.customer);
+				user.setUser(customerService.findCustomerByBk(customer.getEmail()).getId());
 				
-				customerService.insertCustomer(customer);
+				userService.insert(user);
 				
 				SimpleMailMessage email = new SimpleMailMessage();
 				// setTo(from, to)
@@ -174,10 +202,11 @@ public class CompanyController {
 
 				javaMailSender.send(email);
 			}
-			Company comp = new Company();
-			comp.setId(companyService.findCompanyByBk(companyObject.getCompanyCode()).getId());
+			
+			Company co = new Company();
+			co.setId(companyService.findCompanyByBk(companyObject.getCompanyCode()).getId());
 			Mapping mapping = new Mapping();
-			mapping.setCompany(comp);
+			mapping.setCompany(co);
 			
 			mappingService.insert(mapping);
 

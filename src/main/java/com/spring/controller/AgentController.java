@@ -28,15 +28,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.enumeration.Enum.Active;
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.Image;
 import com.spring.model.Status;
 import com.spring.model.UpdatePassword;
+import com.spring.model.User;
+import com.spring.model.admin.AdminAgentInput;
 import com.spring.model.agent.Agent;
 import com.spring.model.agent.AgentLogin;
-import com.spring.model.agent.AgentPage;
-import com.spring.model.agent.AgentPagination;
 import com.spring.service.AgentService;
 import com.spring.service.ImageService;
+import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -47,6 +49,8 @@ public class AgentController {
 	AgentService agentService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+	UserService userService;
 	@Autowired
     private JavaMailSender javaMailSender;
 	
@@ -88,20 +92,26 @@ public class AgentController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<?> insertAgent(@ModelAttribute Agent agent, @RequestParam(name = "pp", required = false) MultipartFile pp) {
+	public ResponseEntity<?> insertAgent(@ModelAttribute AdminAgentInput adminAgentInput, @RequestParam(name = "pp", required = false) MultipartFile pp) {
 		try {
 			Agent ag = new Agent();
+			User user = new User();
 			
 			String pass = passwordGenerator();
 			String encryptedPassword = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
-			ag.setEmail(agent.getEmail());
-			ag.setUsername(agent.getUsername());
-			ag.setPassword(encryptedPassword);
-			ag.setName(agent.getName());
+			ag.setEmail(adminAgentInput.getEmail());
+			ag.setName(adminAgentInput.getName());
 			ag.setStatus(Active.active);
 			
 			String msg = agentService.insert(ag);
+			
+			user.setUsername(adminAgentInput.getUsername());
+			user.setPassword(encryptedPassword);
+			user.setRole(Role.agent);
+			user.setUser(agentService.findByBk(adminAgentInput.getEmail()).getId());
+
+			userService.insert(user);
 			
 			Image img = new Image();
 			
@@ -118,7 +128,7 @@ public class AgentController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 				
-				Agent agn = agentService.findByBk(ag.getUsername());
+				Agent agn = agentService.findByBk(adminAgentInput.getUsername());
 				
 				imageService.insert(img);
 				agn.setImageId(imageService.findByBk(fileName, data).getId());
@@ -127,10 +137,10 @@ public class AgentController {
 
 			SimpleMailMessage email = new SimpleMailMessage();
 	        //setTo(from, to)
-	        email.setTo("jnat51.jg@gmail.com", agent.getEmail());
+	        email.setTo("jnat51.jg@gmail.com", adminAgentInput.getEmail());
 	        
-	        email.setSubject("Welcome "+ agent.getName() +", New Agent!");
-	        email.setText("Here is your username and password to login to your account.\nUsername: "+ agent.getUsername()+ "\nPassword: " + pass);
+	        email.setSubject("Welcome "+ adminAgentInput.getName() +", New Agent!");
+	        email.setText("Here is your username and password to login to your account.\nUsername: "+ adminAgentInput.getUsername()+ "\nPassword: " + pass);
 	        
 	        javaMailSender.send(email);
 			
@@ -190,16 +200,7 @@ public class AgentController {
 	public ResponseEntity<?> updateAgent(@ModelAttribute Agent agent, @RequestParam(name= "pp", required = false) MultipartFile pp) {
 		try {
 			Agent ag = agentService.findById(agent.getId());
-			String pass = agent.getPassword();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			
-			ag.setId(agent.getId());
-			ag.setEmail(agent.getEmail());
-			ag.setUsername(agent.getUsername());
-			ag.setPassword(generatedSecuredPasswordHash);
-			ag.setName(agent.getName());
-			ag.setStatus(agent.getStatus());
-
 			if (pp != null) {
 				Image img = new Image();
 				byte[] data = pp.getBytes();
@@ -214,7 +215,7 @@ public class AgentController {
 				img.setFileName(fileName);
 				img.setMime(mime);
 				
-				if(ag.getImageId() != null) {
+				if(agent.getImageId() != null) {
 				imageService.delete(ag.getImageId());
 				}
 				imageService.insert(img);
@@ -250,32 +251,6 @@ public class AgentController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	@GetMapping(value = "/{size}/{page}")
-	public ResponseEntity<?> getAgentPagination(@PathVariable int size, @PathVariable int page){
-		try {
-			List<AgentPagination> agents = agentService.findWithPagination(size, page);
-			AgentPage agentsPage = new AgentPage();
-			
-			int max = 0;
-			
-			if(agentService.getMaxPage()%size == 0)
-			{
-				max = agentService.getMaxPage()/size;
-			}
-			else
-			{
-				max = (agentService.getMaxPage()/size)+1;
-			}
-			
-			agentsPage.setMaxPage(max);
-			agentsPage.setAgents(agents);
-			
-			return new ResponseEntity<>(agentsPage, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteAgent(@PathVariable String id) {
@@ -289,81 +264,6 @@ public class AgentController {
 			}
 			
 			return new ResponseEntity<>("Agent successfully deleted!", HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody Agent agent) {
-		try {
-			boolean matched = BCrypt.checkpw(agent.getPassword(),
-					agentService.findByBk(agent.getUsername()).getPassword());
-			System.out.println(matched);
-			
-			AgentLogin agt;
-			
-			if(matched == true) {
-				agt = agentService.login(agent.getUsername());
-				
-				return new ResponseEntity<>(agt, HttpStatus.OK);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username/password");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@PatchMapping(value = "/password/{id}")
-	public ResponseEntity<?> updatePassword(@RequestBody UpdatePassword updatePassword, @PathVariable String id) {
-		try {
-			Agent agent = agentService.findById(id);
-
-			if (BCrypt.checkpw(updatePassword.getOldPassword(), agent.getPassword()) == true) {
-
-				String pass = updatePassword.getNewPassword();
-				String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-
-				agent.setPassword(generatedSecuredPasswordHash);
-
-				agentService.update(agent);
-				
-				return new ResponseEntity<>("Update password success", HttpStatus.OK);
-			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password not match");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@PatchMapping(value = "/reset")
-	public ResponseEntity<?> resetPassword(@RequestParam String email) {
-		try {
-			Agent agent = agentService.resetPassword(email);
-			
-			String pass = passwordGenerator();
-			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
-			
-			agent.setPassword(generatedSecuredPasswordHash);
-			
-			agentService.update(agent);
-			
-			SimpleMailMessage mail = new SimpleMailMessage();
-			// setTo(from, to)
-			mail.setTo("jnat51.jg@gmail.com", email);
-
-			mail.setSubject("Hi " + agent.getName());
-			mail.setText("Here is your new password to login to your account. \nPassword: " + pass);
-
-			System.out.println("send...");
-
-			javaMailSender.send(mail);
-
-			System.out.println("sent");
-			
-			return new ResponseEntity<>("Password has been reset.", HttpStatus.OK);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
