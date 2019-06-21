@@ -21,20 +21,18 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.model.Image;
-import com.spring.model.UpdatePassword;
 import com.spring.model.User;
 import com.spring.model.admin.Admin;
 import com.spring.model.admin.AdminAgentInput;
-import com.spring.model.admin.AdminLogin;
 import com.spring.service.AdminService;
 import com.spring.service.ImageService;
+import com.spring.service.UserService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
@@ -45,6 +43,8 @@ public class AdminController {
 	AdminService adminService;
 	@Autowired
 	ImageService imageService;
+	@Autowired
+	UserService userService;
 	@Autowired
 	JavaMailSender javaMailSender;
 
@@ -109,6 +109,8 @@ public class AdminController {
 			user.setUsername(admin.getUsername());
 			user.setPassword(generatedSecuredPasswordHash);
 			adm.setName(admin.getName());
+			
+			userService.insert(user);
 
 			String msg = adminService.insert(adm);
 
