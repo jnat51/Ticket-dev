@@ -107,18 +107,21 @@ public class AdminController {
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
+			adm.setStatus(Active.active);
 			adm.setEmail(admin.getEmail());
 			adm.setName(admin.getName());
-			adm.setStatus(Active.active);
-			
-			user.setUsername(admin.getUsername());
-			user.setPassword(generatedSecuredPasswordHash);
-			user.setRole(Role.customer);
-			user.setUser(adminService.findByBk(admin.getEmail()).getId());
-			
-			userService.insert(user);
 
 			String msg = adminService.insert(adm);
+			
+			System.out.println(adminService.findByBk(adm.getEmail()).getName());
+			System.out.println(user.getUser());
+
+			user.setUsername(admin.getUsername());
+			user.setPassword(generatedSecuredPasswordHash);
+			user.setRole(Role.admin);
+			user.setUser(adminService.findByBk(adm.getEmail()).getId());
+
+			userService.insert(user);
 
 			if (pp != null) {
 				Image img = new Image();

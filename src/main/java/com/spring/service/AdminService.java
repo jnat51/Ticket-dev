@@ -60,13 +60,13 @@ public class AdminService {
 		adminDao.save(admin);
 	}
 	
-	public Admin findByBk(String username)
+	public Admin findByBk(String email)
 	{
 		Admin admin = new Admin();
 		
-		if(adminDao.findByBk(username) != null)
+		if(adminDao.findByBk(email) != null)
 		{
-			admin = adminDao.findByBk(username);
+			admin = adminDao.findByBk(email);
 			
 			return admin;
 		}
