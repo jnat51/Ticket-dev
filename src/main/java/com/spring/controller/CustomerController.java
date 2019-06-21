@@ -119,8 +119,7 @@ public class CustomerController {
 				System.out.println(imageService.findByBk(fileName, data).getId());
 				cust.setImageId(imageService.findByBk(fileName, data).getId());
 			}
-
-			customerService.insertCustomer(cust);
+			
 			try {
 			SimpleMailMessage email = new SimpleMailMessage();
 			// setTo(from, to)

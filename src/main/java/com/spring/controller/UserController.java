@@ -85,6 +85,8 @@ public class UserController {
 	public ResponseEntity<?> patchPassword(@RequestBody UpdatePassword updatePassword, @PathVariable String userId){
 		try {
 			User user = userService.findByUserId(userId);
+			System.out.println(user.getUsername());
+			System.out.println(user.getPassword());
 			
 			if (BCrypt.checkpw(updatePassword.getOldPassword(), user.getPassword()) == true) {
 				String pass = updatePassword.getNewPassword();
