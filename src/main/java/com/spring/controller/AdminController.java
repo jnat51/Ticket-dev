@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.enumeration.Enum.Active;
+import com.spring.enumeration.Enum.Role;
 import com.spring.model.Image;
 import com.spring.model.User;
 import com.spring.model.admin.Admin;
@@ -106,9 +108,13 @@ public class AdminController {
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 
 			adm.setEmail(admin.getEmail());
+			adm.setName(admin.getName());
+			adm.setStatus(Active.active);
+			
 			user.setUsername(admin.getUsername());
 			user.setPassword(generatedSecuredPasswordHash);
-			adm.setName(admin.getName());
+			user.setRole(Role.customer);
+			user.setUser(adminService.findByBk(admin.getEmail()).getId());
 			
 			userService.insert(user);
 
