@@ -335,6 +335,34 @@ public class TicketController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping(value = "/hdr/agent/{agentId}")
+	public ResponseEntity<?> findTicketByAgent(@PathVariable String agentId) {
+		try {
+			List<Ticket> tickets = ticketService.findByAgent(agentId);
+
+			List<DetailTicket> details = new ArrayList<DetailTicket>();
+			for(Ticket ticket : tickets) {
+				Company company = ticket.getCustomer().getCompany();
+				
+				List<Customer> customers = new ArrayList<Customer>();
+				company.setCustomers(customers);
+				
+				ticket.getCustomer().setCompany(company);
+				
+				for (DetailTicket detail : ticket.getDetails()) {
+					detail.setTicket(null);
+					details.add(detail);
+				}
+				
+				ticket.setDetails(details);
+			}
+
+			return new ResponseEntity<>(tickets, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@GetMapping(value = "/hdr/code/{ticketCode}")
 	public ResponseEntity<?> findTicketByBk(@PathVariable String ticketCode) {

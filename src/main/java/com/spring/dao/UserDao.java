@@ -116,7 +116,7 @@ public class UserDao extends ParentDao{
 			if(role == role.admin) {
 			System.out.println("login admin");
 				
-			String query = "SELECT tbl_admin.id, tbl_user.username, tbl_user.password, tbl_admin.name, tbl_admin.email, tbl_admin.status, tbl_image.image FROM tbl_admin " 
+			String query = "SELECT tbl_admin.id, tbl_user.username, tbl_user.password, tbl_user.role, tbl_admin.name, tbl_admin.email, tbl_admin.status, tbl_image.image FROM tbl_admin " 
 					+ "INNER JOIN tbl_user ON tbl_admin.id = tbl_user.user_id "
 					+ "LEFT JOIN tbl_image ON tbl_admin.image_id = tbl_image.id "
 					+ "WHERE tbl_user.username = :username";
@@ -127,7 +127,7 @@ public class UserDao extends ParentDao{
 			if(role == role.agent){
 				System.out.println("login agent");
 				
-				String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_user.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " 
+				String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_user.role, tbl_user.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " 
 						+ "INNER JOIN tbl_user ON tbl_agent.id = tbl_user.user_id "
 						+ "LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id "
 						+ "WHERE tbl_user.username = :username";
@@ -139,7 +139,7 @@ public class UserDao extends ParentDao{
 				System.out.println("login customer");
 				
 				String query = "SELECT tbl_customer.id, tbl_customer.name, tbl_customer.company_id, tbl_customer.position, tbl_customer.email, tbl_customer.status, "
-						+ "tbl_user.username, tbl_user.password, "
+						+ "tbl_user.username, tbl_user.password, tbl_user.role, "
 						+ "tbl_image.image, "
 						+ "tbl_company.company_name, tbl_company.company_code " +
 						"FROM tbl_customer "

@@ -5,6 +5,8 @@ import javax.persistence.Id;
 
 import org.springframework.stereotype.Component;
 
+import com.spring.enumeration.Enum.Role;
+
 @Component
 @Entity
 public class AdminLogin {
@@ -15,6 +17,15 @@ public class AdminLogin {
 	private String name;
 	private String email;
 	private byte[] image;
+	private String role;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public String getId() {
 		return id;

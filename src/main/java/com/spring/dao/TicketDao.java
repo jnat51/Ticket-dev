@@ -72,6 +72,21 @@ public class TicketDao extends ParentDao{
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<Ticket> findByAgent (String agentId) {
+		try {
+			String query = "FROM Ticket WHERE agent.id = :agentId";
+			
+			List<Ticket> tickets = this.entityManager.createQuery(query)
+					.setParameter("agentId", agentId)
+					.getResultList();
+			
+			return tickets;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Ticket> findByCompany (String companyId) {
 		try {
 			String query = "FROM Ticket WHERE customer.company = :companyId";

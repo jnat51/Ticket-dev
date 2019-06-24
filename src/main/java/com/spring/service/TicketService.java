@@ -98,6 +98,19 @@ public class TicketService {
 		}
 	}
 	
+	public List<Ticket> findByAgent(String agentId){
+		List<Ticket> tickets = new ArrayList<Ticket>();
+		
+		if(ticketDao.findByAgent(agentId).size() > 0) {
+			tickets = ticketDao.findByAgent(agentId);
+			
+			return tickets;
+		}
+		else {
+			return tickets;
+		}
+	}
+	
 	public List<Ticket> findByStatus(String ticketStatus){
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		
