@@ -133,6 +133,7 @@ public class CompanyController {
 	public ResponseEntity<?> insertNewCompany(@RequestParam String company,
 			@RequestParam(name = "logo", required = false) MultipartFile logo) throws JsonParseException, JsonMappingException, IOException
 	{
+		try {
 		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 		CompanyInput companyObject = mapper.readValue(company, CompanyInput.class);
 		companyObject.setStatus(Active.active);
@@ -145,7 +146,6 @@ public class CompanyController {
 		comp.setStatus(companyObject.getStatus());
 		comp.setImageId(companyObject.getImageId());
 		
-		try {
 			if (logo != null) {
 				Image img = new Image();
 				byte[] data = logo.getBytes();
@@ -163,7 +163,9 @@ public class CompanyController {
 				img.setMime(mime);
 				
 				imageService.insert(img);
-				companyObject.setImageId(imageService.findByBk(fileName, data).getId());
+				comp.setImageId(imageService.findByBk(fileName, data).getId());
+				System.out.println(imageService.findByBk(fileName, data).getFileName());
+				System.out.println(imageService.findByBk(fileName, data).getId());
 			}
 			
 			companyService.insertCompany(comp);
