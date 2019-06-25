@@ -127,7 +127,7 @@ public class UserDao extends ParentDao{
 			if(role == role.agent){
 				System.out.println("login agent");
 				
-				String query = "SELECT tbl_agent.id, tbl_agent.username, tbl_user.role, tbl_user.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " 
+				String query = "SELECT tbl_agent.id, tbl_user.username, tbl_user.role, tbl_user.password, tbl_agent.name, tbl_agent.email, tbl_agent.status, tbl_image.image FROM tbl_agent " 
 						+ "INNER JOIN tbl_user ON tbl_agent.id = tbl_user.user_id "
 						+ "LEFT JOIN tbl_image ON tbl_agent.image_id = tbl_image.id "
 						+ "WHERE tbl_user.username = :username";
