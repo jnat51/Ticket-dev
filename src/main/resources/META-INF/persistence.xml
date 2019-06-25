@@ -11,6 +11,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/minimarket_ujian" />
 			<property name="javax.persistence.jdbc.user" value="postgres" />
 			<property name="javax.persistence.jdbc.password" value="admin" />
+			<property name="javax.persistence.jdbc.stringtype" value="unspecified" />
 			
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
 		</properties>

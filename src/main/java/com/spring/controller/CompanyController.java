@@ -166,7 +166,7 @@ public class CompanyController {
 				companyObject.setImageId(imageService.findByBk(fileName, data).getId());
 			}
 			
-			String msg = companyService.insertCompany(comp);
+			companyService.insertCompany(comp);
 			
 			for(CustomerInput customer : companyObject.getCustomers()) {
 				User user = new User();
@@ -175,7 +175,8 @@ public class CompanyController {
 				cust.setEmail(customer.getEmail());
 				cust.setName(customer.getName());
 				cust.setPosition(customer.getPosition());
-				cust.setCompany(companyService.findCompanyById(customer.getCompany().getId()));
+				cust.setCompany(companyService.findCompanyByBk(comp.getCompanyCode())); 
+				System.out.println();
 				cust.setStatus(Active.active);
 				
 				customerService.insertCustomer(cust);
@@ -210,7 +211,7 @@ public class CompanyController {
 			
 			mappingService.insert(mapping);
 
-			return new ResponseEntity<>(msg, HttpStatus.CREATED);
+			return new ResponseEntity<>("Company successfully added", HttpStatus.CREATED);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
