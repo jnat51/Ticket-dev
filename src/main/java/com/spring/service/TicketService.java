@@ -72,11 +72,11 @@ public class TicketService {
 		}
 	}
 	
-	public List<Ticket> findByCustomer(String customerId){
+	public List<Ticket> findByCustomer(String customerId, String status){
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		
-		if(ticketDao.findByCustomer(customerId).size() > 0) {
-			tickets = ticketDao.findByCustomer(customerId);
+		if(ticketDao.findByCustomer(customerId, status).size() > 0) {
+			tickets = ticketDao.findByCustomer(customerId, status);
 			
 			return tickets;
 		}
@@ -85,11 +85,11 @@ public class TicketService {
 		}
 	}
 	
-	public List<Ticket> findByCompany(String companyId){
+	public List<Ticket> findByCompany(String companyId, String status){
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		
-		if(ticketDao.findByCompany(companyId).size() > 0) {
-			tickets = ticketDao.findByCompany(companyId);
+		if(ticketDao.findByCompany(companyId, status).size() > 0) {
+			tickets = ticketDao.findByCompany(companyId, status);
 			
 			return tickets;
 		}
@@ -98,11 +98,11 @@ public class TicketService {
 		}
 	}
 	
-	public List<Ticket> findByAgent(String agentId){
+	public List<Ticket> findByAgent(String agentId, String status){
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		
-		if(ticketDao.findByAgent(agentId).size() > 0) {
-			tickets = ticketDao.findByAgent(agentId);
+		if(ticketDao.findByAgent(agentId, status).size() > 0) {
+			tickets = ticketDao.findByAgent(agentId, status);
 			
 			return tickets;
 		}

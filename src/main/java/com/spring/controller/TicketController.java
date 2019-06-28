@@ -250,10 +250,10 @@ public class TicketController {
 		}
 	}
 	
-	@GetMapping(value = "/hdr/customer/{customerId}")
-	public ResponseEntity<?> findTicketByCustomer(@PathVariable String customerId) {
+	@GetMapping(value = "/hdr/customer/{customerId}/{status}")
+	public ResponseEntity<?> findTicketByCustomer(@PathVariable String customerId, @PathVariable String status) {
 		try {
-			List<Ticket> tickets = ticketService.findByCustomer(customerId);
+			List<Ticket> tickets = ticketService.findByCustomer(customerId, status);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
@@ -307,10 +307,10 @@ public class TicketController {
 		}
 	}
 	
-	@GetMapping(value = "/hdr/company/{companyId}")
-	public ResponseEntity<?> findTicketByCompany(@PathVariable String companyId) {
+	@GetMapping(value = "/hdr/company/{companyId}/{status}")
+	public ResponseEntity<?> findTicketByCompany(@PathVariable String companyId, @PathVariable String status) {
 		try {
-			List<Ticket> tickets = ticketService.findByCustomer(companyId);
+			List<Ticket> tickets = ticketService.findByCustomer(companyId, status);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
@@ -336,10 +336,10 @@ public class TicketController {
 		}
 	}
 	
-	@GetMapping(value = "/hdr/agent/{agentId}")
-	public ResponseEntity<?> findTicketByAgent(@PathVariable String agentId) {
+	@GetMapping(value = "/hdr/agent/{agentId}/{status}")
+	public ResponseEntity<?> findTicketByAgent(@PathVariable String agentId, @PathVariable String status) {
 		try {
-			List<Ticket> tickets = ticketService.findByAgent(agentId);
+			List<Ticket> tickets = ticketService.findByAgent(agentId, status);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			for(Ticket ticket : tickets) {

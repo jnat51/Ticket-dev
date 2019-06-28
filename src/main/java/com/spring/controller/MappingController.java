@@ -24,7 +24,6 @@ import com.spring.service.MappingService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
-@Transactional
 @RequestMapping("/map")
 public class MappingController {
 	@Autowired
