@@ -310,7 +310,7 @@ public class TicketController {
 	@GetMapping(value = "/hdr/company/{companyId}/{status}")
 	public ResponseEntity<?> findTicketByCompany(@PathVariable String companyId, @PathVariable String status) {
 		try {
-			List<Ticket> tickets = ticketService.findByCustomer(companyId, status);
+			List<Ticket> tickets = ticketService.findByCompany(companyId, status);
 
 			List<DetailTicket> details = new ArrayList<DetailTicket>();
 			Ticket tick = new Ticket();
