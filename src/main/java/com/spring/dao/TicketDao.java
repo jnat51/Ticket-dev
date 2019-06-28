@@ -128,7 +128,7 @@ public class TicketDao extends ParentDao {
 				hql = hql + " AND tbl_customer.company_id = :companyId";
 			}
 			if (!status.trim().isEmpty()) {
-				hql = hql + " AND status = :status";
+				hql = hql + " AND tbl_ticket.status = :status";
 			}
 
 			Query query = this.entityManager.createNativeQuery(hql, Ticket.class);
