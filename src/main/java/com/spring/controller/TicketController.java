@@ -33,6 +33,7 @@ import com.spring.enumeration.Enum.Stat;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.TicketImage;
 import com.spring.model.UpdateStatus;
 import com.spring.model.admin.Admin;
 import com.spring.model.agent.Agent;
@@ -149,6 +150,8 @@ public class TicketController {
 
 			if (ticketObject.getDetails().size() > 0) {
 				for (DetailTicket dtl : ticketObject.getDetails()) {
+					LocalDateTime messageDate = LocalDateTime.now();
+					dtl.setMessageDate(messageDate);
 					dtl.setTicket(tick);
 					ticketService.insertDetailTicket(dtl);
 					if (ss.length > 0) {
@@ -168,7 +171,7 @@ public class TicketController {
 							subDetailTicket.setMime(mime);
 							subDetailTicket.setSs(data);
 							subDetailTicket.setDetailId(
-									ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
+							ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
 
 							ticketService.insertSubDetailTicket(subDetailTicket);
 						}
@@ -196,6 +199,24 @@ public class TicketController {
 			}
 
 			return new ResponseEntity<>("insert success", HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value = "/hdr/test/{id}")
+	public ResponseEntity<?> findTicketWithImage(@PathVariable String id) {
+		try {
+			TicketImage ticket = ticketService.findTicketWithImage(id);
+			
+			Company company = ticket.getCustomer().getCompany();
+			List<Customer> customers = new ArrayList<Customer>();
+			
+			company.setCustomers(customers);
+			
+			ticket.getCustomer().setCompany(company);
+
+			return new ResponseEntity<>(ticket, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -516,6 +537,17 @@ public class TicketController {
 			SubDetailTicket subDtlticket = ticketService.findSubDetailTicketByBk(detailId, fileName);
 
 			return new ResponseEntity<>(subDtlticket, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value= "/sub/detail/{detailId}")
+	public ResponseEntity<?> findSubDetailTicketByDetail(@PathVariable String detailId){
+		try {
+			List<SubDetailTicket> subDtltickets = ticketService.findSubDetailTicketByDetail(detailId);
+			
+			return new ResponseEntity<>(subDtltickets, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

@@ -145,26 +145,6 @@ public class CustomerDao extends ParentDao{
 		}
 	}
 	
-	public CustomerLogin login(String username) {
-		try {
-			System.out.println("login");
-			String query = "SELECT tbl_customer.id, tbl_customer.username, tbl_customer.password, tbl_customer.name, tbl_customer.company_id, tbl_customer.position, tbl_customer.email, tbl_customer.status, "
-					+ "tbl_image.image, "
-					+ "tbl_company.company_name, tbl_company.company_code " +
-					"FROM tbl_customer " + 
-					"LEFT JOIN tbl_image ON tbl_customer.image_id = tbl_image.id " +
-					"JOIN tbl_company ON tbl_customer.company_id = tbl_company.id " + 
-					"WHERE tbl_customer.username = :username";
-
-			CustomerLogin customer = (CustomerLogin) super.entityManager.createNativeQuery(query, CustomerLogin.class).setParameter("username", username)
-					.getSingleResult();
-
-			return customer;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
 	public CustomerWithImage findWithImage(String id)
 	{
 		try {

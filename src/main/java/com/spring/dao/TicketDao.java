@@ -6,19 +6,26 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.enumeration.Enum.Stat;
 import com.spring.model.DetailTicket;
+import com.spring.model.DetailTicketImage;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.TicketImage;
 import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
 
 @Repository
 @Transactional
 public class TicketDao extends ParentDao {
+	@Autowired
+	AgentDao agentDao;
+	@Autowired
+	CustomerDao customerDao;
 	// ====================================*Header
 	// Ticket*========================================
 	public void saveTicket(Ticket ticket) {
@@ -54,6 +61,63 @@ public class TicketDao extends ParentDao {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<DetailTicketImage> findDetailWithImage(String ticketId) {
+		try {
+		String hql = "SELECT tbl_detail_ticket.id, tbl_detail_ticket.sender, tbl_detail_ticket.message, tbl_detail_ticket.message_date FROM tbl_detail_ticket " +
+				"WHERE tbl_detail_ticket.ticket_id = :ticketId";
+		
+		List<Object[]> data =  super.entityManager.createNativeQuery(hql)
+				.setParameter("ticketId", ticketId)
+				.getResultList();
+		
+		List<DetailTicketImage> detailTickets = new ArrayList<DetailTicketImage>();
+		
+		for(Object[] obj: data)
+		{
+			DetailTicketImage detailTicket = new DetailTicketImage();
+			detailTicket.setSs(findSubDetailTicketByDetail(obj[0].toString()));
+			detailTicket.setId(obj[0].toString());
+			detailTicket.setSender(obj[1].toString());
+			detailTicket.setMessage(obj[2].toString());
+			detailTicket.setMessageDate(obj[3].toString());
+			detailTickets.add(detailTicket);
+		}
+		
+		return detailTickets;
+		}catch (Exception e) {
+			return null;
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public TicketImage findTicketWithImage(String id) {
+		try {
+			String hql = "SELECT tbl_ticket.id, tbl_ticket.ticket_code, tbl_ticket.agent_id, tbl_ticket.ticket_date, tbl_ticket.title,"
+					+ " tbl_ticket.customer_id, tbl_ticket.status FROM tbl_ticket " +
+					"WHERE tbl_ticket.id = :id";
+			
+			Object[] data = (Object[]) super.entityManager.createNativeQuery(hql)
+					.setParameter("id", id)
+					.getSingleResult();
+			
+			TicketImage ticket = new TicketImage();
+			ticket.setId(data[0].toString());
+			ticket.setTicketCode(data[1].toString());
+			ticket.setAgent(agentDao.findById(data[2].toString()));
+			ticket.setTicketDate(data[3].toString());
+			ticket.setTitle(data[4].toString());
+			ticket.setCustomer(customerDao.findCustomerById(data[5].toString()));
+			ticket.setStatus(data[6].toString());
+			ticket.setDetails(findDetailWithImage(data[0].toString()));
+			
+			return ticket;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Ticket> findByCustomer(String customerId, String status) {
@@ -69,7 +133,7 @@ public class TicketDao extends ParentDao {
 				hql = hql + " AND tbl_ticket.status = :status";
 			}
 
-			Query query = this.entityManager.createNativeQuery(hql, Ticket.class);
+			Query query = super.entityManager.createNativeQuery(hql, Ticket.class);
 
 			if (!customerId.trim().isEmpty()) {
 				query.setParameter("customerId", customerId);

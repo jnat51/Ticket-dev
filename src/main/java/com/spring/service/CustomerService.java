@@ -69,23 +69,6 @@ public class CustomerService {
 			return cust;
 		}
 	}
-	
-	public CustomerLogin login(String username) throws ErrorException {
-		CustomerLogin customer = new CustomerLogin();
-		
-		if(customerDao.login(username) != null)
-		{
-			customer = customerDao.login(username);
-		}
-		if(customer.getStatus().equals("active"))
-		{
-			return customer;
-		}
-		else
-		{
-			throw new ErrorException("User is non-active");
-		}
-	}
 
 	public Customer findCustomerByBk(String email) {
 		Customer cust = new Customer();

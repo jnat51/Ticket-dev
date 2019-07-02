@@ -13,6 +13,7 @@ import com.spring.exception.ErrorException;
 import com.spring.model.DetailTicket;
 import com.spring.model.SubDetailTicket;
 import com.spring.model.Ticket;
+import com.spring.model.TicketImage;
 import com.spring.model.company.Company;
 import com.spring.model.customer.Customer;
 
@@ -84,6 +85,20 @@ public class TicketService {
 			return tickets;
 		}
 	}
+	
+	public TicketImage findTicketWithImage(String id) {
+		TicketImage ticket = new TicketImage();
+		
+		if(ticketDao.findTicketWithImage(id) != null) {
+			ticket = ticketDao.findTicketWithImage(id);
+			
+			return ticket;
+		}
+		else {
+			return ticket;
+		}
+	}
+	
 	
 	public List<Ticket> findByCompany(String companyId, String status){
 		List<Ticket> tickets = new ArrayList<Ticket>();

@@ -28,7 +28,6 @@ import com.spring.service.ImageService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RestController
-@Transactional
 @RequestMapping("/image")
 public class ImageController {
 	@Autowired
