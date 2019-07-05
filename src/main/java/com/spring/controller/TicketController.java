@@ -192,7 +192,7 @@ public class TicketController {
 							subDetailTicket.setMime(mime);
 							subDetailTicket.setSs(data);
 							subDetailTicket.setDetailId(
-									ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
+							ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
 
 							ticketService.insertSubDetailTicket(subDetailTicket);
 						}

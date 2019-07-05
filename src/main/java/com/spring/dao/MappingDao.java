@@ -31,14 +31,6 @@ public class MappingDao extends ParentDao {
 			 mapping = (Mapping) super.entityManager
 					  .createQuery(query)
 					  .setParameter("id",id).getSingleResult();
-			 
-			 List<Customer> customers = new ArrayList<Customer>();
-			 for (Customer cust : mapping.getCompany().getCustomers()) {
-					cust.setCompany(null);
-					customers.add(cust);
-				}
-			 
-			 mapping.getCompany().setCustomers(customers);
 			
 			return mapping;
 			}

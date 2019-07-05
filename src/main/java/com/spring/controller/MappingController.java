@@ -1,5 +1,6 @@
 package com.spring.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.model.Mapping;
 import com.spring.model.MappingReport;
+import com.spring.model.customer.Customer;
 import com.spring.service.MappingService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -67,6 +69,14 @@ public class MappingController {
 		try {
 		Mapping pic = mappingService.findById(id);
 		
+		 List<Customer> customers = new ArrayList<Customer>();
+		 for (Customer cust : pic.getCompany().getCustomers()) {
+				cust.setCompany(null);
+				customers.add(cust);
+			}
+		 
+		 pic.getCompany().setCustomers(customers);
+		
 		return new ResponseEntity<>(pic , HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
@@ -77,6 +87,14 @@ public class MappingController {
 	public ResponseEntity<?> findByBk(@PathVariable("companyId") String companyId) {
 		try {
 		Mapping pic = mappingService.findByBk(companyId);
+		
+		List<Customer> customers = new ArrayList<Customer>();
+		 for (Customer cust : pic.getCompany().getCustomers()) {
+				cust.setCompany(null);
+				customers.add(cust);
+			}
+		 
+		 pic.getCompany().setCustomers(customers);
 		
 		return new ResponseEntity<>(pic , HttpStatus.OK);
 		} catch (Exception e) {
