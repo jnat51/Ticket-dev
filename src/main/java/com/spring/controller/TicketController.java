@@ -314,6 +314,7 @@ public class TicketController {
 
 					javaMailSender.send(mail);
 					
+					System.out.println("sent");
 					}
 					catch (Exception e) {
 						return new ResponseEntity<>("Insert ticket failed", HttpStatus.BAD_REQUEST);

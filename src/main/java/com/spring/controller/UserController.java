@@ -139,12 +139,15 @@ public class UserController {
 			User user = userService.findByBk(username);
 			String name;
 			String email;
+			SimpleMailMessage mail = new SimpleMailMessage();
 			
 			String pass = passwordGenerator();
 			String generatedSecuredPasswordHash = BCrypt.hashpw(pass, BCrypt.gensalt(12));
 			if(user.getRole() == Role.admin)
 			{
-				Admin admin = adminService.findById(user.getId());
+				try {
+				System.out.println("admin");
+				Admin admin = adminService.findById(user.getUser());
 				name = admin.getName();
 				email = admin.getEmail();
 				
@@ -152,7 +155,6 @@ public class UserController {
 				
 				userService.update(user);
 				
-				SimpleMailMessage mail = new SimpleMailMessage();
 				// setTo(from, to)
 				mail.setTo("jnat51.jg@gmail.com", email);
 	
@@ -164,9 +166,14 @@ public class UserController {
 				javaMailSender.send(mail);
 	
 				System.out.println("sent");
+				}catch(Exception e)
+				{
+					System.out.println(e);
+				}
 			}
 			else if(user.getRole() == Role.agent) {
-				Agent agent = agentService.findById(user.getId());
+				System.out.println("agent");
+				Agent agent = agentService.findById(user.getUser());
 				name = agent.getName();
 				email = agent.getEmail();
 				
@@ -174,7 +181,6 @@ public class UserController {
 				
 				userService.update(user);
 				
-				SimpleMailMessage mail = new SimpleMailMessage();
 				// setTo(from, to)
 				mail.setTo("jnat51.jg@gmail.com", email);
 	
@@ -189,7 +195,8 @@ public class UserController {
 				}
 			else if(user.getRole() == Role.customer)
 			{
-				Customer customer = customerService.findCustomerById(user.getId());
+				System.out.println("customer");
+				Customer customer = customerService.findCustomerById(user.getUser());
 				name = customer.getName();
 				email = customer.getEmail();
 				
@@ -197,7 +204,6 @@ public class UserController {
 				
 				userService.update(user);
 				
-				SimpleMailMessage mail = new SimpleMailMessage();
 				// setTo(from, to)
 				mail.setTo("jnat51.jg@gmail.com", email);
 	
