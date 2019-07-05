@@ -296,10 +296,10 @@ public class CustomerController {
 		}
 	}
 
-	@GetMapping(value = "/user/{username}")
-	public ResponseEntity<?> getCustomerByBk(@PathVariable String username) {
+	@GetMapping(value = "/email/{email}")
+	public ResponseEntity<?> getCustomerByBk(@PathVariable String email) {
 		try {
-			Customer cust = customerService.findCustomerByBk(username);
+			Customer cust = customerService.findCustomerByBk(email);
 
 			List<Customer> customers = new ArrayList<Customer>();
 

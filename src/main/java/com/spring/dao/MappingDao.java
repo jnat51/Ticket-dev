@@ -57,14 +57,6 @@ public class MappingDao extends ParentDao {
 					  .createQuery(query)
 					  .setParameter("companyid", companyId).getSingleResult();
 			
-			List<Customer> customers = new ArrayList<Customer>();
-			 for (Customer cust : mapping.getCompany().getCustomers()) {
-					cust.setCompany(null);
-					customers.add(cust);
-				}
-			 
-			 mapping.getCompany().setCustomers(customers);
-			
 			return mapping;
 			}
 			catch(Exception e)
