@@ -120,7 +120,6 @@ public class UserController {
 			if (matched == true) {
 				if (login.getRole() == Role.admin) {
 					user = (AdminLogin) userService.login(username, login.getRole());
-					AdminLogin admin = (AdminLogin) userService.login(username, login.getRole());
 				}
 				if (login.getRole() == Role.agent) {
 					AgentLogin agent = (AgentLogin) userService.login(username, login.getRole());
