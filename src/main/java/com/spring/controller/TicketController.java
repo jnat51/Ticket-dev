@@ -45,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.spring.StoreSession;
 import com.spring.enumeration.Enum.Sender;
 import com.spring.enumeration.Enum.Stat;
 import com.spring.exception.ErrorException;
@@ -79,6 +80,8 @@ public class TicketController {
 	AgentService agentService;
 	@Autowired
 	MappingService mappingService;
+	@Autowired
+	StoreSession storeSession;
 	@Autowired
 	private JavaMailSender javaMailSender;
 
@@ -229,16 +232,7 @@ public class TicketController {
 	@PostMapping(value = "/testemail")
 	public ResponseEntity<?> insertTicketByEmail() throws ErrorException, MessagingException, IOException {
 		try {
-			InputStream input = new FileInputStream("src/main/resources/application.properties");
-			Properties props = new Properties();
-
-			props.load(input);
-
-			Session session = Session.getDefaultInstance(props, null);
-
-			Store store = session.getStore("imaps");
-			store.connect("smtp.gmail.com", "jnat51.jg@gmail.com", "myname51");
-
+			Store store = storeSession.createSession();
 			Folder emailFolder = store.getFolder("INBOX");
 			emailFolder.open(Folder.READ_WRITE);
 			//get unread email from in-box
