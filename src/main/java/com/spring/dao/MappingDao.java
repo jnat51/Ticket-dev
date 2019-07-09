@@ -83,9 +83,9 @@ public class MappingDao extends ParentDao {
 
 			String query = "SELECT tbl_mapping.id, tbl_company.company_code, tbl_company.company_name, tbl_company.status, tbl_agent.name, tbl_image.image "
 					+ "FROM tbl_mapping "
-					+ "JOIN tbl_company ON tbl_mapping.company_id = tbl_company.id "
-					+ "JOIN tbl_agent ON tbl_mapping.agent_id = tbl_agent.id "
-					+ "JOIN tbl_image ON tbl_company.image_id = tbl_image.id "
+					+ "LEFT JOIN tbl_company ON tbl_mapping.company_id = tbl_company.id "
+					+ "LEFT JOIN tbl_agent ON tbl_mapping.agent_id = tbl_agent.id "
+					+ "LEFT JOIN tbl_image ON tbl_company.image_id = tbl_image.id "
 					+ "WHERE tbl_company.status = 'active'";
 
 			mappings = super.entityManager.createNativeQuery(query, MappingReport.class).getResultList();			
