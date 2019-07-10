@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.dao.CompanyDao;
 import com.spring.dao.TicketDataDao;
+import com.spring.model.TicketCount;
 import com.spring.model.TicketData;
 import com.spring.model.company.Company;
 
@@ -54,5 +55,14 @@ public class TicketDataService {
 		else {
 			return ticket;
 		}
+	}
+	
+	public TicketCount countAll(){
+		System.out.println("service");
+		
+		TicketCount ticketCount = new TicketCount();
+		ticketCount = ticketDataDao.countAll();
+		
+		return ticketCount;
 	}
 }

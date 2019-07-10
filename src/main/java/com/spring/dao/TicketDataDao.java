@@ -1,10 +1,8 @@
 package com.spring.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
+import com.spring.model.TicketCount;
 import com.spring.model.TicketData;
 
 @Repository
@@ -98,6 +96,35 @@ public class TicketDataDao extends ParentDao{
 			return ticket;
 		} catch (Exception e) {
 			return ticket;
+		}
+	}
+	
+	public TicketCount countAll() {
+		TicketCount ticketCount = new TicketCount();
+		try {
+			System.out.println("dao");
+		String hql="SELECT (SELECT count(tbl_ticket.*) AS open FROM tbl_ticket WHERE tbl_ticket.status = 'open'), "
+				+ "(SELECT count(tbl_ticket.*) AS closed FROM tbl_ticket WHERE tbl_ticket.status = 'close'), "
+				+ "(SELECT count(tbl_ticket.*) AS reopen FROM tbl_ticket WHERE tbl_ticket.status = 'reopen') "
+				+ "FROM tbl_ticket LIMIT 1";
+		
+		Object[] object = (Object[]) super.entityManager.createNativeQuery(hql)
+				.getSingleResult();
+		
+		System.out.println(object[0]);
+		
+		int open = Integer.parseInt(object[0].toString());
+		int closed = Integer.parseInt(object[1].toString());
+		int reopen = Integer.parseInt(object[2].toString());
+
+		ticketCount.setOpen(open);
+		ticketCount.setReopen(reopen);
+		ticketCount.setClosed(closed);
+				
+		return ticketCount;
+		}
+		catch(Exception e) {
+			return null;
 		}
 	}
 }
