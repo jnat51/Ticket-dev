@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.model.ChartData;
 import com.spring.model.TicketData;
 import com.spring.service.TicketDataService;
 
@@ -25,12 +26,27 @@ public class TicketDataController {
 	@GetMapping(value="/")
 	public ResponseEntity<?> findTicketData(){
 		try {
+			ChartData chartData = new ChartData();
 			List<TicketData> tickets = ticketDataService.findTicketData();
 			
 			for(TicketData ticket : tickets) {
 				System.out.println(ticket.getCompanyName());
 			}
-			return new ResponseEntity<>(tickets, HttpStatus.OK);
+			
+			chartData.setTicketData(tickets);
+			
+			return new ResponseEntity<>(chartData, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping(value="/test")
+	public ResponseEntity<?> test(){
+		try {
+			TicketData ticket = ticketDataService.test();
+			
+			return new ResponseEntity<>(ticket, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
