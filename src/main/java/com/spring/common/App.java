@@ -9,9 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+//uncomment to unable quartz scheduler
+//@EnableScheduling
 @SpringBootApplication
 @EnableAutoConfiguration
-//@EnableScheduling
 @ComponentScan(basePackages = {"com.spring"})
 @EnableTransactionManagement
 @EntityScan(basePackages = "com.spring.model") class App 

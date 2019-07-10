@@ -85,45 +85,7 @@ public class TicketController {
 	@Autowired
 	private JavaMailSender javaMailSender;
 
-	// ======================================*Header
-	// Ticket*===========================================
-//	@PostMapping(value = "/hdr")
-//	public ResponseEntity<?> insertTicket(@RequestBody Ticket ticket) {
-//		try {
-//			Date date = new Date();
-//
-//			SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
-//			int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH)+1).size() + 1;
-//			Customer customer = customerService.findCustomerById(ticket.getCustomer().getId());
-//
-//			String ticketCode = customer.getCompany().getCompanyCode()+ "-" + format.format(date) + "-" + ticketCount;
-//			System.out.println(ticketCode);
-//			
-//			ticket.setTicketCode(ticketCode);
-//			ticket.setTicketDate(date);
-//
-//			System.out.println("insert ticket:");
-//			System.out.println(ticket.getTicketCode());
-//			System.out.println(ticket.getTicketDate());
-//
-//			System.out.println(ticket.getDetails().size());
-//
-//			ticketService.insertTicket(ticket);
-//
-//			Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
-//
-//			if (ticket.getDetails().size() > 0) {
-//				for (DetailTicket dtl : ticket.getDetails()) {
-//					dtl.setTicket(tick);
-//					ticketService.insertDetailTicket(dtl);
-//				}
-//			}
-//
-//			return new ResponseEntity<>("insert success", HttpStatus.CREATED);
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//		}
-//	}
+	// ====================================*Header Ticket*=========================================
 
 	@PostMapping(value = "/hdr")
 	public ResponseEntity<?> insertTicketWithSs(@RequestParam String ticket,
@@ -195,7 +157,7 @@ public class TicketController {
 							subDetailTicket.setMime(mime);
 							subDetailTicket.setSs(data);
 							subDetailTicket.setDetailId(
-							ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
+									ticketService.findDetailTicketByBk(tick.getId(), dtl.getMessageDate()).getId());
 
 							ticketService.insertSubDetailTicket(subDetailTicket);
 						}
@@ -226,8 +188,8 @@ public class TicketController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-	}	
-	
+	}
+
 	@Scheduled(cron = "*/30 */1 * * * ?")
 	@PostMapping(value = "/testemail")
 	public ResponseEntity<?> insertTicketByEmail() throws ErrorException, MessagingException, IOException {
@@ -235,12 +197,12 @@ public class TicketController {
 			Store store = storeSession.createSession();
 			Folder emailFolder = store.getFolder("INBOX");
 			emailFolder.open(Folder.READ_WRITE);
-			//get unread email from in-box
+			// get unread email from in-box
 			Message[] messages = emailFolder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
 			System.out.println(messages.length);
 			emailFolder.getMessage(messages.length).getContent();
-			
-			for(int i = 0; i < messages.length;i++) {
+
+			for (int i = 0; i < messages.length; i++) {
 				System.out.println("email: " + i);
 				Message message = messages[i];
 				System.out.println("==============================");
@@ -249,71 +211,67 @@ public class TicketController {
 				System.out.println("From: " + message.getFrom()[0]);
 				System.out.println("Text: " + message.getContent().toString());
 				emailFolder.setFlags(new Message[] { message }, new Flags(Flags.Flag.SEEN), true);
-				
+
 				String address = message.getFrom()[0].toString();
-				String emailAddress = address.substring(address.lastIndexOf("<"))
-						.replace("<", "")
-						.replace(">", "");
-				
-				if (customerService.findCustomerByBk(emailAddress)
-						.getId() != null) {
+				String emailAddress = address.substring(address.lastIndexOf("<")).replace("<", "").replace(">", "");
+
+				if (customerService.findCustomerByBk(emailAddress).getId() != null) {
 					Date date = new Date();
-					Customer customer = customerService
-							.findCustomerByBk(emailAddress);
+					Customer customer = customerService.findCustomerByBk(emailAddress);
 					System.out.println("email found");
 
 					SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
-					int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH) + 1).size() + 1;
+					int ticketCount = ticketService.findByMonth(Calendar.getInstance().get(Calendar.MONTH) + 1).size()
+							+ 1;
 
 					String ticketCode = customer.getCompany().getCompanyCode() + "-" + format.format(date) + "-"
 							+ ticketCount;
 
 					Mapping mapping = mappingService.findByBk(customer.getCompany().getId());
-					
+
 					List<DetailTicket> details = new ArrayList<DetailTicket>();
 					DetailTicket detail = new DetailTicket();
 					try {
-					Ticket ticket = new Ticket();
-					ticket.setAgent(mapping.getAgent());
-					ticket.setCustomer(customer);
-					ticket.setTitle(message.getSubject());
-					ticket.setTicketDate(date);
-					ticket.setTicketCode(ticketCode);
-					ticket.setDetails(details);
-					ticket.setStatus(Stat.open);
-					
-					ticketService.insertTicket(ticket);
-					
-					Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
-					
-					Multipart multipart = (Multipart) message.getContent();
-					BodyPart bodypart = multipart.getBodyPart(0);
-					System.out.println(bodypart.getContent());
-					
-					detail.setTicket(tick);
-					detail.setSender(Sender.C);
-					detail.setMessageDate(LocalDateTime.now());
-					detail.setMessage(bodypart.getContent().toString());
-					
-					ticketService.insertDetailTicket(detail);
-					
-					SimpleMailMessage mail = new SimpleMailMessage();
-					
-					mail.setTo("jnat51.jg@gmail.com", emailAddress);
+						Ticket ticket = new Ticket();
+						ticket.setAgent(mapping.getAgent());
+						ticket.setCustomer(customer);
+						ticket.setTitle(message.getSubject());
+						ticket.setTicketDate(date);
+						ticket.setTicketCode(ticketCode);
+						ticket.setDetails(details);
+						ticket.setStatus(Stat.open);
 
-					mail.setSubject("Thank you for contacting us " + customer.getName() + ".");
-					mail.setText("Thank you for contacting us, please wait for the reply on your ticket.");
+						ticketService.insertTicket(ticket);
 
-					System.out.println("send...");
+						Ticket tick = ticketService.findTicketByBk(ticket.getTicketCode());
 
-					javaMailSender.send(mail);
-					
-					System.out.println("sent");
-					}
-					catch (Exception e) {
+						Multipart multipart = (Multipart) message.getContent();
+						BodyPart bodypart = multipart.getBodyPart(0);
+						System.out.println(bodypart.getContent());
+
+						detail.setTicket(tick);
+						detail.setSender(Sender.C);
+						detail.setMessageDate(LocalDateTime.now());
+						detail.setMessage(bodypart.getContent().toString());
+
+						ticketService.insertDetailTicket(detail);
+
+						SimpleMailMessage mail = new SimpleMailMessage();
+
+						mail.setTo("jnat51.jg@gmail.com", emailAddress);
+
+						mail.setSubject("Thank you for contacting us " + customer.getName() + ".");
+						mail.setText("Thank you for contacting us, please wait for the reply on your ticket.");
+
+						System.out.println("send...");
+
+						javaMailSender.send(mail);
+
+						System.out.println("sent");
+					} catch (Exception e) {
 						return new ResponseEntity<>("Insert ticket failed", HttpStatus.BAD_REQUEST);
 					}
-					
+
 					System.out.println("insert ticket success");
 				} else {
 					return new ResponseEntity<>("Email not found", HttpStatus.BAD_REQUEST);
@@ -557,8 +515,7 @@ public class TicketController {
 		}
 	}
 
-	// ======================================*Detail
-	// Ticket*===========================================
+	// ====================================*Detail  Ticket*=========================================
 
 	@PostMapping(value = "/dtl/{idHeader}")
 	public ResponseEntity<?> insertDetailTicket(@RequestParam String detailTicket,
