@@ -111,8 +111,6 @@ public class TicketDataDao extends ParentDao{
 		Object[] object = (Object[]) super.entityManager.createNativeQuery(hql)
 				.getSingleResult();
 		
-		System.out.println(object[0]);
-		
 		int open = Integer.parseInt(object[0].toString());
 		int closed = Integer.parseInt(object[1].toString());
 		int reopen = Integer.parseInt(object[2].toString());
