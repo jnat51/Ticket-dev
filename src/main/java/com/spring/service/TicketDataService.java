@@ -25,7 +25,13 @@ public class TicketDataService {
 		for(Company comp:companyDao.findAll())
 		{
 			System.out.println(comp.getId());
-			tickets.add(ticketDataDao.getTicketData(comp.getId()));
+			
+			TicketData ticketData = new TicketData();
+			ticketData = ticketDataDao.getTicketData(comp.getId());
+			
+			if(ticketData.getId() != null) {
+			tickets.add(ticketData);
+			}
 		}
 		
 		if(tickets.size() > 0) {
